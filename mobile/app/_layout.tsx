@@ -8,6 +8,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { Slot } from "expo-router";
+import { SessionProvider } from "../ctx";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -31,22 +33,20 @@ export default function RootLayout() {
     return null;
   }
 
-  const isloggedin: boolean = false;
-
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        {isloggedin ? (
-          <Stack.Screen name="(logged-in)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen
-            name="(not-logged-in)"
-            options={{ headerShown: false }}
-          />
-        )}
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <SessionProvider>
+      <Slot />
+    </SessionProvider>
   );
 }
+    //<Stack>
+    //    {isloggedin ? (
+    //      <Stack.Screen name="(logged-in)" options={{ headerShown: false }} />
+    //    ) : (
+    //      <Stack.Screen
+    //        name="(not-logged-in)"
+    //        options={{ headerShown: false }}
+    //      />
+    //    )}
+    //    <Stack.Screen name="+not-found" />
+    //  </Stack> 
