@@ -9,16 +9,18 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { Slot } from "expo-router";
-import { SessionProvider } from "../ctx";
+import { SessionProvider } from "@/context/context";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
+  // colorS
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -35,18 +37,20 @@ export default function RootLayout() {
 
   return (
     <SessionProvider>
-      <Slot />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
+        <Slot />
+      </SafeAreaView>
     </SessionProvider>
   );
 }
-    //<Stack>
-    //    {isloggedin ? (
-    //      <Stack.Screen name="(logged-in)" options={{ headerShown: false }} />
-    //    ) : (
-    //      <Stack.Screen
-    //        name="(not-logged-in)"
-    //        options={{ headerShown: false }}
-    //      />
-    //    )}
-    //    <Stack.Screen name="+not-found" />
-    //  </Stack> 
+//<Stack>
+//    {isloggedin ? (
+//      <Stack.Screen name="(logged-in)" options={{ headerShown: false }} />
+//    ) : (
+//      <Stack.Screen
+//        name="(not-logged-in)"
+//        options={{ headerShown: false }}
+//      />
+//    )}
+//    <Stack.Screen name="+not-found" />
+//  </Stack>
