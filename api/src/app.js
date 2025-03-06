@@ -1,16 +1,43 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mysql = require("mysql2/promise");
 
-const app = express();
-const port = 3000;
+// Load environment variables for database password
+require("dotenv").config();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const main = async () => {
+  const app = express();
+  const port = 3000;
 
-app.get("/", (request, response) => {
-  response.json({ message: "bldr backend" });
-});
+  const db = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  });
 
-app.listen(port, () => {
-  console.log("BLDR Api Listening 🚀🚀🚀");
-});
+  // db.connect((error) => {
+  //   if (error) {
+  //     console.error("Error connecting to MySQL database:", error);
+  //     return;
+  //   } else {
+  //     console.log("Connected to MySQL database!");
+  //   }
+  // });
+
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+
+  app.get("/", async (request, response) => {
+    const t = await db.query("SELECT * FROM bldr_users");
+    response.json({ data: t[0] });
+  });
+
+  app.listen(port);
+};
+
+main()
+  .then(() => {
+    console.log("BLDR Api Listening 🚀🚀🚀");
+  })
+  .catch((err) => console.error("FATAL ERROR:", err));

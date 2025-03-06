@@ -7,3 +7,4 @@ Backend:
 Frontend authentication
 
 - https://docs.expo.dev/router/reference/authentication/
+- https://docs.expo.dev/versions/latest/sdk/map-view/
