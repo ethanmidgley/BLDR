@@ -5,7 +5,7 @@ export default function Register() {
   return (
     <View>
       <Text>Register page</Text>
-      <Link href={"/login"}>Go to log in page</Link>
+      <Link href={"/login"}>Go to log in page - Yours Trule, Ethan</Link>
     </View>
   );
 }

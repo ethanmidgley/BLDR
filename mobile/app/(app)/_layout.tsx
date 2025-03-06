@@ -13,6 +13,8 @@ import { Redirect, Stack } from "expo-router";
 
 import { useSession } from "@/context/context";
 
+import { FontAwesome6, AntDesign, FontAwesome } from "@expo/vector-icons";
+
 export default function TabLayout() {
   const { session, isLoading } = useSession();
 
@@ -34,7 +36,6 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
@@ -45,20 +46,47 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="skills"
         options={{
-          title: "Home",
+          title: "Skills",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <FontAwesome6 name="hill-rockslide" size={24} color="black" />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="log"
         options={{
-          title: "Explore",
+          title: "Log",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <AntDesign name="book" size={24} color="black" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="home" size={24} color="black" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="locations"
+        options={{
+          title: "Map",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="map-o" size={24} color="black" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="post"
+        options={{
+          title: "Post",
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="plus" size={24} color="black" />
           ),
         }}
       />

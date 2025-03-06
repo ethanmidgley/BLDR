@@ -15,7 +15,7 @@ export default function Login() {
           router.replace("/");
         }}
       >
-        LOGIN SECURELY MAGICALLY
+        LOGIN SECURELY MAGICALLY - made by a big neek
       </Text>
       <Link href={"/register"}>Go to register page</Link>
     </View>

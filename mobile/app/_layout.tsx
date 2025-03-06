@@ -43,14 +43,3 @@ export default function RootLayout() {
     </SessionProvider>
   );
 }
-//<Stack>
-//    {isloggedin ? (
-//      <Stack.Screen name="(logged-in)" options={{ headerShown: false }} />
-//    ) : (
-//      <Stack.Screen
-//        name="(not-logged-in)"
-//        options={{ headerShown: false }}
-//      />
-//    )}
-//    <Stack.Screen name="+not-found" />
-//  </Stack>
