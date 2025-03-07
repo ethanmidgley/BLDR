@@ -14,6 +14,7 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -37,9 +38,11 @@ export default function RootLayout() {
 
   return (
     <SessionProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
-        <Slot />
-      </SafeAreaView>
+      <GestureHandlerRootView>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
+          <Slot />
+        </SafeAreaView>
+      </GestureHandlerRootView>
     </SessionProvider>
   );
 }
