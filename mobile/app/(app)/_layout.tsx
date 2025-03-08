@@ -1,15 +1,9 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-
 import { Text } from "react-native";
-import { Redirect, Stack } from "expo-router";
+import { Redirect } from "expo-router";
 
 import { useSession } from "@/context/context";
 
@@ -49,7 +43,7 @@ export default function TabLayout() {
         name="skills"
         options={{
           title: "Skills",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: () => (
             <FontAwesome6 name="hill-rockslide" size={24} color="black" />
           ),
         }}
@@ -58,25 +52,21 @@ export default function TabLayout() {
         name="log"
         options={{
           title: "Log",
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="book" size={24} color="black" />
-          ),
+          tabBarIcon: () => <AntDesign name="book" size={24} color="black" />,
         }}
       />
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="home" size={24} color="black" />
-          ),
+          tabBarIcon: () => <AntDesign name="home" size={24} color="black" />,
         }}
       />
       <Tabs.Screen
         name="locations"
         options={{
           title: "Map",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: () => (
             <FontAwesome name="map-o" size={24} color="black" />
           ),
         }}
@@ -85,9 +75,7 @@ export default function TabLayout() {
         name="post"
         options={{
           title: "Post",
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="plus" size={24} color="black" />
-          ),
+          tabBarIcon: () => <AntDesign name="plus" size={24} color="black" />,
         }}
       />
     </Tabs>
