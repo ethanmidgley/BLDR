@@ -11,8 +11,13 @@ export default function Login() {
   const [ email, on_change_email ] = React.useState('');
   const [ password, on_change_password ] = React.useState('');
 
+  const test_submitted = () => {
+    Alert.alert(`submitted : ${email} ${password}`);
+  }
+
   const submitted = () => {
-    Alert.alert(`submitted : ${email} ${password}`)
+    signIn();
+    router.replace("/");
   }
 
   return (
@@ -22,7 +27,7 @@ export default function Login() {
 
       <Image source = {require("../assets/images/icon.png")} style = {styles.image} />
 
-      <Text style = {styles.h1}>Log In</Text>
+      <Text style = {styles.h1}> Log In </Text>
 
       <TextInput
         style = {styles.input}
@@ -43,12 +48,13 @@ export default function Login() {
       <TouchableOpacity style = {styles.button} onPress = {submitted}>
         <Text style = {styles.button_text}> Confirm </Text>
       </TouchableOpacity>
+      <TouchableOpacity style = {styles.button} onPress = {test_submitted}>
+        <Text style = {styles.button_text}> Confirm Test </Text>
+      </TouchableOpacity>
 
 
-      <Text 
-        style = {styles.text}> Don't have an account? </Text>
-      <Link href={"/register"} 
-        style = {styles.link}> Register </Link>
+      <Text style = {styles.text}> Don't have an account? </Text>
+      <Link href={"/register"} style = {styles.link}> Register </Link>
     </View>
   );
 }
