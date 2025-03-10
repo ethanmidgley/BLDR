@@ -2,8 +2,6 @@ import { useState } from "react";
 import {View, Text, Button, Alert } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-gesture-handler";
-import DropDownPicker from 'react-native-dropdown-picker';
-
 
 const dates = ["01/01/01", "02/02/02", "03/03/03"];
 const names = ["jeff", "test", "name 3"];
@@ -97,12 +95,13 @@ export default function Log() {
           </View>
         ):
         <View style= {{padding: 10}}>
-          <View style = {{flexDirection: "row"}}>
+          <View style = {{flexDirection: "row", paddingTop: 20}}>
             <Text style = {{fontSize: 25}}>Date: </Text>
             <TextInput
               onChangeText={onChangeDay}
               value = {day}
               placeholder="dd"
+              placeholderTextColor="#ddd"
               keyboardType='numeric'
               maxLength={2}
               onEndEditing={capValues}
@@ -111,6 +110,7 @@ export default function Log() {
               onChangeText={onChangeMonth}
               value = {month}
               placeholder="mm"
+              placeholderTextColor="#ddd"
               keyboardType='numeric'
               maxLength={2}
               onEndEditing={capValues}
@@ -119,48 +119,53 @@ export default function Log() {
               onChangeText={onChangeYear}
               value = {year}
               placeholder="yyyy"
+              placeholderTextColor="#ddd"
               keyboardType='numeric'
               maxLength={4}
               onEndEditing={capValues}
             />
             </View>
-            <View style = {{flexDirection:'row'}}>
+            <View style = {{flexDirection:'row', paddingTop: 20}}>
               <Text style = {{fontSize: 25}}>Location</Text>
               <TextInput  
                 onChangeText={onChangeLocation}
                 value = {location}
                 placeholder="eg. Climbing Academy Kinning Park"
+                placeholderTextColor="#ddd"
                 keyboardType="default"
               />
             </View>
-            <View style={{ flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row', paddingTop: 20}}>
               <Text style={{ fontSize: 25 }}>Level</Text>
               <TextInput
                 onChangeText={onChangeLevel}
                 value = {level}
                 placeholder="eg. Red or Expert"
+                placeholderTextColor="#ddd"
                 keyboardType='default'
                 />
             </View>
-            <View style={{ flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row', paddingTop: 20}}>
               <Text style={{ fontSize: 25 }}>Time(s)</Text>
               <TextInput
                 onChangeText={onChangeTime}
                 value = {time}
                 placeholder="eg. 20"
+                placeholderTextColor="#ddd"
                 keyboardType='numeric'
               />
             </View>
-            <View style={{ flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row', paddingTop: 20}}>
               <Text style={{ fontSize: 25 }}>Height(m)</Text>
               <TextInput
                 onChangeText={onChangeHeight}
                 value = {height}
                 placeholder="eg. 5"
+                placeholderTextColor="#ddd"
                 keyboardType='numeric'
               />
             </View>
-          <View>
+          <View style= {{width: 100, paddingTop: 20}}>
             <Button
               onPress= {submitted}
               title="submit"
