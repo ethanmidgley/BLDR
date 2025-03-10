@@ -1,9 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
+const path = require("path");
 
 // Load environment variables for database password
-require("dotenv").config();
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const main = async () => {
   const app = express();
@@ -16,21 +17,31 @@ const main = async () => {
     database: process.env.DB_DATABASE,
   });
 
-  // db.connect((error) => {
-  //   if (error) {
-  //     console.error("Error connecting to MySQL database:", error);
-  //     return;
-  //   } else {
-  //     console.log("Connected to MySQL database!");
-  //   }
-  // });
-
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
-  app.get("/", async (request, response) => {
-    const t = await db.query("SELECT * FROM bldr_users");
-    response.json({ data: t[0] });
+  app.post("/users/register", async (request, response) => {
+    const { email, fullname, password } = request.body;
+
+    try {
+      const [result] = await db.execute(
+        "INSERT INTO `bldr_users` (`name`, `email`, `password`) VALUES (?, ?, ?);",
+        [fullname, email, password],
+      );
+      response.json({
+        data: {
+          user: {
+            id: result.insertId,
+            email: email,
+            fullname: fullname,
+            password: password,
+          },
+        },
+      });
+    } catch {
+      response.status(500).send({ error: "failed to create user" });
+      return;
+    }
   });
 
   app.listen(port);
