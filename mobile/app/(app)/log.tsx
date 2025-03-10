@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {View, Text, Button, Alert, TouchableOpacity } from "react-native";
+import {View, Text, Image, Alert, TouchableOpacity } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { styles } from "@/constants/style";
@@ -69,24 +69,24 @@ export default function Log() {
       <View>
         {names.map((name, index) => (
         <View key={index} style = {styles.history_container}>
-        <Text>
-            {"\n"}
+        <Text style = {{fontSize: 25}}>
             {name} - {dates[index]}
           </Text>
-          <Text>Time: </Text>
-          <Text>
+          <Text style = {{fontSize: 25}}>Time: </Text>
+          <Text style ={{fontSize: 25}}>
             Height: 
-            {"\n"}
           </Text>
-                  
           </View>
           ))}
           </View>
         ):
+        
         <View style= {{padding: 10}}>
+          {/* <Image source = {require("../assets/images/icon.png")} style = {styles.image} /> */}
           <View style = {{flexDirection: "row"}}>
             <Text style = {{fontSize: 25}}>Date: </Text>
             <TextInput
+              style = {styles.date}
               onChangeText={onChangeDay}
               value = {day}
               placeholder="dd"
@@ -96,6 +96,7 @@ export default function Log() {
               onEndEditing={capValues}
             />
             <TextInput
+              style = {styles.date}
               onChangeText={onChangeMonth}
               value = {month}
               placeholder="mm"
@@ -105,6 +106,7 @@ export default function Log() {
               onEndEditing={capValues}
             />
             <TextInput
+              style = {styles.date}
               onChangeText={onChangeYear}
               value = {year}
               placeholder="yyyy"

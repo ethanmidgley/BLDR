@@ -79,7 +79,11 @@ export const styles = StyleSheet.create({
   },
 
   history_container: {
-    padding: 10
+    padding: 10,
   },
+
+  date:{
+    padding:5
+  }
 
 })
