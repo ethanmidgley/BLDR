@@ -56,7 +56,7 @@ export default function Log() {
 
   return (
     <View>
-      <View style={{ flexDirection: "row", height: 150 }}>
+      <View style={{ flexDirection: "row", height: 150, padding:0, marginBottom:0}}>
         <TouchableOpacity style = {styles.button_log_page} onPress = {showRecord}>
           <Text style = {styles.button_text}> Record </Text>
         </TouchableOpacity>
@@ -64,7 +64,7 @@ export default function Log() {
           <Text style = {styles.button_text}> History </Text>
         </TouchableOpacity>
       </View>
-
+      <Image source = {require("../../assets/images/logo.png")} style = {styles.image_record} />
       {show ? (
       <View>
         {names.map((name, index) => (
@@ -81,8 +81,7 @@ export default function Log() {
           </View>
         ):
         
-        <View style= {{padding: 10}}>
-          {/* <Image source = {require("../assets/images/icon.png")} style = {styles.image} /> */}
+        <View style= {{padding: 5}}>
           <View style = {{flexDirection: "row"}}>
             <Text style = {{fontSize: 25}}>Date: </Text>
             <TextInput

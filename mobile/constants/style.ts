@@ -49,10 +49,11 @@ export const styles = StyleSheet.create({
   button_log_page: {
     width: "50%",
     height: "30%",
-    marginVertical: 20,
+    marginVertical: 1,
     borderRadius: 9,
     justifyContent: "center",
     backgroundColor: "#f00",
+    marginBottom:0
   },
 
   
@@ -79,11 +80,21 @@ export const styles = StyleSheet.create({
   },
 
   history_container: {
-    padding: 10,
+    padding:10
   },
 
   date:{
-    padding:5
-  }
+    padding:5,
+  },
 
+  image_record: {
+    width: 350,
+    height: 100,
+    resizeMode: "contain", 
+    alignSelf: "center",
+    marginVertical: 0,
+    marginTop: 0,
+    marginBottom: 0,
+  },
+  
 })
