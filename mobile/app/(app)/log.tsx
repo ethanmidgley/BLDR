@@ -1,7 +1,9 @@
 import { useState } from "react";
-import {View, Text, Button, Alert } from "react-native";
+import {View, Text, Button, Alert, TouchableOpacity } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-gesture-handler";
+import { styles } from "@/constants/style";
+
 
 const dates = ["01/01/01", "02/02/02", "03/03/03"];
 const names = ["jeff", "test", "name 3"];
@@ -16,11 +18,11 @@ export default function Log() {
   const [time, onChangeTime] = React.useState('');
   const [height,onChangeHeight] = React.useState('');
 
-  const showNames = () => {
+  const showHitory = () => {
     setShow(true);
   };
 
-  const hideNames = () => {
+  const showRecord = () => {
     setShow(false)
   }
 
@@ -54,33 +56,20 @@ export default function Log() {
 
   return (
     <View>
-      <View style={{ flexDirection: "row" }}>
-        <View style={{ flex: 1 }}>
-          <Button
-            onPress={hideNames}
-            title="Record"
-            color="black"
-            accessibilityLabel="Record your scores manually or with inbuilt technology"
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Button
-            onPress={showNames}
-            title="History"
-            color="black"
-            accessibilityLabel="Show your history of past recorded climbs"
-          />
-        </View>
-
-
-
+      <View style={{ flexDirection: "row", height: 150 }}>
+        <TouchableOpacity style = {styles.button_log_page} onPress = {showRecord}>
+          <Text style = {styles.button_text}> Record </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style = {styles.button_log_page} onPress = {showHitory}>
+          <Text style = {styles.button_text}> History </Text>
+        </TouchableOpacity>
       </View>
 
       {show ? (
-        <View style= {{padding: 10}}>
+      <View>
         {names.map((name, index) => (
-        <View key={index}>
-        <Text >
+        <View key={index} style = {styles.history_container}>
+        <Text>
             {"\n"}
             {name} - {dates[index]}
           </Text>
@@ -95,7 +84,7 @@ export default function Log() {
           </View>
         ):
         <View style= {{padding: 10}}>
-          <View style = {{flexDirection: "row", paddingTop: 20}}>
+          <View style = {{flexDirection: "row"}}>
             <Text style = {{fontSize: 25}}>Date: </Text>
             <TextInput
               onChangeText={onChangeDay}
@@ -166,12 +155,9 @@ export default function Log() {
               />
             </View>
           <View style= {{width: 100, paddingTop: 20}}>
-            <Button
-              onPress= {submitted}
-              title="submit"
-              color = "black"
-              accessibilityLabel="this is where you submit your climb"
-            />
+          <TouchableOpacity style = {styles.button_log_submission} onPress = {submitted}>
+            <Text style = {styles.button_text}> Submit </Text>
+          </TouchableOpacity>
           </View>
         </View>
         }
