@@ -42,10 +42,18 @@
     "react-native-screens": "~4.4.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
+    "react-native-image-picker": "^7.1.0",
+    "react-native-picker-select": "^9.1.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "expo-secure-store": "~14.0.1",
+<<<<<<< Updated upstream
     "react-native-maps": "1.18.0",
     "expo-location": "~18.0.7",
-    "expo-image": "~2.0.6"
+    "expo-image": "~2.0.6",
+=======
+    "expo-image-picker": "~16.0.6"
+
+>>>>>>> Stashed changes
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

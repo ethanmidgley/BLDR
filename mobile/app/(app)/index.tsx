@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { useSession } from "@/context/context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import { useState } from "react";
+import React, { useState } from "react";
 
 type Post = {
   id: number;
