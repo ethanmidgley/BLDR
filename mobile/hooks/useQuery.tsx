@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import useApi from "./useApi";
 
-export const useQuery = (url: string, options?: RequestInit) => {
+export const useQuery = <DataType,>(url: string, options?: RequestInit) => {
   const queryOptions: RequestInit = { method: "get" };
-  const [mutate, state] = useApi(url, { ...queryOptions, ...options });
+  const [mutate, state] = useApi<DataType>(url, {
+    ...queryOptions,
+    ...options,
+  });
 
   useEffect(() => {
     mutate();

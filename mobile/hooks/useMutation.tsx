@@ -1,8 +1,11 @@
 import useApi from "./useApi";
 
-export const useMutation = (url: string, options?: RequestInit) => {
+export const useMutation = <DataType,>(url: string, options?: RequestInit) => {
   const mutationOptions: RequestInit = {
-    method: "post",
+    method: "POST",
+    headers: new Headers({
+      "Content-Type": "application/json; charset=UTF-8",
+    }),
   };
-  return useApi(url, { ...mutationOptions, ...options });
+  return useApi<DataType>(url, { ...mutationOptions, ...options });
 };

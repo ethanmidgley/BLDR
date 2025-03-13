@@ -73,7 +73,7 @@ const main = async () => {
 
     try {
       const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-users` (`name`, `email`, `password`) VALUES (?, ?, ?);",
+        "INSERT INTO `CS317-bldr-users` (`full_name`, `email`, `password`) VALUES (?, ?, ?);",
         [fullname, email, password],
       );
       response.json({
