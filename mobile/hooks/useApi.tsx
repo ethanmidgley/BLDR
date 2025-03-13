@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_PATH = "http://10.12.123.227:3000";
+const API_PATH = "http://192.168.1.148:3000";
 
 type FetchStatus = "loading" | "error" | "success" | "not called";
 
@@ -13,18 +13,25 @@ type ApiResponse<DataType> = {
 export const useApi = <DataType,>(
   url: string,
   options?: RequestInit,
-): [() => Promise<ApiResponse<DataType>>, ApiResponse<DataType>] => {
+): [
+  (variables?: Object) => Promise<ApiResponse<DataType>>,
+  ApiResponse<DataType>,
+] => {
   const [data, setData] = useState<DataType | null>(null);
   const [status, setStatus] = useState<FetchStatus>("not called");
   const [error, setError] = useState<string | null>(null);
 
-  const send = async (): Promise<ApiResponse<DataType>> => {
+  const send = async (body?: Object): Promise<ApiResponse<DataType>> => {
     setStatus("loading");
     setData(null);
     setError(null);
 
     try {
-      const res = await fetch(API_PATH + url, options);
+      const res = await fetch(API_PATH + url, {
+        ...options,
+        method: "POST",
+        body: JSON.stringify(body),
+      });
       const json = (await res.json()) as DataType;
 
       setData(json);
@@ -32,6 +39,7 @@ export const useApi = <DataType,>(
     } catch (err: any) {
       setStatus("error");
       setError(err.message);
+      throw err;
     }
 
     return { data, status, error };
