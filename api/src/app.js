@@ -20,6 +20,7 @@ const main = async () => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
+  //register api
   app.post("/users/register", async (request, response) => {
     const { email, fullname, password } = request.body;
 
@@ -43,6 +44,24 @@ const main = async () => {
       return;
     }
   });
+
+  //login endpoints
+  app.post("/users/login", async (request, response) => {
+    response.json({ data: "things" });
+  });
+
+  //log endpoints
+  app.post("/log/add", async (request, response) => {});
+
+  app.get("/log/fetch", async (request, response) => {});
+
+  //posts endpoints
+  app.post("/posts/add", async (request, response) => {});
+
+  app.get("/posts/fetch", async (request, response) => {});
+
+  //comments endpoints
+  app.post("/comments/add", async (request, response) => {});
 
   app.listen(port);
 };
