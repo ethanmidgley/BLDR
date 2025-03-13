@@ -1,4 +1,4 @@
-![BLDR image](./mobile/assets/images/icon.png)
+![BLDR image](./mobile/assets/images/logo.png)
 
 
 # CS317 Support and Wellbeing App
