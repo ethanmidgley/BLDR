@@ -53,7 +53,21 @@ const main = async () => {
   //log endpoints
   app.post("/log/add", async (request, response) => {});
 
-  app.get("/log/fetch", async (request, response) => {});
+  app.get("/log/fetch", async (request, response) => {
+    //TODO:replace this with the acutal user id when we can
+    const user_id = 1;
+
+    try {
+      const [result] = await db.execute(
+        "SELECT * FROM `CS317-bldr-climbs` WHERE user_id=?",
+        [user_id],
+      );
+      response.json({ data: result });
+    } catch {
+      response.status(500).send({ error: "failed to read user log" });
+      return;
+    }
+  });
 
   //posts endpoints
   app.post("/posts/add", async (request, response) => {});
