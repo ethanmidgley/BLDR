@@ -9,7 +9,6 @@ const LocalStrategy = require("passport-local");
 // Load environment variables for database password
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
-
 const main = async () => {
   const app = express();
   const port = 3000;
@@ -21,39 +20,49 @@ const main = async () => {
     database: process.env.DB_DATABASE,
   });
 
-  passport.use(new LocalStrategy({usernameField: "email", passwordField: "password"}, async function verify(email, password, cb) {
-    try {
-      const [ result ] = await db.query('SELECT * FROM `CS317-bldr-users` WHERE email = ?', [ email ]);
-        if (result.length === 0){
-          return cb(null, false, { message: 'Incorrect E-mail' });
+  passport.use(
+    new LocalStrategy(
+      { usernameField: "email", passwordField: "password" },
+      async function verify(email, password, cb) {
+        try {
+          const [result] = await db.query(
+            "SELECT * FROM `CS317-bldr-users` WHERE email = ?",
+            [email],
+          );
+          if (result.length === 0) {
+            return cb(null, false, { message: "Incorrect E-mail" });
+          }
+          if (!(password === result[0].password)) {
+            return cb(null, false, { message: "INCORRECT PASSWORD!!" });
+          } else {
+            return cb(null, result);
+          }
+        } catch (err) {
+          return cb(err);
         }
-        if (!(password === result[0].password)){
-          return cb(null, false, { message: "INCORRECT PASSWORD!!" });
-        } else {
-          return cb(null, result);
-        }
-      } catch (err) {
-        return cb(err);
-      }
-  }));
+      },
+    ),
+  );
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(session({
-    secret: "insert witty secret",
-    resave: false,
-    saveUninitialized: false 
-  }));
-  app.use(passport.authenticate('session'));
+  app.use(
+    session({
+      secret: "insert witty secret",
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+  app.use(passport.authenticate("session"));
 
-  passport.serializeUser(function(user, cb) {
-    process.nextTick(function() {
+  passport.serializeUser(function (user, cb) {
+    process.nextTick(function () {
       cb(null, { id: user.id, email: user.email });
     });
   });
 
-  passport.deserializeUser(function(user, cb) {
-    process.nextTick(function() {
+  passport.deserializeUser(function (user, cb) {
+    process.nextTick(function () {
       return cb(null, user);
     });
   });
@@ -84,17 +93,56 @@ const main = async () => {
   });
 
   //login endpoints
-  app.post("/users/login", passport.authenticate('local'), (request, response) => {
-    response.json({
-      data: {
-        success: "YES YAHOOO"
-      }
-    });
-  });
+  app.post(
+    "/users/login",
+    passport.authenticate("local"),
+    (request, response) => {
+      response.json({
+        data: {
+          success: "YES YAHOOO",
+        },
+      });
+    },
+  );
 
   //log endpoints
-  app.post("/log/add", async (request, response) => {});
 
+  //add a climb
+  app.post("/log/add", async (request, response) => {
+    //TODO: replace dummy id with actual user id once we can accquire it without hassle
+    const { type, time_s, level, success, angle, lat, lon, height } =
+      request.body;
+    let dummy_user_id = 1;
+
+    try {
+      const [result] = await db.execute(
+        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `angle`, `lat`, `lon`, `height`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+        [dummy_user_id, type, time_s, level, success, angle, lat, lon, height],
+      );
+
+      response.json({
+        data: {
+          climb: {
+            id: result.insertId,
+            user_id: dummy_user_id,
+            type: type,
+            time: time_s,
+            level: level,
+            success: success,
+            angle: angle,
+            lat: lat,
+            lon: lon,
+            height: height,
+          },
+        },
+      });
+    } catch {
+      response.status(500).send({ error: "failed to save to user log" });
+      return;
+    }
+  });
+
+  //get user climbs
   app.get("/log/fetch", async (request, response) => {
     //TODO:replace this with the acutal user id when we can
     const user_id = 1;
