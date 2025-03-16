@@ -38,7 +38,7 @@ const main = async () => {
           if (!(password === result[0].password)) {
             return cb(null, false, { message: "INCORRECT PASSWORD!!" });
           } else {
-            return cb(null, result);
+            return cb(null, result[0]);
           }
         } catch (err) {
           return cb(err);
@@ -48,6 +48,7 @@ const main = async () => {
   );
 
   app.use(bodyParser.json());
+
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(
     session({
@@ -56,6 +57,9 @@ const main = async () => {
       saveUninitialized: false,
     }),
   );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(passport.authenticate("session"));
 
   passport.serializeUser(function (user, cb) {
@@ -110,22 +114,30 @@ const main = async () => {
 
   //add a climb
   app.post("/log/add", async (request, response) => {
-    //TODO: replace dummy id with actual user id once we can accquire it without hassle
     const { type, time_s, level, success, angle, lat, lon, height } =
       request.body;
-    let dummy_user_id = 1;
 
     try {
       const [result] = await db.execute(
         "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `angle`, `lat`, `lon`, `height`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
-        [dummy_user_id, type, time_s, level, success, angle, lat, lon, height],
+        [
+          request.user.id,
+          type,
+          time_s,
+          level,
+          success,
+          angle,
+          lat,
+          lon,
+          height,
+        ],
       );
 
       response.json({
         data: {
           climb: {
             id: result.insertId,
-            user_id: dummy_user_id,
+            user_id: request.user.id,
             type: type,
             time: time_s,
             level: level,
@@ -146,12 +158,11 @@ const main = async () => {
   //get user climbs
   app.get("/log/fetch", async (request, response) => {
     //TODO:replace this with the acutal user id when we can
-    const user_id = 1;
 
     try {
       const [result] = await db.execute(
         "SELECT * FROM `CS317-bldr-climbs` WHERE user_id=?",
-        [user_id],
+        [request.user.id],
       );
       response.json({ data: result });
     } catch {
@@ -162,18 +173,25 @@ const main = async () => {
 
   //posts endpoints
   app.post("/posts/add", upload.single("image"), async (request, response) => {
-    const { user_id, title, description, date, climb_id } = request.body;
+    const { title, description, date, climb_id } = request.body;
 
     try {
       const [result] = await db.execute(
         "INSERT INTO `CS317-bldr-posts` (`user_id`,`title`,`image`,`description`,`date`,`climb_id`) VALUES (?,?,?,?,?,?);",
-        [user_id, title, request.file.filename, description, date, climb_id],
+        [
+          request.user.id,
+          title,
+          request.file.filename,
+          description,
+          date,
+          climb_id,
+        ],
       );
       response.json({
         data: {
           user: {
             id: result.insertId,
-            user_id: user_id,
+            user_id: request.user.id,
             title: title,
             image: request.file.filename,
             description: description,
