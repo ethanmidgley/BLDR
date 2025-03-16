@@ -7,6 +7,7 @@ const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
+const fs = require("fs");
 
 // Load environment variables for database password
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
@@ -222,6 +223,18 @@ const main = async () => {
       response.status(500).send({ error: "Failed" });
       return;
     }
+  });
+
+  app.get("/image/:uri", async (request, response) => {
+    const fileStream = fs.createReadStream(
+      path.join("uploads", request.params.uri),
+    );
+    fileStream.on("open", () => {
+      fileStream.pipe(response);
+    });
+    fileStream.on("error", () => {
+      response.status(404).send();
+    });
   });
 
   //comments endpoints
