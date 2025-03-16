@@ -5,11 +5,18 @@ import React from "react";
 import { useState } from "react";
 import { useSession } from "@/context/context";
 import { Alert, Button, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useMutation } from "@/hooks/useMutation";
+
+type loginResponse = {
+  success: boolean;
+}
 
 export default function Login() {
   const { signIn } = useSession();
   const [ email, on_change_email ] = React.useState('');
   const [ password, on_change_password ] = React.useState('');
+
+  const [ sendRequest, { data } ] = useMutation<loginResponse>("/users/login")
 
   const test_submitted = () => {
     Alert.alert(`submitted : ${email} ${password}`);

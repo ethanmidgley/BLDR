@@ -93,17 +93,11 @@ const main = async () => {
   });
 
   //login endpoints
-  app.post(
-    "/users/login",
-    passport.authenticate("local"),
-    (request, response) => {
-      response.json({
-        data: {
-          success: "YES YAHOOO",
-        },
-      });
-    },
-  );
+  app.post("/users/login", passport.authenticate('local'), (request, response) => {
+    response.json({
+        success: true
+    });
+  });
 
   //log endpoints
 
