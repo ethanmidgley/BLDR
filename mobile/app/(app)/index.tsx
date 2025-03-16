@@ -1,9 +1,10 @@
-import { Alert, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useSession } from "@/context/context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@/hooks/useQuery";
 
 type Climb = {
   time: number;
@@ -105,6 +106,8 @@ function PostComponent(data: Post) {
 export default function HomeScreen() {
   const { signOut } = useSession();
 
+  const { data, status } = useQuery<Post[]>("/posts/fetch");
+
   const confirmSignOut = () => {
     Alert.alert("Logout?", "Are you sure you sure you want to log out?", [
       {
@@ -136,13 +139,16 @@ export default function HomeScreen() {
           color="black"
         />
       </View>
-      <FlatList
-        style={{}}
-        data={posts}
-        ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
-        // keyExtractor={(p) => p.id}
-        renderItem={(d) => <PostComponent {...d.item} />}
-      />
+      {status === "loading" ? (
+        <ActivityIndicator />
+      ) : (
+        <FlatList
+          style={{}}
+          data={data}
+          ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
+          renderItem={(d) => <PostComponent {...d.item} />}
+        />
+      )}
     </View>
   );
 }
