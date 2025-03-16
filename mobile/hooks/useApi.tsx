@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_PATH = "http://10.12.123.227:3000";
+export const API_PATH = "http://10.12.123.227:3000";
 
 type FetchStatus = "loading" | "error" | "success" | "not called";
 

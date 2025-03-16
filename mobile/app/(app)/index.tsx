@@ -5,6 +5,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@/hooks/useQuery";
+import { API_PATH } from "@/hooks/useApi";
 
 type Climb = {
   time: number;
@@ -66,7 +67,7 @@ function PostComponent(data: Post) {
     <View style={{ flex: 1, gap: 10 }}>
       <View style={{ flex: 1 }}>
         <Image
-          source={data.image}
+          source={`${API_PATH}/image/${data.image}`}
           contentFit="cover"
           style={{ width: "100%", height: 300 }}
         />
