@@ -23,8 +23,8 @@ export default function Log() {
   };
 
   const showRecord = () => {
-    setShow(false)
-  }
+    setShow(false);
+  };
 
   const capValues = () => {
     if (parseInt(day) > 31) onChangeDay('31');

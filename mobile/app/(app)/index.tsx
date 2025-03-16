@@ -4,6 +4,7 @@ import { useSession } from "@/context/context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import React, { useState } from "react";
+import { useMutation } from "@/hooks/useMutation";
 
 type Climb = {
   time: number;
@@ -27,6 +28,11 @@ type Comment = {
   author: string;
   content: string;
 };
+
+type commentResponse = {
+  success?: boolean;
+  message?: string;
+}
 
 const posts = [
   {
@@ -55,9 +61,14 @@ const posts = [
 
 function PostComponent(data: Post) {
   const [comment, setComment] = useState<string>("");
+  const [ sendRequest, { data: response } ] = useMutation<commentResponse>("/comments/add");
 
-  const commentOnPost = () => {
+  const commentOnPost = async () => {
     data.comments.push({ id: Infinity, author: "You", content: comment });
+    await sendRequest({ post_id: data.id, content: comment });
+    if (response?.message){
+      Alert.alert(response.message);
+    }
     setComment("");
   };
 
