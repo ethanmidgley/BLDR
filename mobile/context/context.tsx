@@ -1,8 +1,11 @@
 import { useContext, createContext, type PropsWithChildren } from 'react';
 import { useStorageState } from './useStorageState';
+import { useMutation } from '@/hooks/useMutation';
+import { Alert } from 'react-native';
+import { router } from 'expo-router';
 
 const AuthContext = createContext<{
-  signIn: () => void;
+  signIn: (email: string, password: string) => void;
   signOut: () => void;
   session?: string | null;
   isLoading: boolean;
@@ -12,6 +15,11 @@ const AuthContext = createContext<{
   session: null,
   isLoading: false,
 });
+
+type loginResponse = {
+  success?: boolean;
+  message?: string;
+}
 
 // This hook can be used to access the user info.
 export function useSession() {
@@ -27,13 +35,24 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
+  const [ sendRequest, { data } ] = useMutation<loginResponse>("/users/login")
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: () => {
-          // Perform sign-in logic here
-          setSession('xxx');
+        signIn: async (email: string, password: string) => {
+          try{
+            await sendRequest({email: email, password: password});
+            if (data?.success === true){
+              setSession(email);
+              router.replace("/");
+              if (data?.message){
+                Alert.alert(data.message);
+              }
+            }
+          } catch {
+            Alert.alert("Incorrect login details");
+          }
         },
         signOut: () => {
           setSession(null);
