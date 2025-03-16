@@ -95,11 +95,15 @@ const main = async () => {
   });
 
   //login endpoints
-  app.post("/users/login", passport.authenticate('local'), (request, response) => {
-    response.json({
-        success: true
-    });
-  });
+  app.post(
+    "/users/login",
+    passport.authenticate("local"),
+    (request, response) => {
+      response.json({
+        success: true,
+      });
+    },
+  );
 
   //log endpoints
 
@@ -157,34 +161,32 @@ const main = async () => {
 
   //posts endpoints
   app.post("/posts/add", upload.single("image"), async (request, response) => {
-        const {user_id, title, description, date, climb_id} = request.body;
-        
-        try{
-          const [result] = await db.execute(
-            "INSERT INTO `CS317-bldr-posts` (`user_id`,`title`,`image`,`description`,`date`,`climb_id`) VALUES (?,?,?,?,?,?);",
-            [user_id,title,request.file.filename,description,date,climb_id]
-          )
-          response.json({
-            data: {
-              user: {
-                id: result.insertId,
-                user_id: user_id,
-                title: title,
-                image: request.file.filename,
-                description: description,
-                date: date,
-                climb_id: climb_id,
-              },
-            },
-          });
-        }
-        catch (error) {
-          console.log(error);
-          response.status(500).send({error: "Failed to create post"});
-          return;
-        }
+    const { user_id, title, description, date, climb_id } = request.body;
+
+    try {
+      const [result] = await db.execute(
+        "INSERT INTO `CS317-bldr-posts` (`user_id`,`title`,`image`,`description`,`date`,`climb_id`) VALUES (?,?,?,?,?,?);",
+        [user_id, title, request.file.filename, description, date, climb_id],
+      );
+      response.json({
+        data: {
+          user: {
+            id: result.insertId,
+            user_id: user_id,
+            title: title,
+            image: request.file.filename,
+            description: description,
+            date: date,
+            climb_id: climb_id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      response.status(500).send({ error: "Failed to create post" });
+      return;
+    }
   });
- 
 
   app.get("/posts/fetch", async (request, response) => {
     const result = [];

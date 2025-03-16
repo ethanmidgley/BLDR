@@ -10,7 +10,7 @@ export const useQuery = <DataType,>(url: string, options?: RequestInit) => {
 
   useEffect(() => {
     mutate();
-  }, [mutate]);
+  }, []);
 
   return state;
 };

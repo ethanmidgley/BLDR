@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_PATH = "http://10.12.114.179:3000";
+const API_PATH = "http://10.12.35.62:3000";
 
 type FetchStatus = "loading" | "error" | "success" | "not called";
 
@@ -28,9 +28,9 @@ export const useApi = <DataType,>(
 
     try {
       const res = await fetch(API_PATH + url, {
-        ...options,
         method: "POST",
         body: JSON.stringify(body),
+        ...options,
       });
       const json = (await res.json()) as DataType;
 

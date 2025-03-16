@@ -1,7 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-
   map_container: {
     flex: 1,
   },
@@ -26,7 +25,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   text: {
@@ -35,7 +34,7 @@ export const styles = StyleSheet.create({
 
   link: {
     fontSize: 14,
-    color: "#00f"
+    color: "#00f",
   },
 
   h1: {
@@ -43,7 +42,7 @@ export const styles = StyleSheet.create({
     fontSize: 40,
     color: "#f00",
     fontWeight: "bold",
-    marginVertical: 20
+    marginVertical: 20,
   },
 
   input: {
@@ -54,7 +53,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     fontSize: 18,
-    margin: 5
+    margin: 5,
   },
 
   button: {
@@ -71,13 +70,13 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
     textAlign: "center",
-    color: "#fff"
+    color: "#fff",
   },
 
   image: {
     width: 300,
     height: 100,
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
 
   button_log_page: {
@@ -87,10 +86,9 @@ export const styles = StyleSheet.create({
     borderRadius: 9,
     justifyContent: "center",
     backgroundColor: "#f00",
-    marginBottom:0
+    marginBottom: 0,
   },
 
-  
   button_log_submission: {
     width: "100%",
     height: "30%",
@@ -100,23 +98,25 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f00",
   },
 
-
   history_container: {
-    padding:10
+    padding: 10,
+    fontSize: 25,
+    borderWidth: 5,
+    borderColor: "red",
+    backgroundColor: "#ffffff",
   },
 
-  date:{
-    padding:5,
+  date: {
+    padding: 5,
   },
 
   image_record: {
     width: 350,
     height: 100,
-    resizeMode: "contain", 
+    resizeMode: "contain",
     alignSelf: "center",
     marginVertical: 0,
     marginTop: 0,
     marginBottom: 0,
   },
-  
-})
+});
