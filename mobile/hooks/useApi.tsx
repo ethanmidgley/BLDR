@@ -29,6 +29,7 @@ export const useApi = <DataType,>(
     JSON.stringify(body);
     try {
       const res = await fetch(API_PATH + url, {
+        credentials: "include",
         method: "POST",
         body: JSON.stringify(body),
         ...options,
