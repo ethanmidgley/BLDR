@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { useSession } from "@/context/context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
+import { useMutation } from "@/hooks/useMutation";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@/hooks/useQuery";
 import { API_PATH } from "@/hooks/useApi";
@@ -29,6 +30,11 @@ type Comment = {
   author: string;
   content: string;
 };
+
+type commentResponse = {
+  success?: boolean;
+  message?: string;
+}
 
 const posts = [
   {
@@ -57,9 +63,14 @@ const posts = [
 
 function PostComponent(data: Post) {
   const [comment, setComment] = useState<string>("");
+  const [ sendRequest, { data: response } ] = useMutation<commentResponse>("/comments/add");
 
-  const commentOnPost = () => {
+  const commentOnPost = async () => {
     data.comments.push({ id: Infinity, author: "You", content: comment });
+    await sendRequest({ post_id: data.id, content: comment });
+    if (response?.message){
+      Alert.alert(response.message);
+    }
     setComment("");
   };
 

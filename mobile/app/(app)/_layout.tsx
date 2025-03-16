@@ -43,9 +43,7 @@ export default function TabLayout() {
         name="skills"
         options={{
           title: "Skills",
-          tabBarIcon: () => (
-            <FontAwesome6 name="hill-rockslide" size={24} color="black" />
-          ),
+          tabBarIcon: () => <FontAwesome6 name="hill-rockslide" size={24} color="black" />
         }}
       />
       <Tabs.Screen
@@ -66,9 +64,7 @@ export default function TabLayout() {
         name="locations"
         options={{
           title: "Map",
-          tabBarIcon: () => (
-            <FontAwesome name="map-o" size={24} color="black" />
-          ),
+          tabBarIcon: () => <FontAwesome name="map-o" size={24} color="black" />
         }}
       />
       <Tabs.Screen
