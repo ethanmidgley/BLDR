@@ -11,32 +11,49 @@ const names = ["jeff", "test", "name 3"];
 
 
 export default function Log() {
+  //this is the usestate to detirmine which page is shown
   const [show, setShow] = useState(false);
+
+  // these are the usestates used for date
   const [day, onChangeDay] = React.useState('');
   const [month, onChangeMonth] = React.useState('');
   const [year, onChangeYear] = React.useState('');
+
+  //this is where the location is stored
   const [location, onChangeLocation] = React.useState('');
+
+  //this is where the level of the climb is stored
   const [level, onChangeLevel] = React.useState('');
+
+  //these are used for the timer and where the time is stored
   const [time, onChangeTime] = React.useState(0);
+  const [timerInterval, setTimerInterval] = useState<number | null>(null);
+
+  //these are the states used in measuring the chang in height of the person when climbing
   const [height,onChangeHeight] = React.useState('');
   const [initialPressure, setInitialPressure] = React.useState(0);
   const [highestPressure, setHighestPressure] = React.useState(0);
-  const [subscription, setSubscription] = useState<EventSubscription | null>(null);
-  const [recording, setRecording] = useState(false);
-  const [timerInterval, setTimerInterval] = useState<number | null>(null); 
   const p_g = 1200.5; //this is the value to divide the change in pressure by tho get the height climbed
+  const [subscription, setSubscription] = useState<EventSubscription | null>(null);
+
+  //this is the state used to toggle wether or not the phone is using the sensors to record the user
+  const [recording, setRecording] = useState(false);
+
+  //this is used for the max angles
   const [maxAngles, setMaxAngles] = useState({ maxPitch: 0, maxRoll: 0 });
   const [motionSubscription, setMotionSubscription] = useState<EventSubscription | null>(null);
 
-
+  //triggers to the history page
   const showHitory = () => {
     setShow(true);
   };
 
+  //triggers to the record page(which is the initial page aswell)
   const showRecord = () => {
     setShow(false)
   }
 
+  //puts caps on day, month, year so they cant put innacurate dates
   const capValues = () => {
     if (parseInt(day) > 31) onChangeDay('31');
     if (parseInt(month) > 12) onChangeMonth('12');
@@ -46,6 +63,7 @@ export default function Log() {
     if (parseInt(year) < 1) onChangeYear('1');
   };
 
+  //resets all values to 0 when the climb is submitted
   const resetValues = () => {
     // Reset your state values here
     onChangeDay('');
@@ -60,6 +78,7 @@ export default function Log() {
     setMaxAngles({ maxPitch: 0, maxRoll: 0 })
   };
 
+  //toggles between recording and not recording the values
   const toggleRecording = () => {
     if (recording) {
       stopRecording(); // Stop recording if it's currently active
@@ -71,7 +90,7 @@ export default function Log() {
     setRecording(!recording); // Toggle the recording state
   };
 
-
+  //starts recording the presure of the persons location
   const startRecording = () => {
     // Remove any existing listener before adding a new one
     if (subscription) {
@@ -115,6 +134,7 @@ export default function Log() {
     
   };
   
+  //stops recording the pressure at the persons location
   const stopRecording = () => {
     // Remove Barometer listener
     if (subscription) {
@@ -129,6 +149,7 @@ export default function Log() {
     }
   };
 
+  //submits the record for and will put it in the database
   const submitted = () => {
     Alert.alert(
       'Submitted', 
@@ -139,6 +160,7 @@ export default function Log() {
     );
   };
 
+  //this calculates the height based on the formula (p1 - p2)/ (pressure at ground level * gravity) -- all converted to pascals
   useEffect(() => {
     if (initialPressure !== 0 && highestPressure !== 0) {
       const height = ((initialPressure * 100) - (highestPressure*100)) / p_g;
@@ -147,6 +169,7 @@ export default function Log() {
     }
   }, [initialPressure, highestPressure]); 
 
+  //this is where the extreme angle is calculated and stored in the max angle state
   const startDeviceMotionTracking = () => {
     const sub = DeviceMotion.addListener((motionData) => {
       if (motionData && motionData.acceleration) {
@@ -166,11 +189,7 @@ export default function Log() {
   setMotionSubscription(sub as unknown as EventSubscription);
   }
  
-
- 
-    
-  
-  // Stop motion tracking
+  //this stops the angle recording so it doesnt eat battery when not recording
   const stopDeviceMotionTracking = () => {
     if (motionSubscription) {
       motionSubscription.remove();
