@@ -259,7 +259,7 @@ const main = async () => {
 
   app.get("/image/:uri", async (request, response) => {
     const fileStream = fs.createReadStream(
-      path.join("uploads", request.params.uri),
+      path.resolve(__dirname, "../uploads/" + request.params.uri),
     );
     fileStream.on("open", () => {
       fileStream.pipe(response);
