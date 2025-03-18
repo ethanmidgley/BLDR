@@ -64,7 +64,7 @@ export default function Locations() {
     async function getCurrentLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Error", "Failed to access deviece location");
+        Alert.alert("Error", "Failed to access device location");
         return;
       }
 
