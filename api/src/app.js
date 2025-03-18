@@ -272,10 +272,9 @@ const main = async () => {
   //comments endpoints
   app.post("/comments/add", isLoggedIn, async (request, response) => {
     const { date, content, post_id } = request.body;
-    console.log("tried");
     try {
       const [result] = await db.execute(
-        "INSERT INTO `317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
+        "INSERT INTO `CS317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
         [request.user.id, date, content, post_id],
       );
 
