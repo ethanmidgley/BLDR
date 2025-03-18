@@ -9,9 +9,10 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const fs = require("fs");
 
+
 // Load environment variables for database password
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
-
+console.log(process.env.DB_HOST);
 const main = async () => {
   const app = express();
   const port = 3000;
@@ -256,11 +257,34 @@ const main = async () => {
   });
 
   //comments endpoints
-  app.post("/comments/add", async (request, response) => {});
+  app.post("/comments/add", async (request,response) => {
+    const {user_id,date,content,post_id} = request.body;
+    console.log("tried");
+    try{
+      const [comments] = await db.query(
+        "INSERT INTO `317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
+        [user_id, date, content, post_id]
+      );
+      
+      
+      response.json({
+        data: {
+          id: result.insertId,
+          user_id: user_id,
+          date: date,
+          content: content,  
+          post_id: post_id
+        }
 
-  app.listen(port);
-};
+      })
+    }
+    catch (error) {
+      console.error("Error inserting comment:", error);
+      response.status(500).json({ error: "Unable to post comment"});
 
+    }
+  });
+}
 main()
   .then(() => {
     console.log("BLDR Api Listening 🚀🚀🚀");
