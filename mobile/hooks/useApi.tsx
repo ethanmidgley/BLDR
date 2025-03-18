@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-export const API_PATH = "http://10.12.35.62:3000";
+export const API_PATH =
+  process.env.EXPO_PUBLIC_API_URL ||
+  "https://devweb2024.cis.strath.ac.uk/mhb22136-nodejs";
 
 type FetchStatus = "loading" | "error" | "success" | "not called";
 

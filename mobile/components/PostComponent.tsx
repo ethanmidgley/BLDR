@@ -40,7 +40,15 @@ export function PostComponent(data: Post) {
 
   const commentOnPost = async () => {
     data.comments.push({ id: Infinity, author: "You", content: comment });
-    await sendRequest({ post_id: data.id, content: comment });
+    const today = new Date();
+    let day = today.getDate();
+    let month = today.getMonth() + 1;
+    let year = today.getFullYear();
+    day = Number(day);
+    month = Number(month);
+    year = Number(year);
+    const proper_date = `${day < 10 ? '0' + day : String(day)}/${month < 10 ? '0' + month : month}/${year % 1000}`;
+    await sendRequest({ post_id: data.id, content: comment, date: proper_date });
     if (response?.message) {
       Alert.alert(response.message);
     }

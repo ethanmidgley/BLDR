@@ -6,7 +6,7 @@ const passport = require("passport");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: path.resolve(__dirname, "../uploads/") });
 const fs = require("fs");
 
 // Load environment variables for database password
@@ -259,7 +259,7 @@ const main = async () => {
 
   app.get("/image/:uri", async (request, response) => {
     const fileStream = fs.createReadStream(
-      path.join("uploads", request.params.uri),
+      path.resolve(__dirname, "../uploads/" + request.params.uri),
     );
     fileStream.on("open", () => {
       fileStream.pipe(response);
@@ -272,10 +272,9 @@ const main = async () => {
   //comments endpoints
   app.post("/comments/add", isLoggedIn, async (request, response) => {
     const { date, content, post_id } = request.body;
-    console.log("tried");
     try {
       const [result] = await db.execute(
-        "INSERT INTO `317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
+        "INSERT INTO `CS317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
         [request.user.id, date, content, post_id],
       );
 
