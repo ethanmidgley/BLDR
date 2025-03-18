@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
 import MapView, { Region, Marker, Callout } from "react-native-maps";
 import { styles } from "../../constants/style";
 import * as Location from "expo-location";
 import { Link } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import {
+  PostComponent,
+  Climb,
+  Post,
+  Comment,
+  commentResponse,
+} from "@/components/PostComponent";
+import { useQuery } from "@/hooks/useQuery";
 
 function setDefaultLocation() {
   //can perform data base read for this later but ill hard code it for now
@@ -48,6 +56,20 @@ const DefaultPoints: Spot[] = [
   },
 ];
 
+const boulderingGrades: string[] = [
+  "#A8E6CF", // V0 (Soft Green)
+  "#FFD97D", // V1 (Warm Yellow)
+  "#FFAB6C", // V2 (Light Orange)
+  "#FF6B6B", // V3 (Bright Red)
+  "#BE4BDB", // V4 (Vibrant Purple)
+  "#5A77FF", // V5 (Deep Blue)
+  "#6E44FF", // V6 (Dark Violet)
+  "#543864", // V7 (Muted Dark Purple)
+  "#3B2F51", // V8 (Deep Gray-Purple)
+  "#2A1F38", // V9 (Almost Black)
+  "#1A131F", // V10+ (Near Black)
+];
+
 export default function Locations() {
   //NOTE: this is how states are managed as oppsed to page self refferencing
   // const [state, setState] = useState(0);
@@ -75,29 +97,37 @@ export default function Locations() {
   }, []);
 
   //marker information state
-  const [bottomState, setBottomState] = useState<Spot | null>(null);
+  const [bottomStateSpot, setBottomStateSpot] = useState<Spot | null>(null);
+  const [bottomStatePost, setBottomStatePost] = useState<Post | null>(null);
 
   // const handleMarkerPress = () => {
   //   markerRef
   //   setBottomView(!showBottomView)
   //
   // }
+  //
+
+  //fetch posts to grab climbs
+  const { data } = useQuery<Post[]>("/posts/fetch");
+  console.log(data);
 
   //actual app render
   return (
     <View style={styles.map_container}>
       <MapView style={styles.map} initialRegion={setDefaultLocation()}>
+        {/*render user location*/}
         {location !== null ? (
           <Marker
             key="user"
             coordinate={location.coords}
             pinColor="red"
             onPress={() => {
-              setBottomState(null);
+              setBottomStateSpot(null);
+              setBottomStatePost(null);
             }}
           />
         ) : null}
-
+        {/*render default location*/}
         {DefaultPoints.map((point) => (
           <Marker
             key={point.name + point.id}
@@ -107,7 +137,33 @@ export default function Locations() {
             }}
             pinColor="blue"
             onPress={() => {
-              setBottomState(point);
+              setBottomStatePost(null);
+              setBottomStateSpot(point);
+            }}
+          >
+            <Callout tooltip={true}>
+              <View
+                style={{ height: 1, width: 1, backgroundColor: "transparent" }}
+              />
+            </Callout>
+          </Marker>
+        ))}
+        {/*render other user posts location*/}
+        {data?.map((post) => (
+          <Marker
+            key={post.title + post.id}
+            coordinate={{
+              latitude: post.climb.lat,
+              longitude: post.climb.lon,
+            }}
+            pinColor={
+              post.climb.level >= 10
+                ? boulderingGrades[10]
+                : boulderingGrades[Math.floor(post.climb.level)]
+            }
+            onPress={() => {
+              setBottomStateSpot(null);
+              setBottomStatePost(post);
             }}
           >
             <Callout tooltip={true}>
@@ -118,7 +174,8 @@ export default function Locations() {
           </Marker>
         ))}
       </MapView>
-      {bottomState ? (
+      {/*two states may be null but they won't be active at the same time*/}
+      {bottomStateSpot ? (
         <View style={styles.bottomView}>
           <View
             style={{
@@ -129,23 +186,49 @@ export default function Locations() {
               alignContent: "center",
             }}
           >
-            <Text style={{ fontSize: 20 }}>{bottomState.name}</Text>
+            <Text style={{ fontSize: 20 }}>{bottomStateSpot.name}</Text>
             <Entypo
               name="cross"
               size={24}
               color="black"
-              onPress={() => setBottomState(null)}
+              onPress={() => setBottomStateSpot(null)}
             />
           </View>
           <View style={{ padding: 10 }}>
-            <Text>{bottomState.desc + "\n"}</Text>
+            <Text>{bottomStateSpot.desc + "\n"}</Text>
             <Link
               style={{ color: "blue" }}
-              href={`https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${bottomState.latitude},${bottomState.longitude}`}
+              href={`https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${bottomStateSpot.latitude},${bottomStateSpot.longitude}`}
             >
               Directions
             </Link>
           </View>
+        </View>
+      ) : bottomStatePost ? (
+        <View style={{ ...styles.bottomView, height: "60%" }}>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              padding: 10,
+              justifyContent: "space-between",
+              alignContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: 800 }}>
+              Nº:{bottomStatePost.climb.lat}, Eº:{bottomStatePost.climb.lon}
+            </Text>
+            <Entypo
+              name="cross"
+              size={24}
+              color="black"
+              onPress={() => setBottomStatePost(null)}
+            />
+          </View>
+          <ScrollView>
+            <PostComponent {...bottomStatePost} />
+            <View style={{ height: 100, width: 1 }}></View>
+          </ScrollView>
         </View>
       ) : null}
     </View>
