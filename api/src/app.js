@@ -6,7 +6,7 @@ const passport = require("passport");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: path.resolve(__dirname, "../uploads/") });
 const fs = require("fs");
 
 // Load environment variables for database password
