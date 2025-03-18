@@ -48,7 +48,7 @@ export function PostComponent(data: Post) {
     month = Number(month);
     year = Number(year);
     const proper_date = `${day < 10 ? '0' + day : String(day)}/${month < 10 ? '0' + month : month}/${year % 1000}`;
-    await sendRequest({ post_id: data.id, content: comment, date: today });
+    await sendRequest({ post_id: data.id, content: comment, date: proper_date });
     if (response?.message) {
       Alert.alert(response.message);
     }
