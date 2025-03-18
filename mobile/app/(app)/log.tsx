@@ -5,7 +5,7 @@ import { styles } from "@/constants/style";
 import { useQuery } from "../../hooks/useQuery";
 import { Link } from "expo-router";
 import {Barometer, DeviceMotion} from 'expo-sensors';
-
+import * as Location from "expo-location";
 
 type Climb = {
   id: number;
@@ -52,7 +52,7 @@ export default function Log() {
   const [year, onChangeYear] = React.useState('');
 
   //this is where the location is stored
-  const [location, onChangeLocation] = React.useState('');
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
   //this is where the level of the climb is stored
   const [level, onChangeLevel] = React.useState('');
@@ -101,7 +101,7 @@ export default function Log() {
     onChangeDay('');
     onChangeMonth('');
     onChangeYear('');
-    onChangeLocation('');
+    setLocation(null);
     onChangeLevel('');
     onChangeTime(0);
     onChangeHeight('');
@@ -233,6 +233,20 @@ export default function Log() {
     }
   };
 
+  useEffect(() => {
+    async function getCurrentLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Error", "Failed to access deviece location");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    }
+    getCurrentLocation();
+  }, []);
+
   return (
     
     <View>
@@ -264,25 +278,46 @@ export default function Log() {
         />
       ) : (
         <View style={{ padding: 5 }}>
-            <View style = {{flexDirection:'row', paddingTop: 20}}>
-              <Text style = {{fontSize: 25}}>Location</Text>
-              <TextInput  
-                onChangeText={onChangeLocation}
-                value = {location}
-                placeholder="eg. Climbing Academy Kinning Park"
-                placeholderTextColor="#ddd"
-                keyboardType="default"
-              />
+             <View style = {{flexDirection: "row"}}>
+            <Text style = {{fontSize: 25}}>Date: </Text>
+            <TextInput
+              style = {styles.date}
+              onChangeText={onChangeDay}
+              value = {day}
+              placeholder="dd"
+              placeholderTextColor="#ddd"
+              keyboardType='numeric'
+              maxLength={2}
+              onEndEditing={capValues}
+            />
+            <TextInput
+              style = {styles.date}
+              onChangeText={onChangeMonth}
+              value = {month}
+              placeholder="mm"
+              placeholderTextColor="#ddd"
+              keyboardType='numeric'
+              maxLength={2}
+              onEndEditing={capValues}
+            />
+            <TextInput
+              style = {styles.date}
+              onChangeText={onChangeYear}
+              value = {year}
+              placeholder="yyyy"
+              placeholderTextColor="#ddd"
+              keyboardType='numeric'
+              maxLength={4}
+              onEndEditing={capValues}
+            />
             </View>
-            <View style={{ flexDirection: 'row', paddingTop: 20}}>
-              <Text style={{ fontSize: 25 }}>Level</Text>
-              <TextInput
-                onChangeText={onChangeLevel}
-                value = {level}
-                placeholder="eg. Red or Expert"
-                placeholderTextColor="#ddd"
-                keyboardType='default'
-                />
+            <View style = {{flexDirection:'row', paddingTop: 20}}>
+              <Text style={{fontSize:25 }}>Current Location:</Text>
+              {location ? (
+                <Text style= {{fontSize:15}}>{location.coords.latitude} {"\n"}{location.coords.longitude}</Text>
+              ) : (
+                <Text style={{fontSize:15}}>Fetching {"\n"}location...</Text>
+              )}
             </View>
             <View style={{ flexDirection: 'row', paddingTop: 20}}>
               <Text style={{ fontSize: 25 }}>Time(s)</Text>
@@ -338,3 +373,4 @@ export default function Log() {
     </View>
   );
 }
+
