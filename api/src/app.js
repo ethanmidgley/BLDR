@@ -12,6 +12,14 @@ const fs = require("fs");
 // Load environment variables for database password
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
+const isLoggedIn = (request, response, next) => {
+  if (request.user && request.isAuthenticated()) {
+    next();
+  } else {
+    response.status(403).send();
+  }
+};
+
 const main = async () => {
   const app = express();
   const port = 3000;
@@ -113,7 +121,7 @@ const main = async () => {
   //log endpoints
 
   //add a climb
-  app.post("/log/add", async (request, response) => {
+  app.post("/log/add", isLoggedIn, async (request, response) => {
     const { type, time_s, level, success, angle, lat, lon, height } =
       request.body;
 
@@ -156,7 +164,7 @@ const main = async () => {
   });
 
   //get user climbs
-  app.get("/log/fetch", async (request, response) => {
+  app.get("/log/fetch", isLoggedIn, async (request, response) => {
     //TODO:replace this with the acutal user id when we can
 
     try {
@@ -172,42 +180,47 @@ const main = async () => {
   });
 
   //posts endpoints
-  app.post("/posts/add", upload.single("image"), async (request, response) => {
-    const { title, description, date, climb_id } = request.body;
+  app.post(
+    "/posts/add",
+    isLoggedIn,
+    upload.single("image"),
+    async (request, response) => {
+      const { title, description, date, climb_id } = request.body;
 
-    try {
-      const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-posts` (`user_id`,`title`,`image`,`description`,`date`,`climb_id`) VALUES (?,?,?,?,?,?);",
-        [
-          request.user.id,
-          title,
-          request.file.filename,
-          description,
-          date,
-          climb_id,
-        ],
-      );
-      response.json({
-        data: {
-          user: {
-            id: result.insertId,
-            user_id: request.user.id,
-            title: title,
-            image: request.file.filename,
-            description: description,
-            date: date,
-            climb_id: climb_id,
+      try {
+        const [result] = await db.execute(
+          "INSERT INTO `CS317-bldr-posts` (`user_id`,`title`,`image`,`description`,`date`,`climb_id`) VALUES (?,?,?,?,?,?);",
+          [
+            request.user.id,
+            title,
+            request.file.filename,
+            description,
+            date,
+            climb_id,
+          ],
+        );
+        response.json({
+          data: {
+            user: {
+              id: result.insertId,
+              user_id: request.user.id,
+              title: title,
+              image: request.file.filename,
+              description: description,
+              date: date,
+              climb_id: climb_id,
+            },
           },
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      response.status(500).send({ error: "Failed to create post" });
-      return;
-    }
-  });
+        });
+      } catch (error) {
+        console.log(error);
+        response.status(500).send({ error: "Failed to create post" });
+        return;
+      }
+    },
+  );
 
-  app.get("/posts/fetch", async (request, response) => {
+  app.get("/posts/fetch", isLoggedIn, async (request, response) => {
     const result = [];
     try {
       const [posts] = await db.query(
@@ -257,7 +270,7 @@ const main = async () => {
   });
 
   //comments endpoints
-  app.post("/comments/add", async (request, response) => {
+  app.post("/comments/add", isLoggedIn, async (request, response) => {
     const { date, content, post_id } = request.body;
     console.log("tried");
     try {
