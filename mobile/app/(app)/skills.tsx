@@ -1,6 +1,9 @@
 import { styles } from "@/constants/style";
 import { AntDesign, Entypo } from "@expo/vector-icons";
-import { Dispatch, useState } from "react";
+import { ImageBackground } from "expo-image";
+import { Dispatch, Key, useState } from "react";
+import React from "react";
+import { Image } from "expo-image";
 import {
   View,
   Text,
@@ -11,6 +14,26 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const skillImages = {
+  basic_footwork: require("../../assets/images/skills/basic-footwork.jpg"),
+  three_points_of_contact: require("../../assets/images/skills/three-points-of-contact.jpg"),
+  silent_feet: require("../../assets/images/skills/silent-feet.jpg"),
+  falling_technique: require("../../assets/images/skills/falling-technique.jpg"),
+  reading_routes: require("../../assets/images/skills/reading-routes.jpg"),
+  body_positioning: require("../../assets/images/skills/body-positioning.jpg"),
+  smearing: require("../../assets/images/skills/smearing.jpg"),
+  flagging: require("../../assets/images/skills/flagging.jpg"),
+  heel_toe_hookes: require("../../assets/images/skills/heel-toe-hook.jpg"),
+  mantling: require("../../assets/images/skills/mantling.jpg"),
+  deadpointing: require("../../assets/images/skills/deadpointing.jpg"),
+  grip_strength_training: require("../../assets/images/skills/grip-strength-training.jpg"),
+  core_strength: require("../../assets/images/skills/core-strength.jpg"),
+  flexibility_mobility: require("../../assets/images/skills/flexibility-mobility.jpg"),
+  endurance_drills: require("../../assets/images/skills/endurance-drills.jpg")
+};
+
+type skillImageKey = keyof typeof skillImages;
+
 const climbingSkills = [
   {
     category: "Beginner Skills (Getting Started)",
@@ -19,6 +42,7 @@ const climbingSkills = [
     skills: [
       {
         name: "Basic Footwork",
+        image: "basic_footwork",
         why_it_matters:
           "Footwork is one of the most important aspects of climbing. Many beginners rely too much on their arms, which quickly leads to fatigue. Proper foot placement helps conserve energy and maintain balance, allowing for smoother and more controlled climbing.",
         key_points: [
@@ -29,6 +53,7 @@ const climbingSkills = [
       },
       {
         name: "Three Points of Contact",
+        image: "three_points_of_contact",
         why_it_matters:
           "Maintaining three points of contact at all times improves balance and stability. This prevents unnecessary swings and reduces the chance of slipping off the wall.",
         key_points: [
@@ -38,6 +63,7 @@ const climbingSkills = [
       },
       {
         name: "Silent Feet",
+        image: "silent_feet",
         why_it_matters:
           "Precise footwork helps you stay in control and prevents unnecessary energy waste. Loud foot placements often mean sloppy movements, which can lead to falling off unexpectedly.",
         key_points: [
@@ -46,7 +72,8 @@ const climbingSkills = [
         ],
       },
       {
-        name: "Proper Falling Technique",
+        name: "Falling Technique",
+        image: "falling_technique",
         why_it_matters:
           "Falling is an unavoidable part of bouldering. Learning how to fall safely reduces the risk of injury, helping climbers stay confident and avoid hesitation on difficult moves.",
         key_points: [
@@ -56,7 +83,8 @@ const climbingSkills = [
         ],
       },
       {
-        name: "Reading Routes (Route-Finding)",
+        name: "Reading Routes",
+        image: "reading_routes",
         why_it_matters:
           "Planning ahead makes climbs easier and more efficient. Many beginners get stuck halfway up because they didn’t think about where to go next. Learning to analyze the route before climbing helps avoid unnecessary strain and awkward moves.",
         key_points: [
@@ -72,6 +100,7 @@ const climbingSkills = [
     skills: [
       {
         name: "Body Positioning",
+        image: "body_positioning",
         why_it_matters:
           "Good body positioning prevents unnecessary strain on your arms and fingers. Keeping your hips close to the wall allows you to maintain balance with less effort, making difficult moves feel much easier.",
         key_points: [
@@ -82,6 +111,7 @@ const climbingSkills = [
       },
       {
         name: "Smearing",
+        image: "smearing",
         why_it_matters:
           "When there are no footholds, smearing allows you to use friction against the wall to stay balanced. This is essential for slab climbing and transitioning between holds.",
         key_points: [
@@ -91,6 +121,7 @@ const climbingSkills = [
       },
       {
         name: "Flagging",
+        image: "flagging",
         why_it_matters:
           "Flagging prevents your body from swinging wildly when reaching for holds, especially on overhanging routes. This makes moves feel smoother and more controlled.",
         key_points: [
@@ -105,6 +136,7 @@ const climbingSkills = [
     skills: [
       {
         name: "Heel & Toe Hooks",
+        image: "heel_toe_hookes",
         why_it_matters:
           "These techniques reduce strain on your arms by allowing your legs to do more work.",
         key_points: [
@@ -114,12 +146,14 @@ const climbingSkills = [
       },
       {
         name: "Mantling",
+        image: "mantling",
         why_it_matters:
           "Needed to get over ledges or top out boulders. Many climbers struggle with topping out because they don’t use a mantling motion.",
         key_points: ["Press down on a hold like doing a push-up."],
       },
       {
         name: "Deadpointing",
+        image: "deadpointing",
         why_it_matters:
           "A controlled jump reduces wasted energy and improves efficiency.",
         key_points: ["Swing slightly to generate momentum."],
@@ -131,21 +165,25 @@ const climbingSkills = [
     skills: [
       {
         name: "Grip Strength Training",
+        image: "grip_strength_training",
         why_it_matters:
           "Strong fingers allow for better endurance on small holds.",
       },
       {
         name: "Core Strength",
+        image: "core_strength",
         why_it_matters:
           "A strong core improves balance and movement efficiency.",
       },
       {
         name: "Flexibility & Mobility",
+        image: "flexibility_mobility",
         why_it_matters:
           "More flexibility allows you to reach holds more easily.",
       },
       {
         name: "Endurance Drills",
+        image: "endurance_drills",
         why_it_matters: "Helps climbers complete longer climbs without tiring.",
       },
     ],
@@ -154,6 +192,7 @@ const climbingSkills = [
 
 type Skill = {
   name: string;
+  image: skillImageKey;
   why_it_matters: string;
   key_points?: string[];
 };
@@ -175,11 +214,15 @@ const SkillView = ({ setSkill, ...skill }: SkillProps) => {
         width: 200,
         height: 200,
         marginRight: 10,
-        backgroundColor: "blue",
       }}
       onPress={() => setSkill(skill)}
     >
-      <Text>{skill.name}</Text>
+      <Image
+        source={ skill.image ? skillImages[skill.image] : skillImages.flagging }
+        contentFit="cover"
+        style={{ width: "auto", height: 170 }}
+      />
+      <Text style={{ fontWeight: "bold", fontSize: 17, textAlign: "center", bottom: 6, color: "red", position: "absolute", alignSelf: "center",  }}>{skill.name}</Text>
     </Pressable>
   );
 };

@@ -1,9 +1,12 @@
-import { Alert, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useSession } from "@/context/context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
-import React, { useState } from "react";
+import { useMutation } from "@/hooks/useMutation";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@/hooks/useQuery";
+import { API_PATH } from "@/hooks/useApi";
 
 type Climb = {
   time: number;
@@ -27,6 +30,11 @@ type Comment = {
   author: string;
   content: string;
 };
+
+type commentResponse = {
+  success?: boolean;
+  message?: string;
+}
 
 const posts = [
   {
@@ -55,9 +63,14 @@ const posts = [
 
 function PostComponent(data: Post) {
   const [comment, setComment] = useState<string>("");
+  const [ sendRequest, { data: response } ] = useMutation<commentResponse>("/comments/add");
 
-  const commentOnPost = () => {
+  const commentOnPost = async () => {
     data.comments.push({ id: Infinity, author: "You", content: comment });
+    await sendRequest({ post_id: data.id, content: comment });
+    if (response?.message){
+      Alert.alert(response.message);
+    }
     setComment("");
   };
 
@@ -65,7 +78,7 @@ function PostComponent(data: Post) {
     <View style={{ flex: 1, gap: 10 }}>
       <View style={{ flex: 1 }}>
         <Image
-          source={data.image}
+          source={`${API_PATH}/image/${data.image}`}
           contentFit="cover"
           style={{ width: "100%", height: 300 }}
         />
@@ -105,6 +118,8 @@ function PostComponent(data: Post) {
 export default function HomeScreen() {
   const { signOut } = useSession();
 
+  const { data, status } = useQuery<Post[]>("/posts/fetch");
+
   const confirmSignOut = () => {
     Alert.alert("Logout?", "Are you sure you sure you want to log out?", [
       {
@@ -136,13 +151,16 @@ export default function HomeScreen() {
           color="black"
         />
       </View>
-      <FlatList
-        style={{}}
-        data={posts}
-        ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
-        // keyExtractor={(p) => p.id}
-        renderItem={(d) => <PostComponent {...d.item} />}
-      />
+      {status === "loading" ? (
+        <ActivityIndicator />
+      ) : (
+        <FlatList
+          style={{}}
+          data={data}
+          ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
+          renderItem={(d) => <PostComponent {...d.item} />}
+        />
+      )}
     </View>
   );
 }
