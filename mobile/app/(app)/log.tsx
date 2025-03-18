@@ -145,7 +145,7 @@ export default function Log() {
       // Track the lowest pressure (highest point)
       setHighestPressure((prevHighest) => {
         if (pressure !== 0 && (prevHighest === 0 || pressure < prevHighest)) {
-          console.log("Highest Pressure Updated:", pressure);
+          // console.log("Highest Pressure Updated:", pressure);
           return pressure;
         }
         return prevHighest; // If no update is needed, return the current highest
@@ -175,7 +175,7 @@ export default function Log() {
     if (subscription) {
       subscription.remove(); // Stop the updates
       setSubscription(null); // Clear the subscription state
-      console.log("Barometer listener stopped.");
+      // console.log("Barometer listener stopped.");
     }
   
     if (timerInterval) {
@@ -200,7 +200,7 @@ export default function Log() {
     if (initialPressure !== 0 && highestPressure !== 0) {
       const height = ((initialPressure * 100) - (highestPressure*100)) / p_g;
       onChangeHeight(height.toFixed(2)); // Update the height state
-      console.log("Height Calculated:", height.toFixed(2));
+      // console.log("Height Calculated:", height.toFixed(2));
     }
   }, [initialPressure, highestPressure]); 
 
@@ -229,7 +229,7 @@ export default function Log() {
     if (motionSubscription) {
       motionSubscription.remove();
       setMotionSubscription(null);
-      console.log("DeviceMotion listener stopped.");
+      // console.log("DeviceMotion listener stopped.");
     }
   };
 
