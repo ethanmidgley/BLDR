@@ -257,7 +257,29 @@ const main = async () => {
   });
 
   //comments endpoints
-  app.post("/comments/add", async (request, response) => {});
+  app.post("/comments/add", async (request, response) => {
+    const { date, content, post_id } = request.body;
+    console.log("tried");
+    try {
+      const [result] = await db.execute(
+        "INSERT INTO `317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
+        [request.user.id, date, content, post_id],
+      );
+
+      response.json({
+        data: {
+          id: result.insertId,
+          user_id: request.user.id,
+          date: date,
+          content: content,
+          post_id: post_id,
+        },
+      });
+    } catch (error) {
+      console.error("Error inserting comment:", error);
+      response.status(500).json({ error: "Unable to post comment" });
+    }
+  });
 
   app.listen(port);
 };
