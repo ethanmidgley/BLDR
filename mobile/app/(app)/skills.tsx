@@ -1,18 +1,9 @@
 import { styles } from "@/constants/style";
-import { AntDesign, Entypo } from "@expo/vector-icons";
-import { ImageBackground } from "expo-image";
-import { Dispatch, Key, useState } from "react";
+import { Entypo } from "@expo/vector-icons";
+import { Dispatch, useState } from "react";
 import React from "react";
 import { Image } from "expo-image";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Pressable,
-  Modal,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, FlatList, Pressable } from "react-native";
 
 const skillImages = {
   basic_footwork: require("../../assets/images/skills/basic-footwork.jpg"),
@@ -29,16 +20,14 @@ const skillImages = {
   grip_strength_training: require("../../assets/images/skills/grip-strength-training.jpg"),
   core_strength: require("../../assets/images/skills/core-strength.jpg"),
   flexibility_mobility: require("../../assets/images/skills/flexibility-mobility.jpg"),
-  endurance_drills: require("../../assets/images/skills/endurance-drills.jpg")
+  endurance_drills: require("../../assets/images/skills/endurance-drills.jpg"),
 };
 
 type skillImageKey = keyof typeof skillImages;
 
-const climbingSkills = [
+const climbingSkills: Category[] = [
   {
-    category: "Beginner Skills (Getting Started)",
-    description:
-      "These foundational skills will help you climb safely, efficiently, and with confidence.",
+    category: "Beginner Skills",
     skills: [
       {
         name: "Basic Footwork",
@@ -96,7 +85,7 @@ const climbingSkills = [
     ],
   },
   {
-    category: "Intermediate Skills (Building Confidence)",
+    category: "Intermediate Skills",
     skills: [
       {
         name: "Body Positioning",
@@ -132,7 +121,7 @@ const climbingSkills = [
     ],
   },
   {
-    category: "Advanced Skills (Mastering Techniques)",
+    category: "Advanced Skills",
     skills: [
       {
         name: "Heel & Toe Hooks",
@@ -161,7 +150,7 @@ const climbingSkills = [
     ],
   },
   {
-    category: "Strength & Conditioning (Supplementary Training)",
+    category: "Strength & Conditioning",
     skills: [
       {
         name: "Grip Strength Training",
@@ -201,37 +190,76 @@ type SkillProps = Skill & {
   setSkill: Dispatch<React.SetStateAction<Skill | null>>;
 };
 
-type CategoryProps = {
+type Category = {
   category: string;
   skills: Skill[];
+};
+
+type CategoryProps = Category & {
   setSkill: Dispatch<React.SetStateAction<Skill | null>>;
+  inverted: boolean;
 };
 
 const SkillView = ({ setSkill, ...skill }: SkillProps) => {
   return (
     <Pressable
       style={{
-        width: 200,
-        height: 200,
+        width: 280,
+        height: 280,
         marginRight: 10,
       }}
       onPress={() => setSkill(skill)}
     >
       <Image
-        source={ skill.image ? skillImages[skill.image] : skillImages.flagging }
+        source={skill.image ? skillImages[skill.image] : skillImages.flagging}
         contentFit="cover"
-        style={{ width: "auto", height: 170 }}
+        style={{ width: "auto", height: 280, borderRadius: 5 }}
       />
-      <Text style={{ fontWeight: "bold", fontSize: 17, textAlign: "center", bottom: 6, color: "red", position: "absolute", alignSelf: "center",  }}>{skill.name}</Text>
+      <View
+        style={{
+          backgroundColor: "rgba(255,255,255,0.75)",
+          width: "100%",
+          height: 40,
+          bottom: 0,
+          position: "absolute",
+          justifyContent: "center",
+          flexDirection: "column",
+          borderBottomLeftRadius: 5,
+          borderBottomRightRadius: 5,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 17,
+            textAlign: "center",
+          }}
+        >
+          {skill.name}
+        </Text>
+      </View>
     </Pressable>
   );
 };
 
-const CategoryView = ({ category, skills, setSkill }: CategoryProps) => {
+const CategoryView = ({
+  inverted,
+  category,
+  skills,
+  setSkill,
+}: CategoryProps) => {
   return (
-    <View>
-      <Text style={styles.text}>{category}</Text>
+    <View style={{ marginBottom: 12 }}>
+      <Text
+        style={{
+          fontFamily: "Archivo_500Medium",
+          fontSize: 30,
+          marginVertical: 10,
+        }}
+      >
+        {category}
+      </Text>
       <FlatList
+        inverted={inverted}
         horizontal={true}
         data={skills}
         renderItem={(d) => <SkillView {...d.item} setSkill={setSkill} />}
@@ -245,14 +273,27 @@ export default function Skills() {
 
   return (
     <View>
-      <Text style={{ fontSize: 40, fontWeight: 700 }}>Skills</Text>
-      <FlatList
-        data={climbingSkills}
-        renderItem={(c) => (
-          <CategoryView {...c.item} setSkill={setSelectedSkill} />
-        )}
-        ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
-      />
+      <View style={{ padding: 10 }}>
+        <Text
+          style={{
+            fontSize: 40,
+            fontFamily: "Archivo_700Bold_Italic",
+          }}
+        >
+          Skills
+        </Text>
+        <FlatList
+          data={climbingSkills}
+          renderItem={(c) => (
+            <CategoryView
+              {...c.item}
+              setSkill={setSelectedSkill}
+              inverted={c.index % 2 === 1}
+            />
+          )}
+          ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
+        />
+      </View>
       {selectedSkill ? (
         <View
           style={{

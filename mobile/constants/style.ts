@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
 
   text: {
     fontSize: 14,
+    fontFamily: "Archivo_500Medium",
   },
 
   link: {
@@ -39,9 +40,17 @@ export const styles = StyleSheet.create({
 
   h1: {
     textAlign: "center",
+    fontFamily: "Archivo_700Bold_Italic",
     fontSize: 40,
     color: "#f00",
-    fontWeight: "bold",
+    marginVertical: 20,
+  },
+
+  h2: {
+    textAlign: "center",
+    fontFamily: "Archivo_600Medium",
+    fontSize: 30,
+    color: "#f00",
     marginVertical: 20,
   },
 
