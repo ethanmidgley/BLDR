@@ -8,6 +8,7 @@ import {Barometer, DeviceMotion} from 'expo-sensors';
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import {Checkbox} from 'expo-checkbox';
+import { useMutation } from "@/hooks/useMutation";
 
 type Climb = {
   id: number;
@@ -21,6 +22,11 @@ type Climb = {
   lon: number;
   height: number;
   date: Date
+};
+
+export type logResponse = {
+  success?: boolean;
+  message?: string;
 };
 
 function ClimbComponent(climb: Climb) {
@@ -108,7 +114,6 @@ export default function Log() {
     onChangeDay('');
     onChangeMonth('');
     onChangeYear('');
-    setLocation(null);
     onChangeLevel('');
     onChangeTime(0);
     onChangeHeight('');
@@ -193,15 +198,46 @@ export default function Log() {
     }
   };
 
+  const try_submit = () => {
+    if (!(climb === null)){
+      if (!(level === null)){
+        if (!(location === null)){
+          if (!(height === null)){
+            submitted();
+          } else {
+            Alert.alert("Missing height. Please submit a height and try again");
+          }
+        } else {
+          Alert.alert("Missing location. Please turn on location services");
+        }
+      } else {
+        Alert.alert("Missing level. Please submit a level and try again");
+      }
+    } else {
+      Alert.alert("Missing type. Please submit a type and try again");
+    }
+  }
+
+
   //submits the record for and will put it in the database
+  const [sendRequest, { data: response }] =
+    useMutation<logResponse>("/log/add");
+
   const submitted = () => {
+    let new_day = Number(day);
+    let new_month = Number(month);
+    let new_year = Number(year);
+      const proper_date = `${new_day < 10 ? '0' + new_day : String(new_day)}/${new_month < 10 ? '0' + new_month : new_month}/${new_year % 1000}`;
     Alert.alert(
       'Submitted', 
       `You have submitted the following details:\nDate: ${day}/${month}/${year}\nLocation: ${location}\nLevel: ${level}\nTime: ${time}\nHeight Reached: ${height}`,
       [
         { text: 'OK', onPress: () => resetValues() },
-      ]
-    );
+      ]);
+      sendRequest({ type: climb, time_s: time, level: level, success: completed, angle: maxAngles, lat: location?.coords.latitude, lon: location?.coords.longitude, height: height, date: proper_date });
+      if (response?.message) {
+        Alert.alert(response.message);
+      }
   };
 
   //this calculates the height based on the formula (p1 - p2)/ (pressure at ground level * gravity) -- all converted to pascals
@@ -394,7 +430,7 @@ export default function Log() {
               <Checkbox value={completed} onValueChange={toggleComplete} />
             </View>     
           <View style= {{width: 100, paddingTop: 20, paddingRight: 10, flexDirection: 'row'}}>
-          <TouchableOpacity style = {styles.button_log_submission} onPress = {submitted}>
+          <TouchableOpacity style = {styles.button_log_submission} onPress = {try_submit}>
             <Text style = {styles.button_text}> Submit </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button_log_submission} onPress={toggleRecording}>

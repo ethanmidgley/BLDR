@@ -127,7 +127,7 @@ const main = async () => {
 
     try {
       const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `angle`, `lat`, `lon`, `height`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `angle`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [
           request.user.id,
           type,
@@ -138,6 +138,7 @@ const main = async () => {
           lat,
           lon,
           height,
+          date,
         ],
       );
 
@@ -154,6 +155,7 @@ const main = async () => {
             lat: lat,
             lon: lon,
             height: height,
+            date: date,
           },
         },
       });
