@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {View, Text, Image, Alert, TouchableOpacity, EventSubscription } from "react-native";
+import {View, Text, Image, Alert, TouchableOpacity, EventSubscription} from "react-native";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import { styles } from "@/constants/style";
 import { useQuery } from "../../hooks/useQuery";
 import { Link } from "expo-router";
 import {Barometer, DeviceMotion} from 'expo-sensors';
 import * as Location from "expo-location";
+import { Picker } from "@react-native-picker/picker";
+import {Checkbox} from 'expo-checkbox';
 
 type Climb = {
   id: number;
@@ -18,6 +20,7 @@ type Climb = {
   lat: number;
   lon: number;
   height: number;
+  date: Date
 };
 
 function ClimbComponent(climb: Climb) {
@@ -75,6 +78,10 @@ export default function Log() {
   const [maxAngles, setMaxAngles] = useState({ maxPitch: 0, maxRoll: 0 });
   const [motionSubscription, setMotionSubscription] = useState<EventSubscription | null>(null);
 
+  const [completed,toggleComplete] = useState(false);
+
+  const [climb, setClimb] = useState<string | null>(null);
+
   //triggers to the history page
   const showHitory = () => {
     setShow(true);
@@ -107,7 +114,9 @@ export default function Log() {
     onChangeHeight('');
     setHighestPressure(0);
     setInitialPressure(0);
-    setMaxAngles({ maxPitch: 0, maxRoll: 0 })
+    setMaxAngles({ maxPitch: 0, maxRoll: 0 });
+    toggleComplete(false);
+    setClimb(null);
   };
 
   const { data } = useQuery<{ data: Climb[] }>("/log/fetch");
@@ -248,20 +257,12 @@ export default function Log() {
   }, []);
 
   return (
-    
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 150,
-          padding: 0,
-          marginBottom: 0,
-        }}
-      >
-        <TouchableOpacity style={styles.button_log_page} onPress={showRecord}>
+      <View style = {styles.button_log_page}>
+        <TouchableOpacity style = {styles.button_log_page} onPress={showRecord}>
           <Text style={styles.button_text}> Record </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button_log_page} onPress={showHitory}>
+        <TouchableOpacity style = {styles.button_log_page} onPress={showHitory}>
           <Text style={styles.button_text}> History </Text>
         </TouchableOpacity>
       </View>
@@ -339,6 +340,40 @@ export default function Log() {
                 keyboardType='numeric'
               />
             </View>
+            <View style={{ flexDirection: 'row', paddingTop: 20}}>
+            <Text style={{ fontSize: 25 }}>Level</Text>
+            <Picker
+              selectedValue={level}
+              onValueChange={onChangeLevel}
+              style={styles.picker}
+            >
+              <Picker.Item label="Easy" value="red"/>
+              <Picker.Item label="Medium" value="medium"/>
+              <Picker.Item label="Hard" value="hard"/>
+              <Picker.Item label="Expert" value="expert"/>
+            </Picker>
+            </View>
+            <View style={{ flexDirection: 'row', paddingTop: 20}}>
+            <Text style={{ fontSize: 25 }}>Type of Climb</Text>
+            <Picker
+              selectedValue={climb}
+              onValueChange={setClimb}
+              style={styles.picker}
+            >
+              <Picker.Item label="Overhang" value="overhang" />
+              <Picker.Item label="Jug" value="jug" />
+              <Picker.Item label="Crimp" value="crimp" />
+              <Picker.Item label="Scramble" value="scramble" />
+              <Picker.Item label="Outdoor" value="outdoor" />
+              <Picker.Item label="Slopers" value="slopers" />
+              <Picker.Item label="Pocket" value="pocket" />
+              <Picker.Item label="Slab" value="slab" />
+              <Picker.Item label="Footholds" value="footholds" />
+              <Picker.Item label="Vertical" value="vertical" />
+              <Picker.Item label="Roof" value="roof" />
+              <Picker.Item label="Mantle" value="mantle" />
+            </Picker>
+            </View>
             <View style = {{ flexDirection: 'row', paddingTop: 20}}>
               <Text style={{ fontSize: 25 }}>Extreme Angles (°)</Text>
               <TextInput
@@ -353,11 +388,11 @@ export default function Log() {
                 placeholderTextColor="#ddd"
                 keyboardType="numeric"
               />
-
             </View>
-            {/* <Text>{currentPressure}</Text>
-            <Text>{highestPressure}</Text>
-            <Text>{initialPressure}</Text> */}
+            <View style = {{ flexDirection: 'row', paddingTop: 20}}>
+              <Text style={{ fontSize: 25 }}>Climb Completed   </Text>
+              <Checkbox value={completed} onValueChange={toggleComplete} />
+            </View>     
           <View style= {{width: 100, paddingTop: 20, paddingRight: 10, flexDirection: 'row'}}>
           <TouchableOpacity style = {styles.button_log_submission} onPress = {submitted}>
             <Text style = {styles.button_text}> Submit </Text>
@@ -371,6 +406,4 @@ export default function Log() {
         </View>
       )}
     </View>
-  );
-}
-
+  )};
