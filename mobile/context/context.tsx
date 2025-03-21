@@ -35,22 +35,17 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
-  const [ sendRequest, { data } ] = useMutation<loginResponse>("/users/login");
+  const [ sendRequest ] = useMutation<loginResponse>("/users/login");
 
   return (
     <AuthContext.Provider
       value={{
         signIn: async (email: string, password: string) => {
-          try{
-            await sendRequest({email: email, password: password});
-            if (data?.success === true){
-              setSession(email);
-              router.replace("/");
-              if (data?.message){
-                Alert.alert(data.message);
-              }
-            }
-          } catch {
+          const { data } = await sendRequest({email: email, password: password});
+          if (data?.success === true){
+            setSession(email);
+            router.replace("/");
+          } else {
             Alert.alert("Incorrect login details");
           }
         },
