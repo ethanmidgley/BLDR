@@ -33,9 +33,10 @@ type Spot = {
 };
 
 const DefaultPoints: Spot[] = [
+   
   {
-    latitude: 55.8506,
-    longitude: -4.3138,
+    latitude: 55.85065133261212,
+    longitude: -4.281816013493083,
     name: "The Newsroom - The Climbing Academy",
     desc: "A large, welcoming bouldering centre close to Glasgow's centre, featuring a kids' climbing area, endurance circuits, gym equipment, and a stretching area.",
     id: 1,
