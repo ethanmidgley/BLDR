@@ -7,7 +7,13 @@ import { Redirect } from "expo-router";
 
 import { useSession } from "@/context/context";
 
-import { FontAwesome6, AntDesign, FontAwesome } from "@expo/vector-icons";
+import {
+  FontAwesome6,
+  AntDesign,
+  FontAwesome,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
 export default function TabLayout() {
   const { session, isLoading } = useSession();
@@ -43,14 +49,22 @@ export default function TabLayout() {
         name="skills"
         options={{
           title: "Skills",
-          tabBarIcon: () => <FontAwesome6 name="hill-rockslide" size={24} color="black" />
+          tabBarIcon: () => (
+            <MaterialCommunityIcons
+              name="lightbulb-on-outline"
+              size={24}
+              color="black"
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="log"
+        name="locations"
         options={{
-          title: "Log",
-          tabBarIcon: () => <AntDesign name="book" size={24} color="black" />,
+          title: "Map",
+          tabBarIcon: () => (
+            <FontAwesome name="map-o" size={24} color="black" />
+          ),
         }}
       />
       <Tabs.Screen
@@ -61,17 +75,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="locations"
+        name="log"
         options={{
-          title: "Map",
-          tabBarIcon: () => <FontAwesome name="map-o" size={24} color="black" />
+          title: "Log",
+          tabBarIcon: () => <AntDesign name="book" size={24} color="black" />,
         }}
       />
       <Tabs.Screen
-        name="post"
+        name="history"
         options={{
-          title: "Post",
-          tabBarIcon: () => <AntDesign name="plus" size={24} color="black" />,
+          title: "History",
+          tabBarIcon: () => (
+            <MaterialIcons name="history" size={24} color="black" />
+          ),
         }}
       />
     </Tabs>
