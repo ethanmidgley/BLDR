@@ -35,17 +35,24 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
-  const [ sendRequest, { data } ] = useMutation<loginResponse>("/users/login");
+  const [ sendRequest ] = useMutation<loginResponse>("/users/login");
 
   return (
     <AuthContext.Provider
       value={{
         signIn: async (email: string, password: string) => {
           try{
-            await sendRequest({email: email, password: password});
+            console.log("BEFORE AWAIT");
+            const { data, error } = await sendRequest({email: email, password: password});
+            console.log("PAST AWAIT");
+            console.log(data);
+            console.log(error);
             if (data?.success === true){
+              console.log("ITS TRUE LETS SIGN IN ");
               setSession(email);
+              console.log("HELL YEAH SESSION HAS BEEN SSET");
               router.replace("/");
+              console.log("IT ISSSSSSSS REDIRECTED");
               if (data?.message){
                 Alert.alert(data.message);
               }

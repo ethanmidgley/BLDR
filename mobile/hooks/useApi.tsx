@@ -41,6 +41,7 @@ export const useApi = <DataType,>(
     } catch (err: any) {
       setStatus("error");
       setError(err.message);
+      return { data: null, status: "error", error: err.message };
       throw err;
     }
 

@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { styles } from "@/constants/style";
 import React from "react";
 import {
@@ -61,7 +61,10 @@ export default function Register() {
     }
 
     try {
-      await register({ email: email, fullname: full_name, password: password });
+      const { data } = await register({ email: email, fullname: full_name, password: password });
+      console.log(data);
+      Alert.alert("Welcome to BLDR");
+      router.replace("/login");
     } catch {
       Alert.alert("Failed to created account, try again later");
     }
