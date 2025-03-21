@@ -23,7 +23,6 @@ type Post = {
 
 const PostClimbScreen = () => {
   const { climb_id } = useLocalSearchParams();
-  console.log(climb_id);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -78,12 +77,11 @@ const PostClimbScreen = () => {
     <ScrollView style={styles.container}>
       <View style={styles.banner}>
         <Text style={styles.bannerText}>
-          Climbed a{" "}
+          CLIMBED A{" "}
           <Image
             source={require("@/assets/images/logo.png")}
             style={styles.icon}
-          />{" "}
-          Post it !!
+          />{" "}?
         </Text>
       </View>
       <Text style={styles.label}>Title:</Text>
@@ -114,6 +112,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
+    // textAlign: "center",
+    // alignItems: "center",
   },
   input: {
     borderWidth: 1,
@@ -130,25 +130,41 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   banner: {
-    backgroundColor: "grey",
+    borderRadius:4,
     padding: 15,
     alignItems: "center",
     marginBottom: 20,
   },
   bannerText: {
-    color: "black",
-    fontSize: 20,
+    fontStyle: "italic",
+    color: "red",
+    fontSize: 31,
     fontWeight: "bold",
+    fontFamily: "Archivo_700Bold_Italic",
+    textAlign: "center",
+    marginBottom:10,
+    textShadowColor: "black",
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 1,
   },
   imageContainer: {
     alignItems: "center",
     marginBottom: 10,
+    justifyContent: "flex-end",
+    flexGrow: 1,
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 80,
+    height: 27,
     resizeMode: "contain",
+    paddingTop: 3,
+  },
+  buttonContainer: {
+    marginTop:20,
+    justifyContent: "flex-end",
+    flexGrow: 1,
   },
 });
+
 
 export default PostClimbScreen;
