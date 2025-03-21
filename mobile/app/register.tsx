@@ -62,7 +62,6 @@ export default function Register() {
 
     try {
       const { data } = await register({ email: email, fullname: full_name, password: password });
-      console.log(data);
       Alert.alert("Welcome to BLDR");
       router.replace("/login");
     } catch {
