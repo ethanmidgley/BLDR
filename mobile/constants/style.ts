@@ -80,13 +80,15 @@ export const styles = StyleSheet.create({
   },
 
   button_log_page: {
-    width: "50%",
-    height: "30%",
+    // width: "100%",
+    height: 50,
     marginVertical: 1,
     borderRadius: 9,
-    justifyContent: "center",
+    flex: 1,
     backgroundColor: "#f00",
-    marginBottom: 0,
+    marginBottom: 50,
+    flexDirection: "row",
+    textAlign: "center",
   },
 
   button_log_submission: {
@@ -112,11 +114,16 @@ export const styles = StyleSheet.create({
 
   image_record: {
     width: 350,
-    height: 100,
+    height: 60,
     resizeMode: "contain",
     alignSelf: "center",
     marginVertical: 0,
     marginTop: 0,
     marginBottom: 0,
+  },
+
+  picker: {
+    height: 60,
+    width: 250,
   },
 });
