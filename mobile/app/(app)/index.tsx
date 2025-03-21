@@ -33,7 +33,15 @@ export default function HomeScreen() {
           alignContent: "center",
         }}
       >
-        <Text style={{ fontSize: 32, fontWeight: "700" }}>BLDR</Text>
+        <Text
+          style={{
+            fontSize: 40,
+            fontFamily: "Archivo_700Bold_Italic",
+          }}
+        >
+          BLDR
+        </Text>
+
         <AntDesign
           onPress={confirmSignOut}
           name="logout"

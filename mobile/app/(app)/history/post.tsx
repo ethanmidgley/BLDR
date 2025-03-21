@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLocalSearchParams } from "expo-router";
 
 type Post = {
   id: number;
@@ -21,6 +22,9 @@ type Post = {
 };
 
 const PostClimbScreen = () => {
+  const { climb_id } = useLocalSearchParams();
+  console.log(climb_id);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("Placeholder User");
@@ -76,7 +80,7 @@ const PostClimbScreen = () => {
         <Text style={styles.bannerText}>
           Climbed a{" "}
           <Image
-            source={require("../../assets/images/logo.png")}
+            source={require("@/assets/images/logo.png")}
             style={styles.icon}
           />{" "}
           Post it !!
