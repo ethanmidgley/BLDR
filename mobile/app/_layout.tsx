@@ -1,3 +1,4 @@
+import React from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -10,9 +11,7 @@ import {
   Archivo_600SemiBold,
   Archivo_700Bold_Italic,
 } from "@expo-google-fonts/archivo";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { View } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -39,9 +38,7 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <GestureHandlerRootView>
-        {/* <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}> */}
         <Slot />
-        {/* </SafeAreaView> */}
       </GestureHandlerRootView>
     </SessionProvider>
   );

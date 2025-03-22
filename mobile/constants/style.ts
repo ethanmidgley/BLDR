@@ -54,6 +54,21 @@ export const styles = StyleSheet.create({
     marginVertical: 20,
   },
 
+  headingLarge: {
+    fontSize: 40,
+    fontFamily: "Archivo_700Bold_Italic",
+  },
+
+  headingMedium: {
+    fontFamily: "Archivo_500Medium",
+    fontSize: 30,
+  },
+
+  headingSmall: {
+    fontSize: 17,
+    fontFamily: "Archivo_400Regular",
+  },
+
   input: {
     width: "75%",
     borderWidth: 1,

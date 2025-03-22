@@ -4,6 +4,7 @@ import React from "react";
 import { Image } from "expo-image";
 import { View, Text, FlatList, Pressable } from "react-native";
 import Wrapper from "@/components/Wrapper";
+import { styles } from "@/constants/style";
 
 const skillImages = {
   basic_footwork: require("../../assets/images/skills/basic-footwork.jpg"),
@@ -228,13 +229,7 @@ const SkillView = ({ setSkill, ...skill }: SkillProps) => {
           borderBottomRightRadius: 5,
         }}
       >
-        <Text
-          style={{
-            fontSize: 17,
-            textAlign: "center",
-            fontFamily: "Archivo_400Regular",
-          }}
-        >
+        <Text style={[styles.headingSmall, { textAlign: "center" }]}>
           {skill.name}
         </Text>
       </View>
@@ -251,11 +246,12 @@ const CategoryView = ({
   return (
     <View style={{ marginBottom: 12 }}>
       <Text
-        style={{
-          fontFamily: "Archivo_500Medium",
-          fontSize: 30,
-          marginVertical: 10,
-        }}
+        style={[
+          styles.headingMedium,
+          {
+            marginVertical: 10,
+          },
+        ]}
       >
         {category}
       </Text>

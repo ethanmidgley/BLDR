@@ -11,6 +11,7 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { styles } from "@/constants/style";
 
 export default function TabLayout() {
   const { session, isLoading, signOut } = useSession();
@@ -45,10 +46,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: true,
-        headerTitleStyle: {
-          fontSize: 40,
-          fontFamily: "Archivo_700Bold_Italic",
-        },
+        headerTitleStyle: styles.headingLarge,
         headerStyle: { height: 110 },
         headerTitleAlign: "left",
         tabBarActiveTintColor: "#f00",
