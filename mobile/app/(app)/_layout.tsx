@@ -1,6 +1,6 @@
-import { Tabs, useLocalSearchParams } from "expo-router";
-import React from "react";
-import { Alert, Platform, View } from "react-native";
+import { router, Tabs, useLocalSearchParams, usePathname } from "expo-router";
+import React, { useEffect } from "react";
+import { Alert, Button, Platform, View } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { Text } from "react-native";
 import { Redirect } from "expo-router";
@@ -14,6 +14,7 @@ import {
 
 export default function TabLayout() {
   const { session, isLoading, signOut } = useSession();
+  const pathname = usePathname();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -115,6 +116,16 @@ export default function TabLayout() {
           tabBarIcon: () => (
             <MaterialIcons name="history" size={24} color="black" />
           ),
+          ...(pathname === "/history/post" && {
+            headerTitle: "Post",
+            headerLeft: () => (
+              // It is 8 and not the proper 16 cos the button by default has set 8
+              <View style={{ marginLeft: 8 }}>
+                <Button title="Back" onPress={() => router.back()} />
+              </View>
+            ),
+            headerTitleAlign: "center",
+          }),
         }}
       />
     </Tabs>
