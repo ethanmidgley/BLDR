@@ -38,7 +38,7 @@ export const useApi = <DataType,>(
 
       setData(json);
       setStatus("success");
-      return { data: json, status: "error", error: null };
+      return { data: json, status: "success", error: null };
     } catch (err: any) {
       setStatus("error");
       setError(err.message);
