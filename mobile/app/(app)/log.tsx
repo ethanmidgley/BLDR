@@ -16,6 +16,7 @@ import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import { Checkbox } from "expo-checkbox";
 import { useMutation } from "@/hooks/useMutation";
+import Wrapper from "@/components/Wrapper";
 
 type Climb = {
   id: number;
@@ -270,7 +271,7 @@ export default function Log() {
   }, []);
 
   return (
-    <View>
+    <Wrapper>
       <Image
         source={require("../../assets/images/logo.png")}
         style={styles.image_record}
@@ -417,6 +418,6 @@ export default function Log() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Wrapper>
   );
 }

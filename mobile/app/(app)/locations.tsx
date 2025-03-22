@@ -33,7 +33,6 @@ type Spot = {
 };
 
 const DefaultPoints: Spot[] = [
-   
   {
     latitude: 55.85065133261212,
     longitude: -4.281816013493083,

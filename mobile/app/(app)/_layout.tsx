@@ -1,14 +1,11 @@
-import { Tabs } from "expo-router";
+import { Tabs, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Alert, Platform, View } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { Text } from "react-native";
 import { Redirect } from "expo-router";
-
 import { useSession } from "@/context/context";
-
 import {
-  FontAwesome6,
   AntDesign,
   FontAwesome,
   MaterialCommunityIcons,
@@ -16,7 +13,7 @@ import {
 } from "@expo/vector-icons";
 
 export default function TabLayout() {
-  const { session, isLoading } = useSession();
+  const { session, isLoading, signOut } = useSession();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -31,15 +28,34 @@ export default function TabLayout() {
     return <Redirect href="/login" />;
   }
 
+  const confirmSignOut = () => {
+    Alert.alert("Logout?", "Are you sure you sure you want to log out?", [
+      {
+        text: "No",
+      },
+      {
+        text: "Yes",
+        onPress: signOut,
+      },
+    ]);
+  };
+
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerTitleStyle: {
+          fontSize: 40,
+          fontFamily: "Archivo_700Bold_Italic",
+        },
+        headerStyle: { height: 110 },
+        headerTitleAlign: "left",
+        tabBarActiveTintColor: "#f00",
         tabBarButton: HapticTab,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
+            // position: "absolute",
           },
           default: {},
         }),
@@ -62,6 +78,7 @@ export default function TabLayout() {
         name="locations"
         options={{
           title: "Map",
+          headerShown: false,
           tabBarIcon: () => (
             <FontAwesome name="map-o" size={24} color="black" />
           ),
@@ -70,7 +87,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "BLDR",
+          headerRight: () => (
+            <AntDesign
+              style={{ marginRight: 16 }}
+              onPress={confirmSignOut}
+              name="logout"
+              size={24}
+              color="black"
+            />
+          ),
           tabBarIcon: () => <AntDesign name="home" size={24} color="black" />,
         }}
       />
@@ -85,6 +111,7 @@ export default function TabLayout() {
         name="history"
         options={{
           title: "History",
+          headerShown: true,
           tabBarIcon: () => (
             <MaterialIcons name="history" size={24} color="black" />
           ),

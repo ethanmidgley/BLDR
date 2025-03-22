@@ -4,6 +4,7 @@ import { Dispatch, useState } from "react";
 import React from "react";
 import { Image } from "expo-image";
 import { View, Text, FlatList, Pressable } from "react-native";
+import Wrapper from "@/components/Wrapper";
 
 const skillImages = {
   basic_footwork: require("../../assets/images/skills/basic-footwork.jpg"),
@@ -274,15 +275,7 @@ export default function Skills() {
 
   return (
     <View>
-      <View style={{ padding: 10 }}>
-        <Text
-          style={{
-            fontSize: 40,
-            fontFamily: "Archivo_700Bold_Italic",
-          }}
-        >
-          Skills
-        </Text>
+      <Wrapper>
         <FlatList
           data={climbingSkills}
           renderItem={(c) => (
@@ -292,9 +285,8 @@ export default function Skills() {
               inverted={c.index % 2 === 1}
             />
           )}
-          ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
         />
-      </View>
+      </Wrapper>
       {selectedSkill ? (
         <View
           style={{

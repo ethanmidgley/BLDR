@@ -39,9 +39,9 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <GestureHandlerRootView>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
-          <Slot />
-        </SafeAreaView>
+        {/* <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}> */}
+        <Slot />
+        {/* </SafeAreaView> */}
       </GestureHandlerRootView>
     </SessionProvider>
   );

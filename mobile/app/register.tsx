@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -61,7 +62,11 @@ export default function Register() {
     }
 
     try {
-      const { data } = await register({ email: email, fullname: full_name, password: password });
+      const { data } = await register({
+        email: email,
+        fullname: full_name,
+        password: password,
+      });
       Alert.alert("Welcome to BLDR");
       router.replace("/login");
     } catch {
@@ -71,67 +76,69 @@ export default function Register() {
 
   return (
     // main div
-    <View style={styles.container}>
-      <Image
-        source={require("../assets/images/logo.png")}
-        style={styles.image}
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={styles.container}>
+        <Image
+          source={require("../assets/images/logo.png")}
+          style={styles.image}
+        />
 
-      <Text style={styles.h1}> Register </Text>
+        <Text style={styles.h1}> Register </Text>
 
-      <TextInput
-        style={styles.input}
-        value={full_name}
-        onChangeText={on_change_full_name}
-        placeholder="full name"
-        placeholderTextColor="#ddd"
-        keyboardType="default"
-      />
+        <TextInput
+          style={styles.input}
+          value={full_name}
+          onChangeText={on_change_full_name}
+          placeholder="full name"
+          placeholderTextColor="#ddd"
+          keyboardType="default"
+        />
 
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={on_change_email}
-        placeholder="e-mail"
-        placeholderTextColor="#ddd"
-        keyboardType="email-address"
-      />
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={on_change_email}
+          placeholder="e-mail"
+          placeholderTextColor="#ddd"
+          keyboardType="email-address"
+        />
 
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={on_change_password}
-        placeholder="password"
-        placeholderTextColor="#ddd"
-        keyboardType="visible-password"
-      />
+        <TextInput
+          style={styles.input}
+          value={password}
+          onChangeText={on_change_password}
+          placeholder="password"
+          placeholderTextColor="#ddd"
+          keyboardType="visible-password"
+        />
 
-      <TextInput
-        style={styles.input}
-        value={confirm_password}
-        onChangeText={on_change_confirm_password}
-        placeholder="confirm password"
-        placeholderTextColor="#ddd"
-        keyboardType="visible-password"
-      />
+        <TextInput
+          style={styles.input}
+          value={confirm_password}
+          onChangeText={on_change_confirm_password}
+          placeholder="confirm password"
+          placeholderTextColor="#ddd"
+          keyboardType="visible-password"
+        />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={submitForm}
-        disabled={status === "loading"}
-      >
-        {status !== "loading" ? (
-          <Text style={styles.button_text}> Register </Text>
-        ) : (
-          <ActivityIndicator />
-        )}
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={submitForm}
+          disabled={status === "loading"}
+        >
+          {status !== "loading" ? (
+            <Text style={styles.button_text}> Register </Text>
+          ) : (
+            <ActivityIndicator />
+          )}
+        </TouchableOpacity>
 
-      <Text style={styles.text}> Already have an account? </Text>
-      <Link href={"/login"} style={styles.link}>
-        {" "}
-        Log In{" "}
-      </Link>
-    </View>
+        <Text style={styles.text}> Already have an account? </Text>
+        <Link href={"/login"} style={styles.link}>
+          {" "}
+          Log In{" "}
+        </Link>
+      </View>
+    </SafeAreaView>
   );
 }
