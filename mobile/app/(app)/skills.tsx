@@ -1,4 +1,3 @@
-import { styles } from "@/constants/style";
 import { Entypo } from "@expo/vector-icons";
 import { Dispatch, useState } from "react";
 import React from "react";
@@ -297,32 +296,48 @@ export default function Skills() {
             height: "100%",
             backgroundColor: "white",
             padding: 16,
-            elevation: 5, // Adds a shadow effect
           }}
         >
           <View
             style={{
               backgroundColor: "#fff",
               flexDirection: "row",
-              padding: 10,
               justifyContent: "space-between",
               alignContent: "center",
             }}
           >
-            <Text style={{ fontSize: 20 }}>{selectedSkill.name}</Text>
+            <Text style={{ fontFamily: "Archivo_500Medium", fontSize: 30 }}>
+              {selectedSkill.name}
+            </Text>
             <Entypo
               name="cross"
-              size={24}
+              size={30}
               color="black"
               onPress={() => setSelectedSkill(null)}
             />
           </View>
 
-          <Text>Why it matters:</Text>
+          <Text
+            style={{
+              fontSize: 17,
+              fontFamily: "Archivo_400Regular",
+              marginTop: 16,
+            }}
+          >
+            Why it matters:
+          </Text>
           <Text>{selectedSkill.why_it_matters}</Text>
           {selectedSkill.key_points ? (
             <View>
-              <Text>Key points: </Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  marginTop: 16,
+                  fontFamily: "Archivo_400Regular",
+                }}
+              >
+                Key points:
+              </Text>
               {selectedSkill.key_points.map((point, idx) => (
                 <Text key={idx}>
                   {idx + 1}. {point}
