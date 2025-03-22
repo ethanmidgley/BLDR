@@ -5,6 +5,7 @@ import { Slot } from "expo-router";
 import { SessionProvider } from "@/context/context";
 import "react-native-reanimated";
 import {
+  Archivo_400Regular,
   Archivo_500Medium,
   Archivo_600SemiBold,
   Archivo_700Bold_Italic,
@@ -21,6 +22,7 @@ export default function RootLayout() {
     Archivo_500Medium,
     Archivo_700Bold_Italic,
     Archivo_600SemiBold,
+    Archivo_400Regular,
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 

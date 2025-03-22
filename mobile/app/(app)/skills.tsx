@@ -232,6 +232,7 @@ const SkillView = ({ setSkill, ...skill }: SkillProps) => {
           style={{
             fontSize: 17,
             textAlign: "center",
+            fontFamily: "Archivo_400Regular",
           }}
         >
           {skill.name}
