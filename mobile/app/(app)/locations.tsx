@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
-import MapView, { Region, Marker, Callout } from "react-native-maps";
+import { View, Text, Alert, ScrollView } from "react-native";
+import MapView, { Marker, Callout } from "react-native-maps";
 import { styles } from "../../constants/style";
 import * as Location from "expo-location";
 import { Link } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
-import {
-  PostComponent,
-  Climb,
-  Post,
-  Comment,
-  commentResponse,
-} from "@/components/PostComponent";
+import { PostComponent, Post } from "@/components/PostComponent";
 import { useQuery } from "@/hooks/useQuery";
 
 function setDefaultLocation() {
@@ -109,16 +103,25 @@ export default function Locations() {
 
   //fetch posts to grab climbs
   const { data } = useQuery<Post[]>("/posts/fetch");
-  console.log(data);
+
+  const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    setRefresh((prev) => prev + 1); // Increment to force a re-render
+  }, [data, location]);
 
   //actual app render
   return (
     <View style={styles.map_container}>
-      <MapView style={styles.map} initialRegion={setDefaultLocation()}>
+      <MapView
+        key={refresh}
+        style={styles.map}
+        initialRegion={setDefaultLocation()}
+      >
         {/*render user location*/}
         {location !== null ? (
           <Marker
-            key="user"
+            key={`user-${location.coords.latitude}-${location.coords.longitude}`}
             coordinate={location.coords}
             pinColor="red"
             onPress={() => {
@@ -151,7 +154,7 @@ export default function Locations() {
         {/*render other user posts location*/}
         {data?.map((post) => (
           <Marker
-            key={post.title + post.id}
+            key={`${post.title}-${post.id}-${post.climb.lat}-${post.climb.lon}`}
             coordinate={{
               latitude: post.climb.lat,
               longitude: post.climb.lon,
@@ -215,19 +218,18 @@ export default function Locations() {
               alignContent: "center",
             }}
           >
-            <Text style={{ fontSize: 20, fontWeight: 800 }}>
+            <Text style={styles.headingMedium}>
               Nº:{bottomStatePost.climb.lat}, Eº:{bottomStatePost.climb.lon}
             </Text>
             <Entypo
               name="cross"
-              size={24}
+              size={30}
               color="black"
               onPress={() => setBottomStatePost(null)}
             />
           </View>
           <ScrollView>
-            <PostComponent {...bottomStatePost} />
-            <View style={{ height: 100, width: 1 }}></View>
+            <PostComponent {...bottomStatePost} fullWidth={false} />
           </ScrollView>
         </View>
       ) : null}
