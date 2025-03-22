@@ -226,7 +226,7 @@ const main = async () => {
     const result = [];
     try {
       const [posts] = await db.query(
-        "SELECT cbp.id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.user_id <> ?",
+        "SELECT cbp.id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.angle, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.user_id <> ?",
         [request.user.id],
       );
 
@@ -240,10 +240,13 @@ const main = async () => {
           id: post.id,
           title: post.title,
           image: post.image,
+          description: post.description,
           author: post.full_name,
           climb: {
             time: post.time,
             level: post.level,
+            angle: post.angle,
+            type: post.type,
             lat: post.lat,
             lon: post.lon,
           },
