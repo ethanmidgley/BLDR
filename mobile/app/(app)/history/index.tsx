@@ -2,6 +2,7 @@ import { styles } from "@/constants/style";
 import { useQuery } from "@/hooks/useQuery";
 import { Link, useRouter } from "expo-router";
 import React from "react";
+import { Vibration } from "react-native";
 import { Button, FlatList, Text, View } from "react-native";
 
 type Climb = {
@@ -60,12 +61,14 @@ export default function History() {
     <View>
       <Button
         title="Post"
-        onPress={() =>
+        onPress={() => {
+          Vibration.vibrate(50);
           router.push({
-            pathname: "/history/post",
+            pathname: "/history/post", 
             params: { climb_id: 1 },
-          })
-        }
+          });
+        }}
+        
       />
       <FlatList
         style={{}}

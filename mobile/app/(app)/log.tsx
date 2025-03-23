@@ -6,8 +6,9 @@ import {
   Alert,
   TouchableOpacity,
   EventSubscription,
+  Vibration,
 } from "react-native";
-import { FlatList, TextInput } from "react-native-gesture-handler";
+import { FlatList, ScrollView, TextInput } from "react-native-gesture-handler";
 import { styles } from "@/constants/style";
 import { useQuery } from "../../hooks/useQuery";
 import { Link } from "expo-router";
@@ -49,7 +50,7 @@ export default function Log() {
   );
 
   //this is where the level of the climb is stored
-  const [level, onChangeLevel] = React.useState("");
+  const [level, onChangeLevel] = React.useState("easy");
 
   //these are used for the timer and where the time is stored
   const [time, onChangeTime] = React.useState(0);
@@ -74,7 +75,7 @@ export default function Log() {
 
   const [completed, toggleComplete] = useState(false);
 
-  const [climb, setClimb] = useState<string | null>(null);
+  const [climb, setClimb] = useState<string | null>("overhang");
 
   //puts caps on day, month, year so they cant put innacurate dates
   const capValues = () => {
@@ -92,14 +93,14 @@ export default function Log() {
     onChangeDay("");
     onChangeMonth("");
     onChangeYear("");
-    onChangeLevel("");
+    onChangeLevel("easy");
     onChangeTime(0);
     onChangeHeight("");
     setHighestPressure(0);
     setInitialPressure(0);
     setMaxAngles({ maxPitch: 0, maxRoll: 0 });
     toggleComplete(false);
-    setClimb(null);
+    setClimb("overhang");
   };
 
   //toggles between recording and not recording the values
@@ -199,7 +200,7 @@ export default function Log() {
     const proper_date = `${new_day < 10 ? "0" + new_day : String(new_day)}/${new_month < 10 ? "0" + new_month : new_month}/${new_year % 1000}`;
     Alert.alert(
       "Submitted",
-      `You have submitted the following details:\nDate: ${day}/${month}/${year}\nLocation: ${location}\nLevel: ${level}\nTime: ${time}\nHeight Reached: ${height}`,
+      `You have submitted the following details:\nDate: ${day}/${month}/${year}\nLevel: ${level}\nTime: ${time}\nHeight Reached: ${height}\n Type of Climb: ${climb}\nExtreme Angle: ${maxAngles.maxPitch}`,
       [{ text: "OK", onPress: () => resetValues() }],
     );
     sendRequest({
@@ -272,6 +273,7 @@ export default function Log() {
 
   return (
     <Wrapper>
+      <ScrollView>
       <Image
         source={require("../../assets/images/logo.png")}
         style={styles.image_record}
@@ -410,7 +412,10 @@ export default function Log() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button_log_submission}
-            onPress={toggleRecording}
+            onPress={() => {
+              toggleRecording(); 
+              Vibration.vibrate(100); 
+            }}          
           >
             <Text style={styles.button_text}>
               {recording ? "Stop" : "Start"}
@@ -418,6 +423,7 @@ export default function Log() {
           </TouchableOpacity>
         </View>
       </View>
+      </ScrollView>
     </Wrapper>
   );
 }
