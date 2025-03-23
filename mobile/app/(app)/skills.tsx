@@ -15,7 +15,7 @@ const skillImages = {
   body_positioning: require("../../assets/images/skills/body-positioning.jpg"),
   smearing: require("../../assets/images/skills/smearing.jpg"),
   flagging: require("../../assets/images/skills/flagging.jpg"),
-  heel_toe_hookes: require("../../assets/images/skills/heel-toe-hook.jpg"),
+  heel_toe_hooks: require("../../assets/images/skills/heel-toe-hook.jpg"),
   mantling: require("../../assets/images/skills/mantling.jpg"),
   deadpointing: require("../../assets/images/skills/deadpointing.jpg"),
   grip_strength_training: require("../../assets/images/skills/grip-strength-training.jpg"),
@@ -24,7 +24,27 @@ const skillImages = {
   endurance_drills: require("../../assets/images/skills/endurance-drills.jpg"),
 };
 
+const skill_videos = {
+  basic_footwork: "https://www.youtube.com/watch?v=KoTG-0_smTE",
+  three_points_of_contact: "https://www.youtube.com/watch?v=jumbbU0KqQw",
+  silent_feet: "https://www.youtube.com/watch?v=UqGvom5-yNo",
+  falling_technique: "https://www.youtube.com/watch?v=Qc7ZQHE9L9w",
+  reading_routes: "https://www.youtube.com/watch?v=XnScNp24xEU",
+  body_positioning: "https://www.youtube.com/watch?v=hAo_ismiUEU",
+  smearing: "https://www.youtube.com/watch?v=Psu2y-weRnM",
+  flagging: "https://www.youtube.com/watch?v=juPtjVgcQbg",
+  heel_toe_hooks: "https://www.youtube.com/watch?v=wdamT5lhWyI",
+  mantling: "https://www.youtube.com/watch?v=dSbNqltm6Nk",
+  deadpointing: "https://www.youtube.com/watch?v=cre_htAhJh4",
+  grip_strength_training: "https://www.youtube.com/watch?v=XXrDQ8PCAmI",
+  core_strength: "https://www.youtube.com/watch?v=E621anInG5s",
+  flexibility_mobility: "https://www.youtube.com/watch?v=kE9r9kteF4M",
+  endurance_drills: "https://www.youtube.com/watch?v=Y6BxtLXfAFI",
+};
+
 type skillImageKey = keyof typeof skillImages;
+
+type skill_video_key = keyof typeof skill_videos;
 
 const climbingSkills: Category[] = [
   {
@@ -126,7 +146,7 @@ const climbingSkills: Category[] = [
     skills: [
       {
         name: "Heel & Toe Hooks",
-        image: "heel_toe_hookes",
+        image: "heel_toe_hooks",
         why_it_matters:
           "These techniques reduce strain on your arms by allowing your legs to do more work.",
         key_points: [
