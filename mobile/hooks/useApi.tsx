@@ -10,6 +10,7 @@ type ApiResponse<DataType> = {
   data: DataType | null;
   status: FetchStatus;
   error: string | null;
+  refetch: (variables?: Object) => Promise<ApiResponse<DataType>>;
 };
 
 export const useApi = <DataType,>(
@@ -38,15 +39,15 @@ export const useApi = <DataType,>(
 
       setData(json);
       setStatus("success");
-      return { data: json, status: "success", error: null };
+      return { data: json, status: "success", error: null, refetch: send };
     } catch (err: any) {
       setStatus("error");
       setError(err.message);
-      return { data: null, status: "error", error: err.message };
+      return { data: null, status: "error", error: err.message, refetch: send };
     }
   };
 
-  return [send, { data, status, error }];
+  return [send, { data, status, error, refetch: send }];
 };
 
 // a query is an api with different preset values and automatically called
