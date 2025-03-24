@@ -218,7 +218,7 @@ type Category = {
 
 type CategoryProps = Category & {
   setSkill: Dispatch<React.SetStateAction<Skill | null>>;
-  inverted: boolean;
+  //inverted: boolean;
 };
 
 const SkillView = ({ setSkill, ...skill }: SkillProps) => {
@@ -258,7 +258,7 @@ const SkillView = ({ setSkill, ...skill }: SkillProps) => {
 };
 
 const CategoryView = ({
-  inverted,
+  //inverted,
   category,
   skills,
   setSkill,
@@ -276,7 +276,7 @@ const CategoryView = ({
         {category}
       </Text>
       <FlatList
-        inverted={inverted}
+        //inverted={inverted}
         horizontal={true}
         data={skills}
         renderItem={(d) => <SkillView {...d.item} setSkill={setSkill} />}
@@ -297,7 +297,7 @@ export default function Skills() {
             <CategoryView
               {...c.item}
               setSkill={setSelectedSkill}
-              inverted={c.index % 2 === 1}
+              //inverted={c.index % 2 === 1}
             />
           )}
         />

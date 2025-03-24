@@ -152,12 +152,14 @@ export default function Locations() {
           <Marker
             key={`user-${location.coords.latitude}-${location.coords.longitude}`}
             coordinate={location.coords}
-            pinColor="red"
+            //pinColor="red"
             onPress={() => {
               setBottomStateSpot(null);
               setBottomStatePost(null);
-            }}
-          />
+            }}> 
+          <Image source={require("../../assets/images/stickman.png")} style={{height: 35, width: 35, resizeMode: "contain"}}/>
+          </Marker>
+
         ) : null}
         {/*render default location*/}
         {DefaultPoints.map((point) => (
