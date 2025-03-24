@@ -66,14 +66,14 @@ export default function Log() {
   );
 
   //this is where the level of the climb is stored
-  const [level, onChangeLevel] = React.useState("");
+  const [level, onChangeLevel] = React.useState(0);
 
   //these are used for the timer and where the time is stored
   const [time, onChangeTime] = React.useState(0);
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
 
   //these are the states used in measuring the chang in height of the person when climbing
-  const [height, onChangeHeight] = React.useState("");
+  const [height, onChangeHeight] = React.useState(0);
   const [initialPressure, setInitialPressure] = React.useState(0);
   const [highestPressure, setHighestPressure] = React.useState(0);
   const p_g = 1200.5; //this is the value to divide the change in pressure by tho get the height climbed
@@ -108,9 +108,9 @@ export default function Log() {
     onChangeDay("");
     onChangeMonth("");
     onChangeYear("");
-    onChangeLevel("");
+    onChangeLevel(0);
     onChangeTime(0);
-    onChangeHeight("");
+    onChangeHeight(0);
     setHighestPressure(0);
     setInitialPressure(0);
     setMaxAngles({ maxPitch: 0, maxRoll: 0 });
