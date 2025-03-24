@@ -66,14 +66,14 @@ export default function Log() {
   );
 
   //this is where the level of the climb is stored
-  const [level, onChangeLevel] = React.useState("");
+  const [level, onChangeLevel] = React.useState(0);
 
   //these are used for the timer and where the time is stored
   const [time, onChangeTime] = React.useState(0);
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
 
   //these are the states used in measuring the chang in height of the person when climbing
-  const [height, onChangeHeight] = React.useState("");
+  const [height, onChangeHeight] = React.useState(0);
   const [initialPressure, setInitialPressure] = React.useState(0);
   const [highestPressure, setHighestPressure] = React.useState(0);
   const p_g = 1200.5; //this is the value to divide the change in pressure by tho get the height climbed
@@ -108,9 +108,9 @@ export default function Log() {
     onChangeDay("");
     onChangeMonth("");
     onChangeYear("");
-    onChangeLevel("");
+    onChangeLevel(0);
     onChangeTime(0);
-    onChangeHeight("");
+    onChangeHeight(0);
     setHighestPressure(0);
     setInitialPressure(0);
     setMaxAngles({ maxPitch: 0, maxRoll: 0 });
@@ -381,8 +381,8 @@ export default function Log() {
               Height (m)
             </Text>
             <TextInput
-              onChangeText={onChangeHeight}
-              value={height}
+              onChangeText={(text) => onChangeHeight(parseInt(text) || 0)}
+              value={height.toString()}
               returnKeyType="done"
               placeholder="eg. 5"
               placeholderTextColor="#ddd"
@@ -396,19 +396,19 @@ export default function Log() {
             </Text>
             <TextInput
               // need to make this shit regulate the input to 1dp, could just validate on submit for now
-              value={level}
+              value={level.toString()}
               placeholder="eg. 3.4, 10, 7.0"
               placeholderTextColor="#ddd"
               keyboardType="numeric"
               returnKeyType="done"
-              onChangeText={onChangeLevel}
+              onChangeText={(text) => onChangeLevel(parseInt(text) || 0)}
               onEndEditing={(event) => {
                 const num = parseFloat(event.nativeEvent.text) || 0;
                 if (num === Math.floor(num)) {
                   //parse only the integer if there are no decimal points following
-                  onChangeLevel(num.toString());
+                  onChangeLevel(num);
                 } else {
-                  onChangeLevel(num.toFixed(1));
+                  onChangeLevel(num);
                 }
               }}
             />
@@ -432,7 +432,7 @@ export default function Log() {
               placeholder="Select an option"
               searchPlaceholder="Search..."
               value={climbType}
-              onChange={(item) => {
+              onChange={(item: { value: React.SetStateAction<string | null>; }) => {
                 setClimbType(item.value);
               }}
             />

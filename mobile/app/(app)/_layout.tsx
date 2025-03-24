@@ -1,5 +1,5 @@
-import { router, Tabs, useLocalSearchParams, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import { router, Tabs, usePathname } from "expo-router";
+import React from "react";
 import { Alert, Button, Platform, View } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { Text } from "react-native";
@@ -63,7 +63,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="skills"
         options={{
-          title: "Skills",
+          title: "SKILLS",
           tabBarIcon: () => (
             <MaterialCommunityIcons
               name="lightbulb-on-outline"
@@ -76,7 +76,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="locations"
         options={{
-          title: "Map",
+          title: "MAP",
           headerShown: false,
           tabBarIcon: () => (
             <FontAwesome name="map-o" size={24} color="black" />
@@ -102,20 +102,20 @@ export default function TabLayout() {
       <Tabs.Screen
         name="log"
         options={{
-          title: "Log",
+          title: "LOG",
           tabBarIcon: () => <AntDesign name="book" size={24} color="black" />,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: "History",
+          title: "HISTORY",
           headerShown: true,
           tabBarIcon: () => (
             <MaterialIcons name="history" size={24} color="black" />
           ),
           ...(pathname === "/history/post" && {
-            headerTitle: "Post",
+            headerTitle: "POST",
             headerLeft: () => (
               // It is 8 and not the proper 16 cos the button by default has set 8
               <View style={{ marginLeft: 8 }}>
