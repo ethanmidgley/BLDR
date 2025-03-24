@@ -97,6 +97,13 @@ export const styles = StyleSheet.create({
     color: "#fff",
   },
 
+  reply_button: {
+    alignSelf: "flex-end",
+    position: "absolute",
+    padding: 1,
+    borderRadius: 5,
+  },
+
   image: {
     width: 300,
     height: 100,
@@ -150,4 +157,11 @@ export const styles = StyleSheet.create({
     height: 60,
     width: 250,
   },
+
+  //reply: {
+    //justifyContent: "end",
+    //justifyContent: "flex-end",
+    //textAlign: "right",
+    //color: "red",
+  //},
 });

@@ -128,6 +128,12 @@ export function PostComponent({
   const [sendRequest] = useMutation<commentResponse>("/comments/add");
 
   const commentOnPost = async () => {
+
+    if (comment === "") {
+      Alert.alert("Please write a comment before submitting");
+      return;
+    }
+
     const today = new Date();
     let day = today.getDate();
     let month = today.getMonth() + 1;
@@ -138,28 +144,37 @@ export function PostComponent({
 
     const proper_date = `${day < 10 ? "0" + day : String(day)}/${month < 10 ? "0" + month : month}/${year % 1000}`;
 
-    if (comment === "") {
-      Alert.alert("Please write a comment before submitting");
-      return;
-    }
-
     const { status } = await sendRequest({
       post_id: id,
-      content: comment,
+      content: replyee + comment,
       date: proper_date,
     });
 
     if (status === "error") {
       Alert.alert("Failed to post comment. Try again later.");
     } else if (status === "success") {
-      comments.push({ id: Infinity, author: "You", content: comment });
+      setPlaceholder("New comment");
+      comments.push({ id: Infinity, author: "You", content: replyee + comment });
     }
 
     setComment("");
   };
 
+  const [replyee, setReplyee] = useState("");
+  const [placeholder, setPlaceholder] = useState("New comment");
+
+  const reply = (c: Comment) => {
+    if (c.author === "You"){ // HOW DO I GET THE CURRENT USER ID!!! IF I GET IT PUT || C.AUTHOR === USER ID HERE
+      setReplyee("(reply to self) ");
+      setPlaceholder("(reply to self) ");
+    } else {
+      setReplyee("(reply to " + c.author + ") ");
+      setPlaceholder("(reply to " + c.author + ") ");
+    }
+  }
+
   return (
-    <View style={{ flex: 1, gap: 10 }}>
+    <View style={{ flex: 1, gap: 10, marginBottom : 10}}>
       <View style={{ flex: 1 }}>
         <Image
           source={`${API_PATH}/image/${image}`}
@@ -197,18 +212,32 @@ export function PostComponent({
             <Text style={styles.headingSmall}>Comments</Text>
 
             {comments.map((c, idx) => (
-              <Text key={idx}>
-                {c.author}: {c.content}
+            <View key={idx}>
+              <Text style={{ paddingRight: 40 }}>
+                {c.author}: {c.content} 
               </Text>
+              <TouchableOpacity 
+                onPress = {() => reply(c)}
+                style = {styles.reply_button}>
+                <Text style={{color:"#f00", fontSize:12}}> Reply </Text> 
+              </TouchableOpacity>
+            </View>
             ))}
           </View>
           <View style={{ flexDirection: "row" }}>
             <TextInput
-              placeholder="New comment"
+              placeholder={placeholder}
               value={comment}
               onChangeText={(c) => setComment(c)}
               placeholderTextColor={"#ddd"}
               style={{ paddingVertical: 4, flex: 3 }}
+            />
+            <Ionicons
+              name="close-outline"
+              onPress = {() => setPlaceholder("New comment")}
+              style = {{ alignSelf: "flex-end", padding : 1, marginRight : 10, borderRadius : 5 }}
+              size = {28}
+              color = "black"
             />
             <Ionicons
               name="send-outline"
