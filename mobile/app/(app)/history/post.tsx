@@ -10,24 +10,14 @@ import {
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams } from "expo-router";
-
-type Post = {
-  id: number;
-  title: string;
-  description: string;
-  author: string;
-  uri: string | null;
-};
 
 const PostClimbScreen = () => {
   const { climb_id } = useLocalSearchParams();
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [author, setAuthor] = useState("Placeholder User");
   const [uri, setUri] = useState<string | null>(null);
+
 
   const handleChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,40 +26,62 @@ const PostClimbScreen = () => {
       quality: 1,
     });
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setUri(result.assets[0].uri);
+      const imageUri = result.assets[0].uri;
+      setUri(imageUri);
     }
   };
 
   const handlePost = async () => {
     if (!title || !description || !uri) {
-      Alert.alert(
-        "Missing Info",
-        "Please Fill in all fields and select an image",
-      );
+      Alert.alert("Missing Info", "Please fill in all fields and select an image.");
       return;
     }
 
-    const newPost: Post = {
-      id: Date.now(),
-      title,
-      description,
-      author,
-      uri,
-    };
-
     try {
-      const existingPosts = await AsyncStorage.getItem("boulderingPosts");
-      const posts: Post[] = existingPosts ? JSON.parse(existingPosts) : [];
-      posts.push(newPost);
-      await AsyncStorage.setItem("boulderingPosts", JSON.stringify(posts));
+      const today = new Date();
+      let day = today.getDate();
+      let month = today.getMonth() + 1;
+      let year = today.getFullYear();
+      day = Number(day);
+      month = Number(month);
+      year = Number(year);
 
-      Alert.alert("Success", "Post Created");
-      setTitle("");
-      setDescription("");
-      setUri(null);
+      const date = `${day < 10 ? "0" + day : String(day)}/${month < 10 ? "0" + month : month}/${year % 1000}`;
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("climb_id", climb_id);
+      formData.append("date",date)
+      //image upload stuff
+      const localUri = uri;
+      const filename = localUri.split("/").pop();
+      const match = /\.(\w+)$/.exec(filename || "");
+      const type = match ? `image/${match[1]}` : "image";
+
+      formData.append("image", {
+        uri: localUri,
+        name: filename,
+        type: type,
+      });
+      // API redone
+      const response = await fetch("https://devweb2024.cis.strath.ac.uk/mhb22136-nodejs/posts/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+      
+      const responseData = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Post Created", "Your post has been successfully created!");
+      } else {
+        Alert.alert("Error", responseData.error || "Something went wrong.");
+      }
     } catch (error) {
-      console.error("Error Posting", error);
-      Alert.alert("Error", "Failed to post");
+      console.error(error);
+      Alert.alert("Error", "Failed to post data. Please try again.");
     }
   };
 
@@ -77,11 +89,12 @@ const PostClimbScreen = () => {
     <ScrollView style={styles.container}>
       <View style={styles.banner}>
         <Text style={styles.bannerText}>
-          CLIMBED A{" "}
+          CLIMBED A
           <Image
             source={require("@/assets/images/logo.png")}
             style={styles.icon}
-          />{" "}?
+          />{" "}
+          ?
         </Text>
       </View>
       <Text style={styles.label}>Title:</Text>
@@ -112,8 +125,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
-    // textAlign: "center",
-    // alignItems: "center",
   },
   input: {
     borderWidth: 1,
@@ -130,7 +141,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   banner: {
-    borderRadius:4,
+    borderRadius: 4,
     padding: 15,
     alignItems: "center",
     marginBottom: 20,
@@ -142,9 +153,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontFamily: "Archivo_700Bold_Italic",
     textAlign: "center",
-    marginBottom:10,
+    marginBottom: 10,
     textShadowColor: "black",
-    textShadowOffset: {width: -1, height: 1},
+    textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 1,
   },
   imageContainer: {
@@ -160,11 +171,10 @@ const styles = StyleSheet.create({
     paddingTop: 3,
   },
   buttonContainer: {
-    marginTop:20,
+    marginTop: 20,
     justifyContent: "flex-end",
     flexGrow: 1,
   },
 });
-
 
 export default PostClimbScreen;
