@@ -113,7 +113,7 @@ const main = async () => {
     passport.authenticate("local"),
     (request, response) => {
       response.json({
-        success: true,
+        user: request.user,
       });
     },
   );
