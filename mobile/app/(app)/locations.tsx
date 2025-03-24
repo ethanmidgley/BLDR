@@ -7,6 +7,7 @@ import { Link } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 import { PostComponent, Post } from "@/components/PostComponent";
 import { useQuery } from "@/hooks/useQuery";
+import { useSession } from "@/context/context";
 
 function setDefaultLocation() {
   //can perform data base read for this later but ill hard code it for now
@@ -35,14 +36,14 @@ const DefaultPoints: Spot[] = [
     id: 1,
   },
   {
-    latitude: 55.89055716863573,     
+    latitude: 55.89055716863573,
     longitude: -4.2864546895367255,
     name: "The Prop Store - The Climbing Academy",
     desc: "A contemporary climbing centre in Maryhill with bouldering walls, a small roped climbing area with auto belays, lead and top-rope facilities, a well-equipped gym, and a training wall.",
     id: 2,
   },
   {
-    latitude: 55.8507889447758, 
+    latitude: 55.8507889447758,
     longitude: -4.30537304721066,
     name: "Glasgow Climbing Centre",
     desc: "One of Scotland's first dedicated indoor climbing gyms, offering lead climbing, top rope routes, auto belays, and a bouldering area, all within a unique and spacious setting.",
@@ -76,6 +77,9 @@ export default function Locations() {
     null,
   );
 
+  const { getUser } = useSession();
+  const user = getUser();
+
   useEffect(() => {
     async function getCurrentLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -103,6 +107,7 @@ export default function Locations() {
 
   //fetch posts to grab climbs
   const { data } = useQuery<Post[]>("/posts/fetch");
+  console.log(data);
 
   const [refresh, setRefresh] = useState(0);
 
@@ -160,9 +165,11 @@ export default function Locations() {
               longitude: post.climb.lon,
             }}
             pinColor={
-              post.climb.level >= 10
-                ? boulderingGrades[10]
-                : boulderingGrades[Math.floor(post.climb.level)]
+              post.user_id === user?.id
+                ? "#EEEEEE"
+                : post.climb.level >= 10
+                  ? boulderingGrades[10]
+                  : boulderingGrades[Math.floor(post.climb.level)]
             }
             onPress={() => {
               setBottomStateSpot(null);
