@@ -252,7 +252,7 @@ export default function Log() {
   useEffect(() => {
     if (initialPressure !== 0 && highestPressure !== 0) {
       const height = (initialPressure * 100 - highestPressure * 100) / p_g;
-      onChangeHeight(height.toFixed(2)); // Update the height state
+      onChangeHeight(parseFloat(height.toFixed(2))); // Update the height state
       // console.log("Height Calculated:", height.toFixed(2));
     }
   }, [initialPressure, highestPressure]);
@@ -480,7 +480,15 @@ export default function Log() {
             {/* <View style={{ paddingHorizontal: 15 }} /> */}
             <View style={styles.button_positioning}>
               <TouchableOpacity
-                style={styles.button_log_submission}
+                style={
+                  recording
+                    ? styles.button_log_submission
+                    : {
+                        //#228B22 -> forrest green
+                        ...styles.button_log_submission,
+                        backgroundColor: "#228B22",
+                      }
+                }
                 onPress={toggleRecording}
               >
                 <Text
