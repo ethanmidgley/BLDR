@@ -66,7 +66,7 @@ export default function Log() {
   );
 
   //this is where the level of the climb is stored
-  const [level, onChangeLevel] = React.useState("easy");
+  const [level, onChangeLevel] = React.useState("");
 
   //these are used for the timer and where the time is stored
   const [time, onChangeTime] = React.useState(0);
@@ -108,7 +108,7 @@ export default function Log() {
     onChangeDay("");
     onChangeMonth("");
     onChangeYear("");
-    onChangeLevel("easy");
+    onChangeLevel("");
     onChangeTime(0);
     onChangeHeight("");
     setHighestPressure(0);
@@ -237,7 +237,7 @@ export default function Log() {
       time_s: time,
       level: level,
       success: completed,
-      angle: maxAngles,
+      angle: maxAngles.maxPitch,
       lat: location?.coords.latitude,
       lon: location?.coords.longitude,
       height: height,
@@ -317,6 +317,7 @@ export default function Log() {
             <TextInput
               style={styles.date}
               onChangeText={onChangeDay}
+              returnKeyType="done"
               value={day}
               placeholder="dd"
               placeholderTextColor="#ddd"
@@ -327,6 +328,7 @@ export default function Log() {
             <TextInput
               style={styles.date}
               onChangeText={onChangeMonth}
+              returnKeyType="done"
               value={month}
               placeholder="mm"
               placeholderTextColor="#ddd"
@@ -337,6 +339,7 @@ export default function Log() {
             <TextInput
               style={styles.date}
               onChangeText={onChangeYear}
+              returnKeyType="done"
               value={year}
               placeholder="yyyy"
               placeholderTextColor="#ddd"
@@ -366,6 +369,7 @@ export default function Log() {
             <TextInput
               onChangeText={(text) => onChangeTime(parseInt(text) || 0)}
               value={time.toString()}
+              returnKeyType="done"
               placeholder="eg. 20"
               placeholderTextColor="#ddd"
               keyboardType="numeric"
@@ -379,6 +383,7 @@ export default function Log() {
             <TextInput
               onChangeText={onChangeHeight}
               value={height}
+              returnKeyType="done"
               placeholder="eg. 5"
               placeholderTextColor="#ddd"
               keyboardType="numeric"
