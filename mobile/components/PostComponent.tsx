@@ -26,6 +26,7 @@ export type Climb = {
 
 export type Post = {
   id: number;
+  user_id: number;
   title: string;
   description: string;
   author: string;
@@ -128,7 +129,6 @@ export function PostComponent({
   const [sendRequest] = useMutation<commentResponse>("/comments/add");
 
   const commentOnPost = async () => {
-
     if (comment === "") {
       Alert.alert("Please write a comment before submitting");
       return;
@@ -154,7 +154,11 @@ export function PostComponent({
       Alert.alert("Failed to post comment. Try again later.");
     } else if (status === "success") {
       setPlaceholder("New comment");
-      comments.push({ id: Infinity, author: "You", content: replyee + comment });
+      comments.push({
+        id: Infinity,
+        author: "You",
+        content: replyee + comment,
+      });
     }
 
     setComment("");
@@ -164,17 +168,18 @@ export function PostComponent({
   const [placeholder, setPlaceholder] = useState("New comment");
 
   const reply = (c: Comment) => {
-    if (c.author === "You"){ // HOW DO I GET THE CURRENT USER ID!!! IF I GET IT PUT || C.AUTHOR === USER ID HERE
+    if (c.author === "You") {
+      // HOW DO I GET THE CURRENT USER ID!!! IF I GET IT PUT || C.AUTHOR === USER ID HERE
       setReplyee("(reply to self) ");
       setPlaceholder("(reply to self) ");
     } else {
       setReplyee("(reply to " + c.author + ") ");
       setPlaceholder("(reply to " + c.author + ") ");
     }
-  }
+  };
 
   return (
-    <View style={{ flex: 1, gap: 10, marginBottom : 10}}>
+    <View style={{ flex: 1, gap: 10, marginBottom: 10 }}>
       <View style={{ flex: 1 }}>
         <Image
           source={`${API_PATH}/image/${image}`}
@@ -212,16 +217,17 @@ export function PostComponent({
             <Text style={styles.headingSmall}>Comments</Text>
 
             {comments.map((c, idx) => (
-            <View key={idx}>
-              <Text style={{ paddingRight: 40 }}>
-                {c.author}: {c.content} 
-              </Text>
-              <TouchableOpacity 
-                onPress = {() => reply(c)}
-                style = {styles.reply_button}>
-                <Text style={{color:"#f00", fontSize:12}}> Reply </Text> 
-              </TouchableOpacity>
-            </View>
+              <View key={idx}>
+                <Text style={{ paddingRight: 40 }}>
+                  {c.author}: {c.content}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => reply(c)}
+                  style={styles.reply_button}
+                >
+                  <Text style={{ color: "#f00", fontSize: 12 }}> Reply </Text>
+                </TouchableOpacity>
+              </View>
             ))}
           </View>
           <View style={{ flexDirection: "row" }}>
@@ -234,10 +240,15 @@ export function PostComponent({
             />
             <Ionicons
               name="close-outline"
-              onPress = {() => setPlaceholder("New comment")}
-              style = {{ alignSelf: "flex-end", padding : 1, marginRight : 10, borderRadius : 5 }}
-              size = {28}
-              color = "black"
+              onPress={() => setPlaceholder("New comment")}
+              style={{
+                alignSelf: "flex-end",
+                padding: 1,
+                marginRight: 10,
+                borderRadius: 5,
+              }}
+              size={28}
+              color="black"
             />
             <Ionicons
               name="send-outline"

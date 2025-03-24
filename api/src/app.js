@@ -122,7 +122,7 @@ const main = async () => {
 
   //add a climb
   app.post("/log/add", isLoggedIn, async (request, response) => {
-    const { type, time_s, level, success, angle, lat, lon, height } =
+    const { type, time_s, level, success, angle, lat, lon, height, date } =
       request.body;
 
     try {
@@ -226,8 +226,7 @@ const main = async () => {
     const result = [];
     try {
       const [posts] = await db.query(
-        "SELECT cbp.id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.angle, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id",
-        [request.user.id],
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.angle, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id",
       );
 
       for (const post of posts) {
@@ -238,6 +237,7 @@ const main = async () => {
 
         result.push({
           id: post.id,
+          user_id: post.user_id,
           title: post.title,
           image: post.image,
           description: post.description,
