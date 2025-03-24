@@ -63,7 +63,6 @@ const PostClimbScreen = () => {
         name: filename,
         type: type,
       });
-      console.log(formData)
       // API redone
       const response = await fetch("https://devweb2024.cis.strath.ac.uk/mhb22136-nodejs/posts/add", {
         method: "POST",
