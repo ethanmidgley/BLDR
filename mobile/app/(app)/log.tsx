@@ -226,7 +226,7 @@ export default function Log() {
     let new_day = Number(day);
     let new_month = Number(month);
     let new_year = Number(year);
-    const proper_date = `${new_day < 10 ? "0" + new_day : String(new_day)}/${new_month < 10 ? "0" + new_month : new_month}/${new_year % 1000}`;
+    const proper_date = `${new_year % 1000}/${new_month < 10 ? "0" + new_month : new_month}/${new_day < 10 ? "0" + new_day : String(new_day)}`;
     Alert.alert(
       "Submitted",
       `You have submitted the following details:\nDate: ${day}/${month}/${year}\nLevel: ${level}\nTime: ${time}\nHeight Reached: ${height}\n Type of Climb: ${climbType}\nExtreme Angle: ${maxAngles.maxPitch}`,
@@ -432,7 +432,9 @@ export default function Log() {
               placeholder="Select an option"
               searchPlaceholder="Search..."
               value={climbType}
-              onChange={(item: { value: React.SetStateAction<string | null>; }) => {
+              onChange={(item: {
+                value: React.SetStateAction<string | null>;
+              }) => {
                 setClimbType(item.value);
               }}
             />

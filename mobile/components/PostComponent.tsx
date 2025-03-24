@@ -143,7 +143,7 @@ export function PostComponent({
     month = Number(month);
     year = Number(year);
 
-    const proper_date = `${day < 10 ? "0" + day : String(day)}/${month < 10 ? "0" + month : month}/${year % 1000}`;
+    const proper_date = `${year % 1000}/${month < 10 ? "0" + month : month}/${day < 10 ? "0" + day : String(day)}`;
 
     const { status } = await sendRequest({
       post_id: id,
@@ -171,7 +171,7 @@ export function PostComponent({
   const username = getUser()?.full_name;
 
   const reply = (c: Comment) => {
-    if (c.author === "You" || c.author === username){
+    if (c.author === "You" || c.author === username) {
       setReplyee("(reply to self) ");
       setPlaceholder("(reply to self) ");
     } else {

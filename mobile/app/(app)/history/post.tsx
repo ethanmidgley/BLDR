@@ -49,7 +49,7 @@ const PostClimbScreen = () => {
       month = Number(month);
       year = Number(year);
 
-      const date = `${day < 10 ? "0" + day : String(day)}/${month < 10 ? "0" + month : month}/${year % 1000}`;
+      const date = `${year % 1000}/${month < 10 ? "0" + month : month}/${day < 10 ? "0" + day : String(day)} `;
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
