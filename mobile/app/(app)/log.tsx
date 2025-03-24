@@ -43,7 +43,7 @@ const dropDownData = [
   { label: "Overhang", value: "overhang" },
   { label: "Jug", value: "jug" },
   { label: "Crimp", value: "crimp" },
-  { label: "Scrabmble", value: "scrabmble" },
+  { label: "Scramble", value: "scramble" },
   { label: "Slopers", value: "slopers" },
   { label: "Pocket", value: "pocket" },
   { label: "Slab", value: "slab" },
@@ -188,7 +188,7 @@ export default function Log() {
     const now = new Date();
     const year = now.getFullYear().toString();
     const month = now.getMonth() + 1;
-    const day = now.getDay();
+    const day = now.getDate();
     const month_str = month < 10 ? "0" + month.toString() : month.toString();
     const day_str = day < 10 ? "0" + day.toString() : day.toString();
 
@@ -234,7 +234,7 @@ export default function Log() {
     );
     sendRequest({
       type: climbType,
-      time_s: time,
+      time: time,
       level: level,
       success: completed,
       angle: maxAngles.maxPitch,

@@ -354,6 +354,7 @@ export default function Skills() {
               >
                 Key points:
               </Text>
+
               {selectedSkill.key_points.map((point, idx) => (
                 <Text key={idx}>
                   {idx + 1}. {point}

@@ -122,8 +122,10 @@ const main = async () => {
 
   //add a climb
   app.post("/log/add", isLoggedIn, async (request, response) => {
-    const { type, time_s, level, success, angle, lat, lon, height } =
+    const { type, time, level, success, angle, lat, lon, height, date } =
       request.body;
+      console.log(request.user.id);
+      console.log(request.body);
 
     try {
       const [result] = await db.execute(
@@ -131,7 +133,7 @@ const main = async () => {
         [
           request.user.id,
           type,
-          time_s,
+          time,
           level,
           success,
           angle,
@@ -148,7 +150,7 @@ const main = async () => {
             id: result.insertId,
             user_id: request.user.id,
             type: type,
-            time: time_s,
+            time: time,
             level: level,
             success: success,
             angle: angle,
@@ -159,7 +161,8 @@ const main = async () => {
           },
         },
       });
-    } catch {
+    } catch (error) {
+      console.log(error);
       response.status(500).send({ error: "failed to save to user log" });
       return;
     }
@@ -175,7 +178,8 @@ const main = async () => {
         [request.user.id],
       );
       response.json({ data: result });
-    } catch {
+    } catch (error) {
+      console.log(error);
       response.status(500).send({ error: "failed to read user log" });
       return;
     }
