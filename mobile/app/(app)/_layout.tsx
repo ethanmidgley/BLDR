@@ -90,7 +90,7 @@ export default function TabLayout() {
           headerRight: () => (
             <AntDesign
               style={{ marginRight: 16 }}
-              onPress={confirmSignOut}
+              onPress={confirmSignOut} //maybe add small vibration here?!?!
               name="logout"
               size={24}
               color="black"
