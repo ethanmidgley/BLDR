@@ -38,6 +38,7 @@ export default function Login() {
           placeholder="e-mail"
           placeholderTextColor="#ddd"
           keyboardType="email-address"
+          autoCapitalize="none"
         />
 
         <TextInput
@@ -46,7 +47,9 @@ export default function Login() {
           onChangeText={on_change_password}
           placeholder="password"
           placeholderTextColor="#ddd"
-          keyboardType="visible-password"
+          secureTextEntry={true} 
+          keyboardType="default" 
+          autoCapitalize="none"  
         />
 
         <TouchableOpacity style={styles.button} onPress={submitted}>
