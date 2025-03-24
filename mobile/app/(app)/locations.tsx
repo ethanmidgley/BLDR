@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Alert, ScrollView } from "react-native";
+import { View, Text, Alert, ScrollView, TouchableOpacity} from "react-native";
+import { Image } from "expo-image";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { styles } from "../../constants/style";
 import * as Location from "expo-location";
@@ -19,9 +20,20 @@ function setDefaultLocation() {
   };
 }
 
+const spot_images = {
+  newsroom: require("../../assets/images/locales/the-newsroom.jpg"),
+  prop_store: require("../../assets/images/locales/the-prop-store.jpg"),
+  glasgow_climbing_centre: require("../../assets/images/locales/glasgow-climbing-centre.jpg"),
+  cuningar: require("../../assets/images/locales/cuningar.jpg"),
+  climbzone: require("../../assets/images/locales/climbzone.jpg"),
+};
+
+type spot_image_key = keyof typeof spot_images;
+
 type Spot = {
   latitude: number;
   longitude: number;
+  image: spot_image_key;
   name: string;
   desc: string;
   id: number;
@@ -31,6 +43,7 @@ const DefaultPoints: Spot[] = [
   {
     latitude: 55.85065133261212,
     longitude: -4.281816013493083,
+    image: "newsroom",
     name: "The Newsroom - The Climbing Academy",
     desc: "A large, welcoming bouldering centre close to Glasgow's centre, featuring a kids' climbing area, endurance circuits, gym equipment, and a stretching area.",
     id: 1,
@@ -38,6 +51,7 @@ const DefaultPoints: Spot[] = [
   {
     latitude: 55.89055716863573,
     longitude: -4.2864546895367255,
+    image: "prop_store",
     name: "The Prop Store - The Climbing Academy",
     desc: "A contemporary climbing centre in Maryhill with bouldering walls, a small roped climbing area with auto belays, lead and top-rope facilities, a well-equipped gym, and a training wall.",
     id: 2,
@@ -45,6 +59,7 @@ const DefaultPoints: Spot[] = [
   {
     latitude: 55.8507889447758,
     longitude: -4.30537304721066,
+    image: "glasgow_climbing_centre",
     name: "Glasgow Climbing Centre",
     desc: "One of Scotland's first dedicated indoor climbing gyms, offering lead climbing, top rope routes, auto belays, and a bouldering area, all within a unique and spacious setting.",
     id: 3,
@@ -52,6 +67,7 @@ const DefaultPoints: Spot[] = [
   {
     latitude: 55.84850575031594,
     longitude: -4.197678578040989,
+    image: "cuningar",
     name: "Cuningar Bouldering",
     desc: "The Cuningar Loop boulders are designed to introduce new climbers to the sport whilst providing challenges for the more experienced climber.",
     id: 4,
@@ -59,13 +75,11 @@ const DefaultPoints: Spot[] = [
   {
     latitude: 55.84850575031594,
     longitude: -4.374146466629311,
+    image: "climbzone",
     name: "Climbzone",
     desc: "Climbzone, Braehead is Glasgow’s premier indoor adventure park. A perfect playground for all ages and thrill seekers and home to the UK’s tallest indoor slide!",
     id: 5,
   },
-
-  // Cuningar Bouldering 55.84850575031594, -4.197678578040989
-  // Climbzone 55.8839529150199, -4.374146466629311
 ];
 
 const boulderingGrades: string[] = [
@@ -114,13 +128,6 @@ export default function Locations() {
   //marker information state
   const [bottomStateSpot, setBottomStateSpot] = useState<Spot | null>(null);
   const [bottomStatePost, setBottomStatePost] = useState<Post | null>(null);
-
-  // const handleMarkerPress = () => {
-  //   markerRef
-  //   setBottomView(!showBottomView)
-  //
-  // }
-  //
 
   //fetch posts to grab climbs
   const { data } = useQuery<Post[]>("/posts/fetch");
@@ -203,7 +210,7 @@ export default function Locations() {
       </MapView>
       {/*two states may be null but they won't be active at the same time*/}
       {bottomStateSpot ? (
-        <View style={styles.bottomView}>
+        <View style={{ ...styles.bottomView, height: "60%" }}>
           <View
             style={{
               backgroundColor: "#fff",
@@ -213,7 +220,7 @@ export default function Locations() {
               alignContent: "center",
             }}
           >
-            <Text style={{ fontSize: 20 }}>{bottomStateSpot.name}</Text>
+            <Text style={ styles.headingMedium }>{bottomStateSpot.name}</Text>
             <Entypo
               name="cross"
               size={24}
@@ -221,15 +228,29 @@ export default function Locations() {
               onPress={() => setBottomStateSpot(null)}
             />
           </View>
-          <View style={{ padding: 10 }}>
-            <Text>{bottomStateSpot.desc + "\n"}</Text>
-            <Link
-              style={{ color: "blue" }}
-              href={`https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${bottomStateSpot.latitude},${bottomStateSpot.longitude}`}
+          <ScrollView style={{ padding: 10 }}>
+            <Image
+              source={bottomStateSpot.image ? spot_images[bottomStateSpot.image] : spot_images.newsroom}
+              contentFit="cover"
+              style={{ width: "100%", height: 300 }}
+            />
+            <Text style = {{marginTop: 20, textAlign: "center", ...styles.text}}>{bottomStateSpot.desc + "\n"}</Text>
+           <TouchableOpacity
+              style={{
+                backgroundColor: "#f00",
+                justifyContent: "center",
+                borderRadius: 5,
+                paddingVertical: 8,
+              }}
             >
-              Directions
-            </Link>
-          </View>
+              <Link
+                href={`https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${bottomStateSpot.latitude},${bottomStateSpot.longitude}`}
+                style={styles.button_text}
+              >
+                Get directions
+              </Link>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       ) : bottomStatePost ? (
         <View style={{ ...styles.bottomView, height: "60%" }}>
