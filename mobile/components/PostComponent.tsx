@@ -14,6 +14,7 @@ import { Image } from "expo-image";
 import Wrapper from "./Wrapper";
 import { styles } from "@/constants/style";
 import { Link } from "expo-router";
+import { useSession } from "@/context/context";
 
 export type Climb = {
   time: number;
@@ -166,10 +167,11 @@ export function PostComponent({
 
   const [replyee, setReplyee] = useState("");
   const [placeholder, setPlaceholder] = useState("New comment");
+  const { getUser } = useSession();
+  const username = getUser()?.full_name;
 
   const reply = (c: Comment) => {
-    if (c.author === "You") {
-      // HOW DO I GET THE CURRENT USER ID!!! IF I GET IT PUT || C.AUTHOR === USER ID HERE
+    if (c.author === "You" || c.author === username){
       setReplyee("(reply to self) ");
       setPlaceholder("(reply to self) ");
     } else {

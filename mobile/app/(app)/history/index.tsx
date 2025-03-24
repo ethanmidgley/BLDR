@@ -17,6 +17,7 @@ type Climb = {
   lon: number;
   height: number;
   date: Date;
+  posted: boolean;
 };
 
 function ClimbComponent(climb: Climb) {
@@ -39,15 +40,22 @@ function ClimbComponent(climb: Climb) {
       >
         Location
       </Link>
-      <Button
-        title="Post"
-        onPress={() =>
-          router.push({
-            pathname: "/history/post",
-            params: { climb_id: climb.id },
-          })
-        }
-      />
+      {
+        !climb.posted ? (
+          <Button
+          title="Post"
+          onPress={() => {
+            Vibration.vibrate(50); 
+            router.push({
+              pathname: "/history/post", 
+              params: {
+                climb_id: climb.id, 
+              },
+            });
+          }}
+        />
+        ): null
+      }
     </View>
   );
 }
