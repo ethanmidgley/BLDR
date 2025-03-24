@@ -1,5 +1,5 @@
-import { router, Tabs, useLocalSearchParams, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import { router, Tabs, usePathname } from "expo-router";
+import React from "react";
 import { Alert, Button, Platform, View } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { Text } from "react-native";
