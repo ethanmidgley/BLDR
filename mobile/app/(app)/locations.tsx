@@ -49,6 +49,23 @@ const DefaultPoints: Spot[] = [
     desc: "One of Scotland's first dedicated indoor climbing gyms, offering lead climbing, top rope routes, auto belays, and a bouldering area, all within a unique and spacious setting.",
     id: 3,
   },
+  {
+    latitude: 55.84850575031594,
+    longitude: -4.197678578040989,
+    name: "Cuningar Bouldering",
+    desc: "The Cuningar Loop boulders are designed to introduce new climbers to the sport whilst providing challenges for the more experienced climber.",
+    id: 4,
+  },
+  {
+    latitude: 55.84850575031594,
+    longitude: -4.374146466629311,
+    name: "Climbzone",
+    desc: "Climbzone, Braehead is Glasgow’s premier indoor adventure park. A perfect playground for all ages and thrill seekers and home to the UK’s tallest indoor slide!",
+    id: 5,
+  },
+
+  // Cuningar Bouldering 55.84850575031594, -4.197678578040989
+  // Climbzone 55.8839529150199, -4.374146466629311
 ];
 
 const boulderingGrades: string[] = [
