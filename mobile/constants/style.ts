@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   },
 
   headingSmall: {
-    fontSize: 17,
+    fontSize: 22,
     fontFamily: "Archivo_400Regular",
   },
 
@@ -140,14 +140,6 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     backgroundColor: "#f00",
-  },
-
-  history_container: {
-    padding: 10,
-    fontSize: 25,
-    borderWidth: 5,
-    borderColor: "red",
-    backgroundColor: "#ffffff",
   },
 
   date: {

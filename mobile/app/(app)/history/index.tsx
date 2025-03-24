@@ -1,9 +1,12 @@
+import StatsBar from "@/components/StatsBar";
+import Wrapper from "@/components/Wrapper";
 import { styles } from "@/constants/style";
 import { useQuery } from "@/hooks/useQuery";
 import { Link, useRouter } from "expo-router";
-import React from "react";
-import { Vibration } from "react-native";
+import React, { useState } from "react";
+import { TouchableOpacity, Vibration } from "react-native";
 import { Button, FlatList, Text, View } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
 type Climb = {
   id: number;
@@ -24,66 +27,77 @@ function ClimbComponent(climb: Climb) {
   const router = useRouter();
 
   return (
-    <View key={climb.id} style={styles.history_container}>
-      <Text>Level: v{climb.level}</Text>
-      <Text>Time: {climb.time} seconds</Text>
-      <Text>Height: {climb.height} meters</Text>
+    <View key={climb.id} style={{ marginBottom: 20, gap: 10 }}>
+      <View style={{ height: 200, width: "100%" }}>
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: climb.lat,
+            longitude: climb.lon,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          }}
+          zoomEnabled={false}
+          zoomTapEnabled={false}
+          rotateEnabled={false}
+          scrollEnabled={false}
+        >
+          <Marker coordinate={{ latitude: climb.lat, longitude: climb.lon }} />
+        </MapView>
+      </View>
+      <Text style={styles.headingSmall}>
+        {new Date(climb.date).toDateString()}
+      </Text>
 
-      <Text>Completed: {climb.success ? "Yes" : "No"}</Text>
+      <StatsBar keys={["level", "type", "time"]} climb={climb} />
+      <StatsBar keys={["angle", "success", "height"]} climb={climb} />
 
-      <Text>Most Extreme Angle: {climb.angle}</Text>
-
-      {/*TODO: create a link that takes the user to that point on our map */}
-      <Link
-        style={{ color: "blue" }}
-        href={`https://www.google.com/maps/dir/?api=1&destination=${climb.lat},${climb.lon}`}
-      >
-        Location
-      </Link>
-      {
-        !climb.posted ? (
-          <Button
-          title="Post"
+      {!climb.posted ? (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#f00",
+            justifyContent: "center",
+            borderRadius: 5,
+            paddingVertical: 8,
+          }}
           onPress={() => {
-            Vibration.vibrate(50); 
+            Vibration.vibrate(50);
             router.push({
-              pathname: "/history/post", 
+              pathname: "/history/post",
               params: {
-                climb_id: climb.id, 
+                climb_id: climb.id,
               },
             });
           }}
-        />
-        ): null
-      }
+        >
+          <Text style={styles.button_text}>Post</Text>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
 
 export default function History() {
-  const { data } = useQuery<{ data: Climb[] }>("/log/fetch");
-  const router = useRouter();
-  console.log("HHDH", data);
+  const { data, refetch } = useQuery<{ data: Climb[] }>("/log/fetch");
+  const [refreshing] = useState<boolean>(false);
 
   return (
-    <View>
-      <Button
-        title="Post"
-        onPress={() => {
-          Vibration.vibrate(50);
-          router.push({
-            pathname: "/history/post", 
-            params: { climb_id: 1 },
-          });
-        }}
-        
-      />
+    <Wrapper>
       <FlatList
+        ListEmptyComponent={() => (
+          <Text>Log a climb to see it in your history</Text>
+        )}
+        ListHeaderComponent={() => (
+          <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
+            Your previous climbs
+          </Text>
+        )}
         style={{}}
         data={data?.data}
-        ListFooterComponent={<View style={{ width: 1, height: 150 }}></View>}
+        refreshing={refreshing}
+        onRefresh={refetch}
         renderItem={(d) => <ClimbComponent {...d.item} />}
       />
-    </View>
+    </Wrapper>
   );
 }

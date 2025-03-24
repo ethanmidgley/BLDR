@@ -172,7 +172,7 @@ const main = async () => {
 
     try {
       const [result] = await db.execute(
-        "SELECT *, case when exists (select 1 from `CS317-bldr-posts` p where p.climb_id=c.id) then 1 else 0 end as posted FROM `CS317-bldr-climbs` c WHERE user_id = ?;",
+        "SELECT *, case when exists (select 1 from `CS317-bldr-posts` p where p.climb_id=c.id) then 1 else 0 end as posted FROM `CS317-bldr-climbs` c WHERE user_id = ? ORDER BY c.date DESC, c.id DESC;",
         [request.user.id],
       );
       response.json({ data: result });

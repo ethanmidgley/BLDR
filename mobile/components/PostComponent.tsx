@@ -15,12 +15,15 @@ import Wrapper from "./Wrapper";
 import { styles } from "@/constants/style";
 import { Link } from "expo-router";
 import { useSession } from "@/context/context";
+import StatsBar from "./StatsBar";
 
 export type Climb = {
   time: number;
   level: number;
+  height: number;
   angle: number;
   type: string;
+  success: boolean;
   lat: number;
   lon: number;
 };
@@ -48,72 +51,6 @@ export type commentResponse = {
 
 type PostComponentProps = Post & {
   fullWidth?: boolean;
-};
-
-const StatsBar = (stats: Climb) => {
-  const style = StyleSheet.create({
-    box: {
-      flexDirection: "column",
-      borderColor: "#000",
-      justifyContent: "center",
-      flex: 1,
-      alignItems: "center",
-    },
-    text: {
-      textAlign: "center",
-    },
-  });
-  return (
-    <View style={{ flexDirection: "row", width: "100%" }}>
-      <View
-        style={[
-          style.box,
-          {
-            borderRightWidth: 0.5,
-          },
-        ]}
-      >
-        <Text style={style.text}>Level</Text>
-        <Text style={style.text}>{stats.level}</Text>
-      </View>
-
-      <View
-        style={[
-          style.box,
-          {
-            borderLeftWidth: 0.5,
-            borderRightWidth: 0.5,
-          },
-        ]}
-      >
-        <Text style={style.text}>Type</Text>
-        <Text style={style.text}>{stats.type}</Text>
-      </View>
-      <View
-        style={[
-          style.box,
-          {
-            borderRightWidth: 0.5,
-            borderLeftWidth: 0.5,
-          },
-        ]}
-      >
-        <Text style={style.text}>Time</Text>
-        <Text style={style.text}>{stats.time}s</Text>
-      </View>
-      <View
-        style={[
-          style.box,
-          {
-            borderLeftWidth: 0.5,
-          },
-        ]}
-      >
-        <Text style={style.text}>Extreme Angle</Text>
-        <Text style={style.text}>{stats.angle}°</Text>
-      </View>
-    </View>
-  );
 };
 
 export function PostComponent({
@@ -196,7 +133,7 @@ export function PostComponent({
             {title} - {author}
           </Text>
           <Text style={{ textAlign: "justify" }}>{description}</Text>
-          <StatsBar {...climb} />
+          <StatsBar climb={climb} />
 
           <View>
             <TouchableOpacity
@@ -243,7 +180,11 @@ export function PostComponent({
             />
             <Ionicons
               name="close-outline"
-              onPress={() => { setPlaceholder("New comment"); setReplyee(""); setComment(""); }}
+              onPress={() => {
+                setPlaceholder("New comment");
+                setReplyee("");
+                setComment("");
+              }}
               style={{
                 alignSelf: "flex-end",
                 padding: 1,
