@@ -124,8 +124,6 @@ const main = async () => {
   app.post("/log/add", isLoggedIn, async (request, response) => {
     const { type, time, level, success, angle, lat, lon, height, date } =
       request.body;
-    console.log(request.user.id);
-    console.log(request.body);
 
     try {
       const [result] = await db.execute(

@@ -128,6 +128,8 @@ export function PostComponent({
 }: PostComponentProps) {
   const [comment, setComment] = useState<string>("");
   const [sendRequest] = useMutation<commentResponse>("/comments/add");
+  const { getUser } = useSession();
+  const username = getUser()?.full_name as string;
 
   const commentOnPost = async () => {
     if (comment === "") {
@@ -154,12 +156,13 @@ export function PostComponent({
     if (status === "error") {
       Alert.alert("Failed to post comment. Try again later.");
     } else if (status === "success") {
-      setPlaceholder("New comment");
       comments.push({
         id: Infinity,
-        author: "You",
+        author: username,
         content: replyee + comment,
       });
+      setPlaceholder("New comment");
+      setReplyee("");
     }
 
     setComment("");
@@ -167,11 +170,9 @@ export function PostComponent({
 
   const [replyee, setReplyee] = useState("");
   const [placeholder, setPlaceholder] = useState("New comment");
-  const { getUser } = useSession();
-  const username = getUser()?.full_name;
 
   const reply = (c: Comment) => {
-    if (c.author === "You" || c.author === username) {
+    if (c.author === username) {
       setReplyee("(reply to self) ");
       setPlaceholder("(reply to self) ");
     } else {
@@ -237,12 +238,12 @@ export function PostComponent({
               placeholder={placeholder}
               value={comment}
               onChangeText={(c) => setComment(c)}
-              placeholderTextColor={"#ddd"}
+              placeholderTextColor={"#A9A9A9"}
               style={{ paddingVertical: 4, flex: 3 }}
             />
             <Ionicons
               name="close-outline"
-              onPress={() => setPlaceholder("New comment")}
+              onPress={() => { setPlaceholder("New comment"); setReplyee(""); setComment(""); }}
               style={{
                 alignSelf: "flex-end",
                 padding: 1,
