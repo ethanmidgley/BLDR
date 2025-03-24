@@ -40,18 +40,18 @@ export type logResponse = {
 };
 
 const dropDownData = [
-  { label: "Overhang", value: "overhang" },
-  { label: "Jug", value: "jug" },
-  { label: "Crimp", value: "crimp" },
-  { label: "Scramble", value: "scramble" },
-  { label: "Slopers", value: "slopers" },
-  { label: "Pocket", value: "pocket" },
-  { label: "Slab", value: "slab" },
-  { label: "Footholds", value: "footholds" },
-  { label: "Vertical", value: "vertical" },
-  { label: "Roof", value: "roof" },
-  { label: "Mantle", value: "mantle" },
-  { label: "Outdoor", value: "outdoor" },
+  { label: "Overhang", value: "Overhang" },
+  { label: "Jug", value: "Jug" },
+  { label: "Crimp", value: "Crimp" },
+  { label: "Scramble", value: "Scramble" },
+  { label: "Slopers", value: "Slopers" },
+  { label: "Pocket", value: "Pocket" },
+  { label: "Slab", value: "Slab" },
+  { label: "Footholds", value: "Footholds" },
+  { label: "Vertical", value: "Vertical" },
+  { label: "Roof", value: "Roof" },
+  { label: "Mantle", value: "Mantle" },
+  { label: "Outdoor", value: "Outdoor" },
 ];
 
 export default function Log() {
