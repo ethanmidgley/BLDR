@@ -88,6 +88,12 @@ export const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 
+  climb_info_spacing: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 15,
+  },
+
   button_log_page: {
     // width: "100%",
     height: 50,
@@ -100,11 +106,16 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  button_positioning: {
+    flex: 1,
+    height: "30%",
+  },
+
   button_log_submission: {
     width: "100%",
     height: "30%",
     marginVertical: 20,
-    borderRadius: 9,
+    borderRadius: 10,
     justifyContent: "center",
     backgroundColor: "#f00",
   },
@@ -134,5 +145,54 @@ export const styles = StyleSheet.create({
   picker: {
     height: 60,
     width: 250,
+  },
+
+  dropdown: {
+    width: 190,
+    height: 50,
+    borderColor: "gray",
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+
+  placeholderStyle: {
+    fontSize: 16,
+  },
+
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+
+  selectedOption: {
+    marginTop: 20,
+    fontSize: 18,
+  },
+
+  //NOTE: may cause merge conflict due to line positioning
+
+  headingLarge: {
+    fontSize: 40,
+    fontFamily: "Archivo_700Bold_Italic",
+  },
+
+  headingMedium: {
+    fontFamily: "Archivo_500Medium",
+    fontSize: 30,
+  },
+
+  headingSmall: {
+    fontSize: 17,
+    fontFamily: "Archivo_400Regular",
   },
 });

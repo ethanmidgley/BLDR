@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   EventSubscription,
 } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import { styles } from "@/constants/style";
 import { useQuery } from "../../hooks/useQuery";
@@ -36,6 +37,21 @@ export type logResponse = {
   success?: boolean;
   message?: string;
 };
+
+const dropDownData = [
+  { label: "Overhang", value: "overhang" },
+  { label: "Jug", value: "jug" },
+  { label: "Crimp", value: "crimp" },
+  { label: "Scrabmble", value: "scrabmble" },
+  { label: "Slopers", value: "slopers" },
+  { label: "Pocket", value: "pocket" },
+  { label: "Slab", value: "slab" },
+  { label: "Footholds", value: "footholds" },
+  { label: "Vertical", value: "vertical" },
+  { label: "Roof", value: "roof" },
+  { label: "Mantle", value: "mantle" },
+  { label: "Outdoor", value: "outdoor" },
+];
 
 export default function Log() {
   // these are the usestates used for date
@@ -74,7 +90,7 @@ export default function Log() {
 
   const [completed, toggleComplete] = useState(false);
 
-  const [climb, setClimb] = useState<string | null>(null);
+  const [climbType, setClimbType] = useState<string | null>(null);
 
   //puts caps on day, month, year so they cant put innacurate dates
   const capValues = () => {
@@ -99,7 +115,7 @@ export default function Log() {
     setInitialPressure(0);
     setMaxAngles({ maxPitch: 0, maxRoll: 0 });
     toggleComplete(false);
-    setClimb(null);
+    setClimbType(null);
   };
 
   //toggles between recording and not recording the values
@@ -117,6 +133,7 @@ export default function Log() {
   //starts recording the presure of the persons location
   const startRecording = () => {
     // Remove any existing listener before adding a new one
+
     if (subscription) {
       subscription.remove(); // Remove the old subscription
       setSubscription(null); // Clear the previous subscription state
@@ -166,10 +183,23 @@ export default function Log() {
       clearInterval(timerInterval); // Clear the interval
       setTimerInterval(null); // Reset the interval state
     }
+
+    //data and time variables
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = now.getMonth() + 1;
+    const day = now.getDay();
+    const month_str = month < 10 ? "0" + month.toString() : month.toString();
+    const day_str = day < 10 ? "0" + day.toString() : day.toString();
+
+    onChangeDay(day_str);
+    onChangeMonth(month_str);
+    onChangeYear(year);
   };
 
+  //TODO: add better validation to this
   const try_submit = () => {
-    if (!(climb === null)) {
+    if (!(climbType === null)) {
       if (!(level === null)) {
         if (!(location === null)) {
           if (!(height === null)) {
@@ -203,7 +233,7 @@ export default function Log() {
       [{ text: "OK", onPress: () => resetValues() }],
     );
     sendRequest({
-      type: climb,
+      type: climbType,
       time_s: time,
       level: level,
       success: completed,
@@ -272,13 +302,17 @@ export default function Log() {
 
   return (
     <Wrapper>
-      <Image
-        source={require("../../assets/images/logo.png")}
-        style={styles.image_record}
-      />
-      <View style={{ padding: 5 }}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: 25 }}>Date: </Text>
+      {/* <Image */}
+      {/*   source={require("../../assets/images/logo.png")} */}
+      {/*   style={styles.image_record} */}
+      {/* /> */}
+      <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
+        Logged Climb Values
+      </Text>
+      <View style={{ padding: 5, paddingVertical: 20 }}>
+        {/*Date view*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={styles.headingSmall}>Date: </Text>
           <TextInput
             style={styles.date}
             onChangeText={onChangeDay}
@@ -310,19 +344,22 @@ export default function Log() {
             onEndEditing={capValues}
           />
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Current Location:</Text>
+        {/*User Location view*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={styles.headingSmall}>Location:</Text>
           {location ? (
-            <Text style={{ fontSize: 15 }}>
-              {location.coords.latitude} {"\n"}
-              {location.coords.longitude}
+            <Text style={styles.headingSmall}>
+              {location.coords.latitude.toFixed(5)}
+              {"\n"}
+              {location.coords.longitude.toFixed(5)}
             </Text>
           ) : (
-            <Text style={{ fontSize: 15 }}>Fetching {"\n"}location...</Text>
+            <Text style={styles.headingSmall}>Fetching {"\n"}location...</Text>
           )}
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Time(s)</Text>
+        {/*TIMER VIEW*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={styles.headingSmall}>Time (s)</Text>
           <TextInput
             onChangeText={(text) => onChangeTime(parseInt(text) || 0)}
             value={time.toString()}
@@ -331,8 +368,11 @@ export default function Log() {
             keyboardType="numeric"
           />
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Height(m)</Text>
+        {/*Height recording*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={{ ...styles.headingSmall, paddingRight: 15 }}>
+            Height (m)
+          </Text>
           <TextInput
             onChangeText={onChangeHeight}
             value={height}
@@ -341,42 +381,55 @@ export default function Log() {
             keyboardType="numeric"
           />
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Level</Text>
-          <Picker
-            selectedValue={level}
-            onValueChange={onChangeLevel}
-            style={styles.picker}
-          >
-            <Picker.Item label="Easy" value="red" />
-            <Picker.Item label="Medium" value="medium" />
-            <Picker.Item label="Hard" value="hard" />
-            <Picker.Item label="Expert" value="expert" />
-          </Picker>
+        {/*TODO:Level record, allow user to enter full floating point num*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={{ ...styles.headingSmall, paddingRight: 20 }}>
+            Level
+          </Text>
+          <TextInput
+            // need to make this shit regulate the input to 1dp, could just validate on submit for now
+            value={level}
+            placeholder="eg. 3.4, 10, 7.0"
+            placeholderTextColor="#ddd"
+            keyboardType="numeric"
+            returnKeyType="done"
+            onChangeText={onChangeLevel}
+            onEndEditing={(event) => {
+              const num = parseFloat(event.nativeEvent.text) || 0;
+              if (num === Math.floor(num)) {
+                //parse only the integer if there are no decimal points following
+                onChangeLevel(num.toString());
+              } else {
+                onChangeLevel(num.toFixed(1));
+              }
+            }}
+          />
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Type of Climb</Text>
-          <Picker
-            selectedValue={climb}
-            onValueChange={setClimb}
-            style={styles.picker}
-          >
-            <Picker.Item label="Overhang" value="overhang" />
-            <Picker.Item label="Jug" value="jug" />
-            <Picker.Item label="Crimp" value="crimp" />
-            <Picker.Item label="Scramble" value="scramble" />
-            <Picker.Item label="Outdoor" value="outdoor" />
-            <Picker.Item label="Slopers" value="slopers" />
-            <Picker.Item label="Pocket" value="pocket" />
-            <Picker.Item label="Slab" value="slab" />
-            <Picker.Item label="Footholds" value="footholds" />
-            <Picker.Item label="Vertical" value="vertical" />
-            <Picker.Item label="Roof" value="roof" />
-            <Picker.Item label="Mantle" value="mantle" />
-          </Picker>
+        {/*DROPDOWN*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={{ ...styles.headingSmall, paddingRight: 20 }}>Type</Text>
+          <Dropdown
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={dropDownData}
+            search
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder="Select an option"
+            searchPlaceholder="Search..."
+            value={climbType}
+            onChange={(item) => {
+              setClimbType(item.value);
+            }}
+          />
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Extreme Angles (°)</Text>
+        {/*ANGLE SELECTOR*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={styles.headingSmall}>Extreme Angles (°)</Text>
           <TextInput
             onChangeText={(text) =>
               setMaxAngles((prev) => ({
@@ -390,32 +443,39 @@ export default function Log() {
             keyboardType="numeric"
           />
         </View>
-        <View style={{ flexDirection: "row", paddingTop: 20 }}>
-          <Text style={{ fontSize: 25 }}>Climb Completed </Text>
+        {/*climb complete checkbox*/}
+        <View style={styles.climb_info_spacing}>
+          <Text style={styles.headingSmall}>Climb Completed </Text>
           <Checkbox value={completed} onValueChange={toggleComplete} />
         </View>
         <View
           style={{
-            width: 100,
-            paddingTop: 20,
-            paddingRight: 10,
-            flexDirection: "row",
+            ...styles.climb_info_spacing,
+            width: "100%",
+            height: "50%",
+            columnGap: 20,
           }}
         >
-          <TouchableOpacity
-            style={styles.button_log_submission}
-            onPress={try_submit}
-          >
-            <Text style={styles.button_text}> Submit </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button_log_submission}
-            onPress={toggleRecording}
-          >
-            <Text style={styles.button_text}>
-              {recording ? "Stop" : "Start"}
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.button_positioning}>
+            <TouchableOpacity
+              style={styles.button_log_submission}
+              onPress={try_submit}
+            >
+              {/*TODO:IDK why this is offset so low, but should be an easy fix later*/}
+              <Text style={styles.button_text}> Submit </Text>
+            </TouchableOpacity>
+          </View>
+          {/* <View style={{ paddingHorizontal: 15 }} /> */}
+          <View style={styles.button_positioning}>
+            <TouchableOpacity
+              style={styles.button_log_submission}
+              onPress={toggleRecording}
+            >
+              <Text style={styles.button_text}>
+                {recording ? "Stop" : "Start"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Wrapper>
