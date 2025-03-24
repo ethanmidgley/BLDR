@@ -381,8 +381,8 @@ export default function Log() {
               Height (m)
             </Text>
             <TextInput
-              onChangeText={onChangeHeight}
-              value={height}
+              onChangeText={(text) => onChangeHeight(parseInt(text) || 0)}
+              value={height.toString()}
               returnKeyType="done"
               placeholder="eg. 5"
               placeholderTextColor="#ddd"
@@ -396,19 +396,19 @@ export default function Log() {
             </Text>
             <TextInput
               // need to make this shit regulate the input to 1dp, could just validate on submit for now
-              value={level}
+              value={level.toString()}
               placeholder="eg. 3.4, 10, 7.0"
               placeholderTextColor="#ddd"
               keyboardType="numeric"
               returnKeyType="done"
-              onChangeText={onChangeLevel}
+              onChangeText={(text) => onChangeLevel(parseInt(text) || 0)}
               onEndEditing={(event) => {
                 const num = parseFloat(event.nativeEvent.text) || 0;
                 if (num === Math.floor(num)) {
                   //parse only the integer if there are no decimal points following
-                  onChangeLevel(num.toString());
+                  onChangeLevel(num);
                 } else {
-                  onChangeLevel(num.toFixed(1));
+                  onChangeLevel(num);
                 }
               }}
             />
@@ -432,7 +432,7 @@ export default function Log() {
               placeholder="Select an option"
               searchPlaceholder="Search..."
               value={climbType}
-              onChange={(item) => {
+              onChange={(item: { value: React.SetStateAction<string | null>; }) => {
                 setClimbType(item.value);
               }}
             />
