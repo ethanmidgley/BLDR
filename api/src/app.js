@@ -174,12 +174,11 @@ const main = async () => {
 
     try {
       const [result] = await db.execute(
-        "SELECT * FROM `CS317-bldr-climbs` WHERE user_id=?",
+        "SELECT *, case when exists (select 1 from `CS317-bldr-posts` p where p.climb_id=c.id) then 1 else 0 end as posted FROM `CS317-bldr-climbs` c WHERE user_id = ?;",
         [request.user.id],
       );
       response.json({ data: result });
-    } catch (error) {
-      console.log(error);
+    } catch {
       response.status(500).send({ error: "failed to read user log" });
       return;
     }
