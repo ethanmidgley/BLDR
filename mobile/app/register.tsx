@@ -101,6 +101,7 @@ export default function Register() {
           placeholder="e-mail"
           placeholderTextColor="#ddd"
           keyboardType="email-address"
+          autoCapitalize="none"
         />
 
         <TextInput
@@ -109,7 +110,9 @@ export default function Register() {
           onChangeText={on_change_password}
           placeholder="password"
           placeholderTextColor="#ddd"
-          keyboardType="visible-password"
+          keyboardType="default"
+          autoCapitalize="none"
+          secureTextEntry={true}
         />
 
         <TextInput
@@ -118,8 +121,11 @@ export default function Register() {
           onChangeText={on_change_confirm_password}
           placeholder="confirm password"
           placeholderTextColor="#ddd"
-          keyboardType="visible-password"
+          // keyboardType="visible-password"
+          secureTextEntry={true}
+          autoCapitalize="none"
         />
+
 
         <TouchableOpacity
           style={styles.button}
