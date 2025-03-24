@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams } from "expo-router";
+import { API_PATH } from "@/hooks/useApi";
 
 const PostClimbScreen = () => {
   const { climb_id } = useLocalSearchParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uri, setUri] = useState<string | null>(null);
-
 
   const handleChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -33,7 +33,10 @@ const PostClimbScreen = () => {
 
   const handlePost = async () => {
     if (!title || !description || !uri) {
-      Alert.alert("Missing Info", "Please fill in all fields and select an image.");
+      Alert.alert(
+        "Missing Info",
+        "Please fill in all fields and select an image.",
+      );
       return;
     }
 
@@ -51,7 +54,7 @@ const PostClimbScreen = () => {
       formData.append("title", title);
       formData.append("description", description);
       formData.append("climb_id", climb_id);
-      formData.append("date",date)
+      formData.append("date", date);
       //image upload stuff
       const localUri = uri;
       const filename = localUri.split("/").pop();
@@ -64,14 +67,14 @@ const PostClimbScreen = () => {
         type: type,
       });
       // API redone
-      const response = await fetch("https://devweb2024.cis.strath.ac.uk/mhb22136-nodejs/posts/add", {
+      const response = await fetch(API_PATH + "/posts/add", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
         },
         body: formData,
       });
-      
+
       const responseData = await response.json();
 
       if (response.ok) {
