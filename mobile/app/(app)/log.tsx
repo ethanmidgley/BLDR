@@ -13,7 +13,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { styles } from "@/constants/style";
 import { useQuery } from "../../hooks/useQuery";
 import { Link } from "expo-router";
-import { Barometer, DeviceMotion } from "expo-sensors";
+import { Barometer, DeviceMotion, Gyroscope } from "expo-sensors";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import { Checkbox } from "expo-checkbox";
@@ -248,6 +248,13 @@ export default function Log() {
     }
   };
 
+  const help = () => {
+    Alert.alert(
+        "To use this page:", 
+        "1: Click the start button to begin your climb.\n2: Once you finish your climb, press the stop button.\n3: Make sure all the details are filled in.\n4: Submit your climb, then go to the history tab to view it and post it from there."
+    );
+};
+
   //this calculates the height based on the formula (p1 - p2)/ (pressure at ground level * gravity) -- all converted to pascals
   useEffect(() => {
     if (initialPressure !== 0 && highestPressure !== 0) {
@@ -258,23 +265,40 @@ export default function Log() {
   }, [initialPressure, highestPressure]);
 
   //this is where the extreme angle is calculated and stored in the max angle state
+  // const startDeviceMotionTracking = () => {
+  //   const sub = DeviceMotion.addListener((motionData) => {
+  //     if (motionData && motionData.acceleration) {
+  //       const { x, y, z } = motionData.acceleration;
+
+  //       // Calculate pitch and roll
+  //       const pitch = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
+  //       const roll = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
+
+  //       // Update max pitch and roll
+  //       setMaxAngles((prev) => ({
+  //         maxPitch: Math.max(prev.maxPitch, Math.abs(pitch)),
+  //         maxRoll: Math.max(prev.maxRoll, Math.abs(roll)),
+  //       }));
+  //     }
+  //   });
+  //   setMotionSubscription(sub as unknown as EventSubscription);
+  // };
+
   const startDeviceMotionTracking = () => {
-    const sub = DeviceMotion.addListener((motionData) => {
-      if (motionData && motionData.acceleration) {
-        const { x, y, z } = motionData.acceleration;
-
-        // Calculate pitch and roll
-        const pitch = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
-        const roll = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
-
-        // Update max pitch and roll
-        setMaxAngles((prev) => ({
-          maxPitch: Math.max(prev.maxPitch, Math.abs(pitch)),
-          maxRoll: Math.max(prev.maxRoll, Math.abs(roll)),
-        }));
-      }
+    const sub = Gyroscope.addListener((gyroData) => {
+      const { x, y, z } = gyroData;
+      const pitch = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
+      const roll = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
+      
+      setMaxAngles((prev) => ({
+        maxPitch: Math.max(prev.maxPitch, Math.abs(pitch)),
+        maxRoll: Math.max(prev.maxRoll, Math.abs(roll)),
+      }));
     });
+    
+    Gyroscope.setUpdateInterval(100);
     setMotionSubscription(sub as unknown as EventSubscription);
+  
   };
 
   //this stops the angle recording so it doesnt eat battery when not recording
@@ -449,7 +473,7 @@ export default function Log() {
                   maxPitch: parseInt(text) || 0, // Update only the specific property
                 }))
               }
-              value={maxAngles.maxPitch.toString()} // Access the maxPitch property from the state
+              value={maxAngles.maxRoll.toString()} // Access the maxPitch property from the state
               placeholder="eg. 13°"
               placeholderTextColor="#ddd"
               keyboardType="numeric"
@@ -500,6 +524,22 @@ export default function Log() {
                 >
                   {recording ? "Stop" : "Start"}
                 </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.button_positioning}>
+              <TouchableOpacity
+                style={styles.button_log_submission}
+                onPress={help}
+              >
+                <Text style={styles.button_text}> HELP </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.button_positioning}>
+              <TouchableOpacity
+                style={styles.button_log_submission}
+                onPress={resetValues}
+              >
+                <Text style={styles.button_text}> Reset </Text>
               </TouchableOpacity>
             </View>
           </View>
