@@ -131,7 +131,7 @@ export default function Locations() {
 
   //fetch posts to grab climbs
   const { data } = useQuery<Post[]>("/posts/fetch");
-  console.log(data);
+  // console.log(data);
 
   const [refresh, setRefresh] = useState(0);
 
