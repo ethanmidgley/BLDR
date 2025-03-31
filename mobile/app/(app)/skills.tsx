@@ -1,10 +1,11 @@
 import { Entypo } from "@expo/vector-icons";
-import { Dispatch, useState } from "react";
+import { Dispatch, useCallback, useRef, useState } from "react";
 import React from "react";
 import { Image } from "expo-image";
-import { View, Text, FlatList, Pressable } from "react-native";
+import { View, Text, FlatList, Pressable, Alert, Button, TouchableOpacity } from "react-native";
 import Wrapper from "@/components/Wrapper";
 import { styles } from "@/constants/style";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 const skillImages = {
   basic_footwork: require("../../assets/images/skills/basic-footwork.jpg"),
@@ -25,21 +26,21 @@ const skillImages = {
 };
 
 const skill_videos = {
-  basic_footwork: "https://www.youtube.com/watch?v=KoTG-0_smTE",
-  three_points_of_contact: "https://www.youtube.com/watch?v=jumbbU0KqQw",
-  silent_feet: "https://www.youtube.com/watch?v=UqGvom5-yNo",
-  falling_technique: "https://www.youtube.com/watch?v=Qc7ZQHE9L9w",
-  reading_routes: "https://www.youtube.com/watch?v=XnScNp24xEU",
-  body_positioning: "https://www.youtube.com/watch?v=hAo_ismiUEU",
-  smearing: "https://www.youtube.com/watch?v=Psu2y-weRnM",
-  flagging: "https://www.youtube.com/watch?v=juPtjVgcQbg",
-  heel_toe_hooks: "https://www.youtube.com/watch?v=wdamT5lhWyI",
-  mantling: "https://www.youtube.com/watch?v=dSbNqltm6Nk",
-  deadpointing: "https://www.youtube.com/watch?v=cre_htAhJh4",
-  grip_strength_training: "https://www.youtube.com/watch?v=XXrDQ8PCAmI",
-  core_strength: "https://www.youtube.com/watch?v=E621anInG5s",
-  flexibility_mobility: "https://www.youtube.com/watch?v=kE9r9kteF4M",
-  endurance_drills: "https://www.youtube.com/watch?v=Y6BxtLXfAFI",
+  basic_footwork: "KoTG-0_smTE",
+  three_points_of_contact: "jumbbU0KqQw",
+  silent_feet: "UqGvom5-yNo",
+  falling_technique: "Qc7ZQHE9L9w",
+  reading_routes: "XnScNp24xEU",
+  body_positioning: "hAo_ismiUEU",
+  smearing: "Psu2y-weRnM",
+  flagging: "juPtjVgcQbg",
+  heel_toe_hooks: "wdamT5lhWyI",
+  mantling: "dSbNqltm6Nk",
+  deadpointing: "cre_htAhJh4",
+  grip_strength_training: "XXrDQ8PCAmI",
+  core_strength: "E621anInG5s",
+  flexibility_mobility: "kE9r9kteF4M",
+  endurance_drills: "Y6BxtLXfAFI",
 };
 
 type skillImageKey = keyof typeof skillImages;
@@ -288,6 +289,21 @@ const CategoryView = ({
 export default function Skills() {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
 
+  const [playing, setPlaying] = useState(false);
+
+  const onStateChange = useCallback((state: String) => {    
+    if (state === "ended") {      
+      setPlaying(false);      
+      Alert.alert("video has finished playing!");    
+    }  
+  }, []);
+
+  const togglePlaying = useCallback(() => {
+    setPlaying((prev) => !prev);
+  }, []);
+
+  const title = playing ? "Pause" : "Play"
+
   return (
     <View>
       <Wrapper>
@@ -354,12 +370,24 @@ export default function Skills() {
               >
                 Key points:
               </Text>
-
-              {selectedSkill.key_points.map((point, idx) => (
-                <Text key={idx}>
+                {selectedSkill.key_points.map((point, idx) => (
+                <Text key={idx}
+                  style={{marginBottom:20}}
+                >
                   {idx + 1}. {point}
                 </Text>
               ))}
+                <YoutubePlayer
+                  height={200}
+                  play={playing}
+                  videoId={selectedSkill.image ? skill_videos[selectedSkill.image] : skill_videos.flagging}
+                  onChangeState={onStateChange}
+                />
+                <TouchableOpacity 
+                  onPress={togglePlaying}
+                  style={{...styles.button, alignSelf: "center", height: 40}}>
+                <Text style={styles.button_text}>{title}</Text>
+                </TouchableOpacity>
             </View>
           ) : null}
         </View>
