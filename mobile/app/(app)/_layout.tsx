@@ -1,12 +1,13 @@
 import { router, Tabs, usePathname } from "expo-router";
 import React from "react";
-import { Alert, Button, Platform, View } from "react-native";
+import { Alert, Button, Platform, TouchableOpacity, View } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { Text } from "react-native";
 import { Redirect } from "expo-router";
 import { useSession } from "@/context/context";
 import {
   AntDesign,
+  Feather,
   FontAwesome,
   MaterialCommunityIcons,
   MaterialIcons,
@@ -40,6 +41,13 @@ export default function TabLayout() {
         onPress: signOut,
       },
     ]);
+  };
+
+  const help = () => {
+    Alert.alert(
+      "To use this page:",
+      "1: Click the start button to begin your climb.\n2: Once you finish your climb, press the stop button.\n3: Make sure all the details are filled in.\n4: Submit your climb, then go to the history tab to view it and post it from there.",
+    );
   };
 
   return (
@@ -104,6 +112,15 @@ export default function TabLayout() {
         options={{
           title: "LOG",
           tabBarIcon: () => <AntDesign name="book" size={24} color="black" />,
+          headerRight: () => (
+            <Feather
+              onPress={help}
+              style={{ marginRight: 16 }}
+              name="help-circle"
+              size={24}
+              color="black"
+            />
+          ),
         }}
       />
       <Tabs.Screen
