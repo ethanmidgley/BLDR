@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -103,7 +104,7 @@ const PostClimbScreen = () => {
       </View>
       <View style ={{marginHorizontal:20}}>
         <Text style={{fontSize: 16, marginVertical:5}}>Title:</Text>
-        <TextInput style={{...styles.input,width:"100   %"}} value={title} onChangeText={setTitle} />
+        <TextInput style={{...styles.input,width:"100%"}} value={title} onChangeText={setTitle} />
 
         <Text style={{fontSize:16, marginVertical:5}}>Description:</Text>
         <TextInput
