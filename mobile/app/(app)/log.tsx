@@ -277,12 +277,14 @@ export default function Log() {
   //   setMotionSubscription(sub as unknown as EventSubscription);
   // };
 
+  //this is where the extreme angle is calculated and stored in the max angle state
   const startDeviceMotionTracking = () => {
     const sub = Gyroscope.addListener((gyroData) => {
       const { x, y, z } = gyroData;
       const pitch = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
       const roll = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
 
+      // Update max pitch and roll
       setMaxAngles((prev) => ({
         maxPitch: Math.max(prev.maxPitch, Math.abs(pitch)),
         maxRoll: Math.max(prev.maxRoll, Math.abs(roll)),
@@ -302,6 +304,7 @@ export default function Log() {
     }
   };
 
+  //this is where the app gets the location of the user when the app is opened
   useEffect(() => {
     async function getCurrentLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -405,7 +408,6 @@ export default function Log() {
               keyboardType="numeric"
             />
           </View>
-          {/*TODO:Level record, allow user to enter full floating point num*/}
           <View style={styles.climb_info_spacing}>
             <Text style={{ ...styles.headingSmall, paddingRight: 20 }}>
               Level
@@ -484,6 +486,7 @@ export default function Log() {
               columnGap: 20,
             }}
           >
+            {/* this is where the buttons are positioned */}
             <View style={styles.button_positioning}>
               <TouchableOpacity
                 style={styles.button_log_submission}

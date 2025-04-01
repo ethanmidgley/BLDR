@@ -31,6 +31,7 @@ export default function TabLayout() {
     return <Redirect href="/login" />;
   }
 
+  //This is the function used to show the logout alert when the logout button is pressed
   const confirmSignOut = () => {
     Alert.alert("Logout?", "Are you sure you sure you want to log out?", [
       {
@@ -43,6 +44,7 @@ export default function TabLayout() {
     ]);
   };
 
+  //This is the function used to show the help alert when the help button is pressed
   const help = () => {
     Alert.alert(
       "To use this page:",
