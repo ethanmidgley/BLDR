@@ -2,7 +2,15 @@ import { Entypo } from "@expo/vector-icons";
 import { Dispatch, useCallback, useRef, useState } from "react";
 import React from "react";
 import { Image } from "expo-image";
-import { View, Text, FlatList, Pressable, Alert, Button, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  Alert,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import Wrapper from "@/components/Wrapper";
 import { styles } from "@/constants/style";
 import YoutubePlayer from "react-native-youtube-iframe";
@@ -410,18 +418,18 @@ export default function Skills() {
 
   const [playing, setPlaying] = useState(false);
 
-  const onStateChange = useCallback((state: String) => {    
-    if (state === "ended") {      
-      setPlaying(false);      
-      Alert.alert("video has finished playing!");    
-    }  
+  const onStateChange = useCallback((state: String) => {
+    if (state === "ended") {
+      setPlaying(false);
+      Alert.alert("video has finished playing!");
+    }
   }, []);
 
   const togglePlaying = useCallback(() => {
     setPlaying((prev) => !prev);
   }, []);
 
-  const title = playing ? "Pause" : "Play"
+  const title = playing ? "Pause" : "Play";
 
   return (
     <View>
@@ -438,7 +446,7 @@ export default function Skills() {
         />
       </Wrapper>
       {selectedSkill ? (
-        <View
+        <ScrollView
           style={{
             position: "absolute",
             bottom: 0,
@@ -489,24 +497,27 @@ export default function Skills() {
               >
                 Key points:
               </Text>
-                {selectedSkill.key_points.map((point, idx) => (
-                <Text key={idx}
-                  style={{marginBottom:20}}
-                >
+              {selectedSkill.key_points.map((point, idx) => (
+                <Text key={idx} style={{ marginBottom: 20 }}>
                   {idx + 1}. {point}
                 </Text>
               ))}
-                <YoutubePlayer
-                  height={200}
-                  play={playing}
-                  videoId={selectedSkill.image ? skill_videos[selectedSkill.image] : skill_videos.flagging}
-                  onChangeState={onStateChange}
-                />
-                <TouchableOpacity 
-                  onPress={togglePlaying}
-                  style={{...styles.button, alignSelf: "center", height: 40}}>
+              <YoutubePlayer
+                height={200}
+                play={playing}
+                videoId={
+                  selectedSkill.image
+                    ? skill_videos[selectedSkill.image]
+                    : skill_videos.flagging
+                }
+                onChangeState={onStateChange}
+              />
+              <TouchableOpacity
+                onPress={togglePlaying}
+                style={{ ...styles.button, alignSelf: "center", height: 40 }}
+              >
                 <Text style={styles.button_text}>{title}</Text>
-                </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           ) : null}
           {selectedSkill.next_steps ? (
@@ -528,7 +539,7 @@ export default function Skills() {
               ))}
             </View>
           ) : null}
-        </View>
+        </ScrollView>
       ) : null}
     </View>
   );
