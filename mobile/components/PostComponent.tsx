@@ -124,7 +124,7 @@ export function PostComponent({
         <Image
           source={`${API_PATH}/image/${image}`}
           contentFit="cover"
-          style={{ width: "100%", height: 300 }}
+          style={{ width: "100%", height: 400 }}
         />
       </View>
       <Wrapper style={!fullWidth && { marginHorizontal: 0 }}>
