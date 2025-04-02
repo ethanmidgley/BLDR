@@ -421,8 +421,6 @@ export default function Skills() {
     setPlaying((prev) => !prev);
   }, []);
 
-  const title = playing ? "Pause" : "Play"
-
   return (
     <View>
       <Wrapper>
@@ -502,11 +500,6 @@ export default function Skills() {
                   videoId={selectedSkill.image ? skill_videos[selectedSkill.image] : skill_videos.flagging}
                   onChangeState={onStateChange}
                 />
-                <TouchableOpacity 
-                  onPress={togglePlaying}
-                  style={{...styles.button, alignSelf: "center", height: 40}}>
-                <Text style={styles.button_text}>{title}</Text>
-                </TouchableOpacity>
             </View>
           ) : null}
           {selectedSkill.next_steps ? (
