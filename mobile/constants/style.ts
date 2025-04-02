@@ -199,4 +199,48 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 18,
   },
+
+  image2: {
+    width: 200,
+    height: 200,
+    marginTop: 10,
+    resizeMode: "contain",
+  },
+
+  banner: {
+    borderRadius: 4,
+    padding: 20,
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  bannerText: {
+    fontStyle: "italic",
+    color: "red",
+    fontSize: 42,
+    fontWeight: "bold",
+    fontFamily: "Archivo_700Bold_Italic",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "black",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 1,
+  },
+  icon: {
+    width: 80,
+    height: 37,
+    resizeMode: "contain",
+    paddingTop: 10,
+    paddingLeft:5,
+  },
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 10,
+    justifyContent: "flex-end",
+    flexGrow:1,
+  },
+  buttonContainer: {
+    marginTop:20,
+    justifyContent: "flex-end",
+    flexGrow:1,
+  },
 });

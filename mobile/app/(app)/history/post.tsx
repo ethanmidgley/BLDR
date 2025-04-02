@@ -7,11 +7,13 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams } from "expo-router";
 import { API_PATH } from "@/hooks/useApi";
+import { styles } from "@/constants/style"
 
 const PostClimbScreen = () => {
   const { climb_id } = useLocalSearchParams();
@@ -89,7 +91,7 @@ const PostClimbScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView>
       <View style={styles.banner}>
         <Text style={styles.bannerText}>
           CLIMBED A
@@ -100,84 +102,58 @@ const PostClimbScreen = () => {
           ?
         </Text>
       </View>
-      <Text style={styles.label}>Title:</Text>
-      <TextInput style={styles.input} value={title} onChangeText={setTitle} />
+      <View style ={{marginHorizontal:20}}>
+        <Text style={{fontSize: 16, marginVertical:5}}>Title:</Text>
+        <TextInput style={{...styles.input,width:"100%"}} value={title} onChangeText={setTitle} />
 
-      <Text style={styles.label}>Description:</Text>
-      <TextInput
-        style={styles.input}
-        value={description}
-        onChangeText={setDescription}
-      />
-
-      <View style={styles.imageContainer}>
-        <Button title="Choose Image" onPress={handleChooseImage} />
-        {uri && <Image source={{ uri: uri }} style={styles.image} />}
+        <Text style={{fontSize:16, marginVertical:5}}>Description:</Text>
+        <TextInput
+          editable
+          multiline
+          style={{...styles.input,width:"100%",height:100,}}
+          value={description}
+          onChangeText={setDescription}
+        />
       </View>
+      
+      <TouchableOpacity 
+        style={{
+          backgroundColor: "#f00", 
+          justifyContent: "center", 
+          borderRadius: 5, 
+          paddingVertical: 8,
+          alignSelf:"center",
+          padding:10,
+          margin:10,
+          width:"70%",
+          height:50,
+          }}
+        onPress={handleChooseImage}
+        
+        >
+        <Text style = {styles.button_text}>Choose Image</Text>
+      </TouchableOpacity>
+      {uri && <Image source={{ uri: uri }} style={{...styles.image,alignSelf:"center"}} />}
 
-      <Button title="Create Post" onPress={handlePost} />
+      <TouchableOpacity 
+        style={{
+          backgroundColor: "#f00", 
+          justifyContent: "center", 
+          borderRadius: 5, 
+          paddingVertical: 8,
+          alignSelf:"center",
+          padding:10,
+          margin:10,
+          width:"55%",
+          height:50,
+          }}
+        onPress={handlePost}
+        
+        >
+        <Text style = {styles.button_text}>Create Post</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginBottom: 10,
-    minHeight: 40,
-    textAlignVertical: "top",
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginTop: 10,
-    resizeMode: "contain",
-  },
-  banner: {
-    borderRadius: 4,
-    padding: 15,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  bannerText: {
-    fontStyle: "italic",
-    color: "red",
-    fontSize: 31,
-    fontWeight: "bold",
-    fontFamily: "Archivo_700Bold_Italic",
-    textAlign: "center",
-    marginBottom: 10,
-    textShadowColor: "black",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 1,
-  },
-  imageContainer: {
-    alignItems: "center",
-    marginBottom: 10,
-    justifyContent: "flex-end",
-    flexGrow: 1,
-  },
-  icon: {
-    width: 80,
-    height: 27,
-    resizeMode: "contain",
-    paddingTop: 3,
-  },
-  buttonContainer: {
-    marginTop: 20,
-    justifyContent: "flex-end",
-    flexGrow: 1,
-  },
-});
 
 export default PostClimbScreen;

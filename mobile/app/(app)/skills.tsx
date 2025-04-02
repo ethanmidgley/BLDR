@@ -429,8 +429,6 @@ export default function Skills() {
     setPlaying((prev) => !prev);
   }, []);
 
-  const title = playing ? "Pause" : "Play";
-
   return (
     <View>
       <Wrapper>
@@ -502,22 +500,12 @@ export default function Skills() {
                   {idx + 1}. {point}
                 </Text>
               ))}
-              <YoutubePlayer
-                height={200}
-                play={playing}
-                videoId={
-                  selectedSkill.image
-                    ? skill_videos[selectedSkill.image]
-                    : skill_videos.flagging
-                }
-                onChangeState={onStateChange}
-              />
-              <TouchableOpacity
-                onPress={togglePlaying}
-                style={{ ...styles.button, alignSelf: "center", height: 40 }}
-              >
-                <Text style={styles.button_text}>{title}</Text>
-              </TouchableOpacity>
+                <YoutubePlayer
+                  height={200}
+                  play={playing}
+                  videoId={selectedSkill.image ? skill_videos[selectedSkill.image] : skill_videos.flagging}
+                  onChangeState={onStateChange}
+                />
             </View>
           ) : null}
           {selectedSkill.next_steps ? (

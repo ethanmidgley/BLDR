@@ -76,7 +76,7 @@ export default function Log() {
   const [height, onChangeHeight] = React.useState(0);
   const [initialPressure, setInitialPressure] = React.useState(0);
   const [highestPressure, setHighestPressure] = React.useState(0);
-  const p_g = 1200.5; //this is the value to divide the change in pressure by tho get the height climbed
+  const p_g = 12.5; //this is the value to divide the change in pressure by tho get the height climbed
   const [subscription, setSubscription] = useState<EventSubscription | null>(
     null,
   );
@@ -251,7 +251,7 @@ export default function Log() {
   //this calculates the height based on the formula (p1 - p2)/ (pressure at ground level * gravity) -- all converted to pascals
   useEffect(() => {
     if (initialPressure !== 0 && highestPressure !== 0) {
-      const height = (initialPressure * 100 - highestPressure * 100) / p_g;
+      const height = (initialPressure * 100 - highestPressure *100 ) / p_g;
       onChangeHeight(parseFloat(height.toFixed(2))); // Update the height state
       // console.log("Height Calculated:", height.toFixed(2));
     }
