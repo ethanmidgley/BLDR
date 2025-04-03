@@ -177,7 +177,6 @@ export default function Log() {
     if (subscription) {
       subscription.remove(); // Stop the updates
       setSubscription(null); // Clear the subscription state
-      // console.log("Barometer listener stopped.");
     }
 
     if (timerInterval) {
@@ -502,7 +501,6 @@ export default function Log() {
                 style={styles.button_log_submission}
                 onPress={try_submit}
               >
-                {/*TODO:IDK why this is offset so low, but should be an easy fix later*/}
                 <Text style={styles.button_text}> Submit </Text>
               </TouchableOpacity>
             </View>
