@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Alert, ScrollView, TouchableOpacity} from "react-native";
+import { View, Text, Alert, ScrollView, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, {
+  Marker,
+  Callout,
+  PROVIDER_GOOGLE,
+  PROVIDER_DEFAULT,
+} from "react-native-maps";
 import { styles } from "../../constants/style";
 import * as Location from "expo-location";
 import { Link } from "expo-router";
@@ -145,6 +150,11 @@ export default function Locations() {
       <MapView
         key={refresh}
         style={styles.map}
+        provider={
+          process.env.environment === "preview"
+            ? PROVIDER_GOOGLE
+            : PROVIDER_DEFAULT
+        }
         initialRegion={setDefaultLocation()}
       >
         {/*render user location*/}
@@ -156,10 +166,13 @@ export default function Locations() {
             onPress={() => {
               setBottomStateSpot(null);
               setBottomStatePost(null);
-            }}> 
-          <Image source={require("../../assets/images/stickman.png")} style={{height: 35, width: 35, resizeMode: "contain"}}/>
+            }}
+          >
+            <Image
+              source={require("../../assets/images/stickman.png")}
+              style={{ height: 35, width: 35, resizeMode: "contain" }}
+            />
           </Marker>
-
         ) : null}
         {/*render default location*/}
         {DefaultPoints.map((point) => (
@@ -222,7 +235,7 @@ export default function Locations() {
               alignContent: "center",
             }}
           >
-            <Text style={ styles.headingMedium }>{bottomStateSpot.name}</Text>
+            <Text style={styles.headingMedium}>{bottomStateSpot.name}</Text>
             <Entypo
               name="cross"
               size={24}
@@ -232,12 +245,20 @@ export default function Locations() {
           </View>
           <ScrollView style={{ padding: 10 }}>
             <Image
-              source={bottomStateSpot.image ? spot_images[bottomStateSpot.image] : spot_images.newsroom}
+              source={
+                bottomStateSpot.image
+                  ? spot_images[bottomStateSpot.image]
+                  : spot_images.newsroom
+              }
               contentFit="cover"
               style={{ width: "100%", height: 300 }}
             />
-            <Text style = {{marginTop: 20, textAlign: "center", ...styles.text}}>{bottomStateSpot.desc + "\n"}</Text>
-           <TouchableOpacity
+            <Text
+              style={{ marginTop: 20, textAlign: "center", ...styles.text }}
+            >
+              {bottomStateSpot.desc + "\n"}
+            </Text>
+            <TouchableOpacity
               style={{
                 backgroundColor: "#f00",
                 justifyContent: "center",
