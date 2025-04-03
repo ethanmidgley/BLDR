@@ -88,17 +88,17 @@ const DefaultPoints: Spot[] = [
 ];
 
 const boulderingGrades: string[] = [
-  "#A8E6CF", // V0 (Soft Green)
-  "#FFD97D", // V1 (Warm Yellow)
-  "#FFAB6C", // V2 (Light Orange)
-  "#FF6B6B", // V3 (Bright Red)
-  "#BE4BDB", // V4 (Vibrant Purple)
-  "#5A77FF", // V5 (Deep Blue)
-  "#6E44FF", // V6 (Dark Violet)
-  "#543864", // V7 (Muted Dark Purple)
-  "#3B2F51", // V8 (Deep Gray-Purple)
-  "#2A1F38", // V9 (Almost Black)
-  "#1A131F", // V10+ (Near Black)
+  "orange", // V0
+  "wheat", // V1
+  "yellow", // V2
+  "green", // V3
+  "red", // V4
+  "tomato", // V5
+  "linen", // V6
+  "aqua", // V7
+  "blue", // V8
+  "purple", // V9
+  "indigo", // V10+
 ];
 
 export default function Locations() {
@@ -149,7 +149,8 @@ export default function Locations() {
     <View style={styles.map_container}>
       <MapView
         key={refresh}
-        style={styles.map}
+        style={styles.map} //@ts-ignore
+        cluster={false}
         provider={
           process.env.environment === "preview"
             ? PROVIDER_GOOGLE
@@ -160,9 +161,9 @@ export default function Locations() {
         {/*render user location*/}
         {location !== null ? (
           <Marker
-            key={`user-${location.coords.latitude}-${location.coords.longitude}`}
+
+            key={`user-${location.coords.latitude}-${location.coords.longitude}`} //@ts-ignore
             coordinate={location.coords}
-            //pinColor="red"
             onPress={() => {
               setBottomStateSpot(null);
               setBottomStatePost(null);
@@ -170,14 +171,14 @@ export default function Locations() {
           >
             <Image
               source={require("../../assets/images/stickman.png")}
-              style={{ height: 35, width: 35, resizeMode: "contain" }}
+              style={{ height: 30, width: 10, resizeMode: "contain" }}
             />
           </Marker>
         ) : null}
         {/*render default location*/}
         {DefaultPoints.map((point) => (
           <Marker
-            key={point.name + point.id}
+            key={point.name + point.id} //@ts-ignore
             coordinate={{
               latitude: point.latitude,
               longitude: point.longitude,
@@ -195,10 +196,10 @@ export default function Locations() {
             </Callout>
           </Marker>
         ))}
-        {/*render other user posts location*/}
+        {/*render users posts location*/}
         {data?.map((post) => (
           <Marker
-            key={`${post.title}-${post.id}-${post.climb.lat}-${post.climb.lon}`}
+            key={`${post.title}-${post.id}-${post.climb.lat}-${post.climb.lon}`} //@ts-ignore
             coordinate={{
               latitude: post.climb.lat,
               longitude: post.climb.lon,

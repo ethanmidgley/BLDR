@@ -259,26 +259,6 @@ export default function Log() {
   }, [initialPressure, highestPressure]);
 
   //this is where the extreme angle is calculated and stored in the max angle state
-  // const startDeviceMotionTracking = () => {
-  //   const sub = DeviceMotion.addListener((motionData) => {
-  //     if (motionData && motionData.acceleration) {
-  //       const { x, y, z } = motionData.acceleration;
-
-  //       // Calculate pitch and roll
-  //       const pitch = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
-  //       const roll = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
-
-  //       // Update max pitch and roll
-  //       setMaxAngles((prev) => ({
-  //         maxPitch: Math.max(prev.maxPitch, Math.abs(pitch)),
-  //         maxRoll: Math.max(prev.maxRoll, Math.abs(roll)),
-  //       }));
-  //     }
-  //   });
-  //   setMotionSubscription(sub as unknown as EventSubscription);
-  // };
-
-  //this is where the extreme angle is calculated and stored in the max angle state
   const startDeviceMotionTracking = () => {
     const sub = Gyroscope.addListener((gyroData) => {
       const { x, y, z } = gyroData;
@@ -323,11 +303,7 @@ export default function Log() {
   return (
     <Wrapper>
       <ScrollView>
-        {/* <Image */}
-        {/*   source={require("../../assets/images/logo.png")} */}
-        {/*   style={styles.image_record} */}
-        {/* /> */}
-        <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
+       <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
           Logged Climb Values
         </Text>
         <View style={{ padding: 5, paddingVertical: 20 }}>
