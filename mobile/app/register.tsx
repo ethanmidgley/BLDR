@@ -51,7 +51,7 @@ export default function Register() {
 
     if (password.length < 8 || password.length > 32) {
       Alert.alert(
-        "Password is invalid length. Must be between 1 and 32 characters long",
+        "Password is invalid length. Must be between 8 and 32 characters long",
       );
       return;
     }
@@ -61,15 +61,16 @@ export default function Register() {
       return;
     }
 
-    try {
-      const { data } = await register({
-        email: email,
-        fullname: full_name,
-        password: password,
-      });
+    const { status } = await register({
+      email: email,
+      fullname: full_name,
+      password: password,
+    });
+
+    if (status === "success") {
       Alert.alert("Welcome to BLDR");
       router.replace("/login");
-    } catch {
+    } else {
       Alert.alert("Failed to created account, try again later");
     }
   };
@@ -125,7 +126,6 @@ export default function Register() {
           secureTextEntry={true}
           autoCapitalize="none"
         />
-
 
         <TouchableOpacity
           style={styles.button}
