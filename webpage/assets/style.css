@@ -20,6 +20,18 @@ body {
   text-align: center;
 }
 
+h1 {
+  font-size: 1.3em;
+}
+
+h2 {
+  font-size: 0.9em;
+}
+
+h3 {
+  font-size: 0.7em;
+}
+
 .logo-img {
   width: 80%;
 }
@@ -37,13 +49,6 @@ body {
 
 #testimony {
   margin: 0 auto;
-}
-
-#testimony h1 {
-  font-size: 1em;
-}
-#testimony h2 {
-  font-size: 0.6em;
 }
 
 .download-btn {
@@ -73,7 +78,7 @@ body {
 /* Select aspect ratios 3/2 = 1.5 and below */
 @media (max-aspect-ratio: 3/2) {
   .wrapper {
-    width: 70%;
+    width: 60%;
   }
 }
 
@@ -84,8 +89,8 @@ body {
   }
 }
 
-@media (max-aspect-ratio: 1/2) {
+@media (max-aspect-ratio: 1/1.1) {
   .wrapper {
-    width: 100%;
+    width: 85%;
   }
 }
