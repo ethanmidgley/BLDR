@@ -486,6 +486,7 @@ export default function Skills() {
           <Text>{selectedSkill.why_it_matters}</Text>
           {selectedSkill.key_points ? (
             <View>
+              <View style={{marginBottom: 10}}>
               <Text
                 style={{
                   fontSize: 17,
@@ -496,10 +497,12 @@ export default function Skills() {
                 Key points:
               </Text>
               {selectedSkill.key_points.map((point, idx) => (
-                <Text key={idx} style={{ marginBottom: 20 }}>
+                <Text key={idx} style={{ marginBottom: 10 }}>
                   {idx + 1}. {point}
                 </Text>
               ))}
+            </View>
+
                 <YoutubePlayer
                   height={200}
                   play={playing}
@@ -509,7 +512,7 @@ export default function Skills() {
             </View>
           ) : null}
           {selectedSkill.next_steps ? (
-            <View>
+            <View style={{ marginBottom: 10 }}>
               <Text
                 style={{
                   fontSize: 17,
@@ -521,7 +524,7 @@ export default function Skills() {
               </Text>
 
               {selectedSkill.next_steps.map((point, idx) => (
-                <Text key={idx}>
+                <Text key={idx} style={{ marginBottom: 10 }}>
                   {idx + 1}. {point}
                 </Text>
               ))}

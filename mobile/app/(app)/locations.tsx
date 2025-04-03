@@ -244,7 +244,7 @@ export default function Locations() {
               onPress={() => setBottomStateSpot(null)}
             />
           </View>
-          <ScrollView style={{ padding: 10 }}>
+          <ScrollView style={{ padding: 0 }}>
             <Image
               source={
                 bottomStateSpot.image
