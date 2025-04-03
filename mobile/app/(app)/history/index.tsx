@@ -92,7 +92,7 @@ export default function History() {
   const {refresh} = useLocalSearchParams();
   
   useEffect(() => {
-    console.log(refresh)
+    // console.log(refresh)
     if (refresh == "1") {
       refetch();
     }

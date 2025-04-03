@@ -443,7 +443,7 @@ export default function Log() {
                   maxPitch: parseInt(text) || 0, // Update only the specific property
                 }))
               }
-              value={maxAngles.maxRoll.toString()} // Access the maxPitch property from the state
+              value={maxAngles.maxPitch.toString()} // Access the maxPitch property from the state
               placeholder="eg. 13°"
               placeholderTextColor="#ddd"
               keyboardType="numeric"
