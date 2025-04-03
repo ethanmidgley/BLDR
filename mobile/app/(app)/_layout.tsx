@@ -52,6 +52,12 @@ export default function TabLayout() {
     );
   };
 
+  const helpHistory = () => {
+    Alert.alert(
+      "To use this page:",
+      "1: If you cannot see your climb pull down to refresh.\n2: Click on the climb you want to Post.\n3: Click on the post button to post your climb after adding an image.",
+    );}
+
   return (
     <Tabs
       screenOptions={{
@@ -140,6 +146,15 @@ export default function TabLayout() {
               <View style={{ marginLeft: 8 }}>
                 <Button title="Back" onPress={() => router.back()} />
               </View>
+            ),
+            headerRight: () => (
+              <Feather
+                onPress={helpHistory}
+                style={{ marginRight: 16 }}
+                name="help-circle"
+                size={24}
+                color="black"
+              />
             ),
             headerTitleAlign: "center",
           }),

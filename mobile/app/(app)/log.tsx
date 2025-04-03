@@ -77,7 +77,7 @@ export default function Log() {
   const [height, onChangeHeight] = React.useState(0);
   const [initialPressure, setInitialPressure] = React.useState(0);
   const [highestPressure, setHighestPressure] = React.useState(0);
-  const p_g = 12.5; //this is the value to divide the change in pressure by tho get the height climbed
+  const p_g = 120.5; //this is the value to divide the change in pressure by tho get the height climbed
   const [subscription, setSubscription] = useState<EventSubscription | null>(
     null,
   );
@@ -282,7 +282,7 @@ export default function Log() {
   const startDeviceMotionTracking = () => {
     const sub = Gyroscope.addListener((gyroData) => {
       const { x, y, z } = gyroData;
-      const pitch = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI);
+      const pitch = Math.atan2(y, Math.sqrt(x * x + y * y)) * (180 / Math.PI);
       const roll = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
 
       // Update max pitch and roll
