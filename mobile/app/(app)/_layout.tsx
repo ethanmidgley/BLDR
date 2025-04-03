@@ -139,6 +139,15 @@ export default function TabLayout() {
           tabBarIcon: () => (
             <MaterialIcons name="history" size={24} color="black" />
           ),
+          headerRight: () => (
+            <Feather
+              onPress={helpHistory}
+              style={{ marginRight: 16 }}
+              name="help-circle"
+              size={24}
+              color="black"
+            />
+          ),
           ...(pathname === "/history/post" && {
             headerTitle: "POST",
             headerLeft: () => (
@@ -146,15 +155,6 @@ export default function TabLayout() {
               <View style={{ marginLeft: 8 }}>
                 <Button title="Back" onPress={() => router.back()} />
               </View>
-            ),
-            headerRight: () => (
-              <Feather
-                onPress={helpHistory}
-                style={{ marginRight: 16 }}
-                name="help-circle"
-                size={24}
-                color="black"
-              />
             ),
             headerTitleAlign: "center",
           }),
