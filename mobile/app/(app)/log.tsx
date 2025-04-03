@@ -52,6 +52,7 @@ const dropDownData = [
   { label: "Roof", value: "Roof" },
   { label: "Mantle", value: "Mantle" },
   { label: "Outdoor", value: "Outdoor" },
+  { label: "Jamming", value: "Jamming" },
 ];
 
 export default function Log() {

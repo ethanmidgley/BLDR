@@ -2,11 +2,15 @@ import StatsBar from "@/components/StatsBar";
 import Wrapper from "@/components/Wrapper";
 import { styles } from "@/constants/style";
 import { useQuery } from "@/hooks/useQuery";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { TouchableOpacity, Vibration } from "react-native";
-import { Button, FlatList, Text, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { FlatList, Text, View } from "react-native";
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 
 type Climb = {
   id: number;
@@ -31,6 +35,11 @@ function ClimbComponent(climb: Climb) {
       <View style={{ height: 200, width: "100%" }}>
         <MapView
           style={{ flex: 1 }}
+          provider={
+            process.env.environment === "preview"
+              ? PROVIDER_GOOGLE
+              : PROVIDER_DEFAULT
+          }
           initialRegion={{
             latitude: climb.lat,
             longitude: climb.lon,
