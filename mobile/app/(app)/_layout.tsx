@@ -48,7 +48,7 @@ export default function TabLayout() {
   const help = () => {
     Alert.alert(
       "To use this page:",
-      "1: Click the start button to begin your climb.\n2: Once you finish your climb, press the stop button.\n3: Make sure all the details are filled in.\n4: Submit your climb, then go to the history tab to view it and post it from there.",
+      "1: Click the start button to begin your climb.\n2: Once you finish your climb, press the stop button.\n3: Make sure all the details are filled in.\n4: Submit your climb, then go to the history tab to view it and post it from there.\nExtreme Angle - This is your most extreme angle that you reached when you were completing your climb",
     );
   };
 
