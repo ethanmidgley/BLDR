@@ -11,11 +11,12 @@ import {
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { API_PATH } from "@/hooks/useApi";
 import { styles } from "@/constants/style"
 
 const PostClimbScreen = () => {
+  const router = useRouter();
   const { climb_id } = useLocalSearchParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -81,6 +82,10 @@ const PostClimbScreen = () => {
 
       if (response.ok) {
         Alert.alert("Post Created", "Your post has been successfully created!");
+        router.push({
+          pathname: "/history",
+          params: { refresh: "refresh" },
+        });
       } else {
         Alert.alert("Error", responseData.error || "Something went wrong.");
       }

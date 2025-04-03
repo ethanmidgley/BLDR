@@ -2,8 +2,8 @@ import StatsBar from "@/components/StatsBar";
 import Wrapper from "@/components/Wrapper";
 import { styles } from "@/constants/style";
 import { useQuery } from "@/hooks/useQuery";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity, Vibration } from "react-native";
 import { FlatList, Text, View } from "react-native";
 import MapView, {
@@ -29,7 +29,7 @@ type Climb = {
 
 function ClimbComponent(climb: Climb) {
   const router = useRouter();
-
+  
   return (
     <View key={climb.id} style={{ marginBottom: 20, gap: 10 }}>
       <View style={{ height: 200, width: "100%" }}>
@@ -89,7 +89,16 @@ function ClimbComponent(climb: Climb) {
 export default function History() {
   const { data, refetch } = useQuery<{ data: Climb[] }>("/log/fetch");
   const [refreshing] = useState<boolean>(false);
+  const {refresh} = useLocalSearchParams();
+  
+  useEffect(() => {
+    console.log(refresh)
+    if (refresh == "1") {
+      refetch();
+    }
+  }, [refresh, refetch]);
 
+  
   return (
     <Wrapper>
       <FlatList
