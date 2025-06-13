@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <title>BLDR</title>
+    <link rel="stylesheet" href="./assets/style.css" />
+    <link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <img class="logo-img" src="./assets/imgs/logo.png" />
+
+      <h1>
+        Giving boulderers a platform to showcase and improve upon their ability
+        whilst discovering the area around them.
+      </h1>
+
+      <div id="testimony">
+        <h2 id="testimony-text">
+          As an outdoor climber, BLDR has helped me discover new spots and
+          connect with the climbing community. It’s a game-changer!
+        </h2>
+        <h3>
+          <span>- </span
+          ><span id="testimony-author">Jake R., Outdoor Climber</span>
+        </h3>
+      </div>
+
+      <a href="./assets/BLDR.apk" download="BLDR.apk" class="download-btn"
+        >Download</a
+      >
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const testimonials = [
+        {
+          testimonial:
+            "As an outdoor climber, BLDR has helped me discover new spots and connect with the climbing community. It’s a game-changer!",
+          name: "Jake R., Outdoor Climber",
+        },
+        {
+          testimonial:
+            "I’m new to bouldering, and BLDR makes it easy to track my progress and learn techniques. It’s super motivating!",
+          name: "Emily T., Beginner Climber",
+        },
+        {
+          testimonial:
+            "BLDR has improved my overall fitness routine with strength and flexibility exercises that directly help my climbing.",
+          name: "Tom K., Fitness Enthusiast",
+        },
+        {
+          testimonial:
+            "As a coach, BLDR’s detailed analytics help me track my students’ progress and tailor workouts. It’s an invaluable tool!",
+          name: "Rachel D., Climbing Coach",
+        },
+        {
+          testimonial:
+            "BLDR is the most comprehensive bouldering app out there. The community and features keep me engaged and constantly improving.",
+          name: "Ben L., Adventure Blogger",
+        },
+        {
+          testimonial:
+            "BLDR makes climbing fun and motivating with challenges and progress tracking. It’s helped me push my limits!",
+          name: "Nicole P., Recreational Climber",
+        },
+      ];
+
+      let current_tesomony = 0;
+
+      setInterval(() => {
+        $("#testimony").fadeOut(1000, () => {
+          current_tesomony = (current_tesomony + 1) % testimonials.length;
+          $("#testimony-text").html(testimonials[current_tesomony].testimonial);
+          $("#testimony-author").html(testimonials[current_tesomony].name);
+          $("#testimony").fadeIn(1000);
+        });
+      }, 10000);
+    </script>
+  </body>
+</html>
