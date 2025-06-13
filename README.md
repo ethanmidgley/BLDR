@@ -17,7 +17,12 @@ This is the final submission of our group project in CS317: Mobile App Developme
 
 ## Pitch Overview
 
-![Overview video](./assets/overview.mp4)
+![Overview video](https://github.com/user-attachments/assets/42535a06-4877-45f4-99f6-3d03e289f063)
+
+https://github.com/user-attachments/assets/42535a06-4877-45f4-99f6-3d03e289f063
+
+
+
 
 ## Screenshots
 
