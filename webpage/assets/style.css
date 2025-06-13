@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  font-family: "Archivo", sans-serif;
+  font-optical-sizing: auto;
+  box-sizing: "border-box";
+  color: white;
+  width: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100dvh;
+  background-image: url("./imgs/background.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.3em;
+}
+
+h2 {
+  font-size: 0.9em;
+}
+
+h3 {
+  font-size: 0.7em;
+}
+
+.logo-img {
+  width: 80%;
+}
+
+.wrapper {
+  width: 60%;
+  height: 100vh;
+  gap: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+#testimony {
+  margin: 0 auto;
+}
+
+.download-btn {
+  text-decoration: none;
+  background-color: #f00;
+  border: none;
+  width: 50%;
+  border-radius: 2vh;
+  font-size: 1.25em;
+  font-weight: 700;
+  padding: 2vh 5vw;
+  font-family: "Archivo", sans-serif;
+}
+
+.download-btn:hover,
+.download-btn:active {
+  background-color: #b50000;
+}
+
+@media (min-aspect-ratio: 8/5) {
+  .wrapper {
+    width: 40%;
+  }
+}
+
+/* Maximum allowed aspect ratio */
+/* Select aspect ratios 3/2 = 1.5 and below */
+@media (max-aspect-ratio: 3/2) {
+  .wrapper {
+    width: 60%;
+  }
+}
+
+/* Exact aspect ratio, put it at the bottom to avoid override */
+@media (max-aspect-ratio: 1/1) {
+  .wrapper {
+    width: 90%;
+  }
+}
+
+@media (max-aspect-ratio: 1/1.1) {
+  .wrapper {
+    width: 85%;
+  }
+}
