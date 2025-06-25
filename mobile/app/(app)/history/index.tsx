@@ -19,7 +19,6 @@ type Climb = {
   time: number;
   level: number;
   success: boolean;
-  angle: number;
   lat: number;
   lon: number;
   height: number;
@@ -29,7 +28,7 @@ type Climb = {
 
 function ClimbComponent(climb: Climb) {
   const router = useRouter();
-  
+
   return (
     <View key={climb.id} style={{ marginBottom: 20, gap: 10 }}>
       <View style={{ height: 200, width: "100%" }}>
@@ -59,7 +58,6 @@ function ClimbComponent(climb: Climb) {
       </Text>
 
       <StatsBar keys={["level", "type", "time"]} climb={climb} />
-      <StatsBar keys={["angle", "success", "height"]} climb={climb} />
 
       {!climb.posted ? (
         <TouchableOpacity
@@ -89,8 +87,8 @@ function ClimbComponent(climb: Climb) {
 export default function History() {
   const { data, refetch } = useQuery<{ data: Climb[] }>("/log/fetch");
   const [refreshing] = useState<boolean>(false);
-  const {refresh} = useLocalSearchParams();
-  
+  const { refresh } = useLocalSearchParams();
+
   useEffect(() => {
     // console.log(refresh)
     if (refresh == "1") {
@@ -98,7 +96,6 @@ export default function History() {
     }
   }, [refresh, refetch]);
 
-  
   return (
     <Wrapper>
       <FlatList
