@@ -233,15 +233,17 @@ export default function Log() {
       [{ text: "OK", onPress: () => resetValues() }],
     );
     sendRequest({
-      type: climbType,
-      time: time,
-      level: level,
-      success: completed,
-      angle: maxAngles.maxPitch,
-      lat: location?.coords.latitude,
-      lon: location?.coords.longitude,
-      height: height,
-      date: proper_date,
+      body: {
+        type: climbType,
+        time: time,
+        level: level,
+        success: completed,
+        angle: maxAngles.maxPitch,
+        lat: location?.coords.latitude,
+        lon: location?.coords.longitude,
+        height: height,
+        date: proper_date,
+      },
     });
     if (response?.message) {
       Alert.alert(response.message);
@@ -251,7 +253,7 @@ export default function Log() {
   //this calculates the height based on the formula (p1 - p2)/ (pressure at ground level * gravity) -- all converted to pascals
   useEffect(() => {
     if (initialPressure !== 0 && highestPressure !== 0) {
-      const height = (initialPressure * 100 - highestPressure *100 ) / p_g;
+      const height = (initialPressure * 100 - highestPressure * 100) / p_g;
       onChangeHeight(parseFloat(height.toFixed(2))); // Update the height state
       // console.log("Height Calculated:", height.toFixed(2));
     }
@@ -302,7 +304,7 @@ export default function Log() {
   return (
     <Wrapper>
       <ScrollView>
-       <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
+        <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
           Logged Climb Values
         </Text>
         <View style={{ padding: 5, paddingVertical: 20 }}>

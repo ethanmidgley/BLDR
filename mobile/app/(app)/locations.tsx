@@ -161,7 +161,6 @@ export default function Locations() {
         {/*render user location*/}
         {location !== null ? (
           <Marker
-
             key={`user-${location.coords.latitude}-${location.coords.longitude}`} //@ts-ignore
             coordinate={location.coords}
             onPress={() => {

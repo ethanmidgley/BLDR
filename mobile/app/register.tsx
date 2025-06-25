@@ -62,9 +62,11 @@ export default function Register() {
     }
 
     const { status } = await register({
-      email: email,
-      fullname: full_name,
-      password: password,
+      body: {
+        email: email,
+        fullname: full_name,
+        password: password,
+      },
     });
 
     if (status === "success") {

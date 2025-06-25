@@ -16,6 +16,7 @@ export default function HomeScreen() {
         refreshing={status === "loading"}
         onRefresh={refetch}
         data={data}
+        onEndReachedThreshold={() => {}}
         renderItem={(d) => <PostComponent {...d.item} />}
       />
     </>
