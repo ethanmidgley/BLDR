@@ -237,16 +237,29 @@ const main = async () => {
     },
   );
 
-  app.get("/posts/fetch", isLoggedIn, async (request, response) => {
+  app.get("/points/fetch", isLoggedIn, async (request, response) => {
+    const d_fall_back = 0.3;
+    const d_lat = parseFloat(request.query.lat_delta) || d_fall_back;
+    const d_lon = parseFloat(request.query.lon_delta) || d_fall_back;
+    const lat = parseFloat(request.query.lat) || 55.8617;
+    const lon = parseFloat(request.query.lon) || 4.2583;
+
+    const lat_lower = lat - d_lat;
+    const lat_upper = lat + d_lat;
+    const lon_lower = lon - d_lon;
+    const lon_upper = lon + d_lon;
+
     const result = [];
+
     try {
       const [posts] = await db.query(
-        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.angle, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id ORDER BY cbp.date DESC, cbp.id DESC;",
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbc.lat >= ? AND cbc.lat <= ? AND cbc.lon >= ? AND cbc.lon <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
+        [lat_lower, lat_upper, lon_lower, lon_upper],
       );
 
       for (const post of posts) {
         const [comments] = await db.query(
-          "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ?",
+          "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? LIMIT 3",
           [post.id],
         );
 
@@ -260,7 +273,6 @@ const main = async () => {
           climb: {
             time: post.time,
             level: post.level,
-            angle: post.angle,
             type: post.type,
             lat: post.lat,
             lon: post.lon,
@@ -270,6 +282,53 @@ const main = async () => {
       }
 
       response.json(result);
+    } catch (err) {
+      console.log(err);
+      response.status(500).send({ error: "Failed" });
+      return;
+    }
+  });
+
+  app.get("/posts/fetch", isLoggedIn, async (request, response) => {
+    const next_cursor = parseInt(request.query.next_cursor) || 2147483647;
+    const limit = parseInt(request.query.limit) || 20;
+
+    const result = [];
+
+    try {
+      const [posts] = await db.query(
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
+        [next_cursor, limit + 1],
+      );
+
+      for (const post of posts) {
+        const [comments] = await db.query(
+          "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? LIMIT 3",
+          [post.id],
+        );
+
+        result.push({
+          id: post.id,
+          user_id: post.user_id,
+          title: post.title,
+          image: post.image,
+          description: post.description,
+          author: post.full_name,
+          climb: {
+            time: post.time,
+            level: post.level,
+            type: post.type,
+            lat: post.lat,
+            lon: post.lon,
+          },
+          comments: comments,
+        });
+      }
+
+      response.json({
+        next_cursor: result.pop()?.id || null,
+        posts: result,
+      });
     } catch (err) {
       console.log(err);
       response.status(500).send({ error: "Failed" });
