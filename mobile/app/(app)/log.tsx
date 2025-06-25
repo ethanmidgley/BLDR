@@ -2,20 +2,16 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Image,
   Alert,
   TouchableOpacity,
   EventSubscription,
   Vibration,
 } from "react-native";
-import { FlatList, ScrollView, TextInput } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-element-dropdown";
 import { styles } from "@/constants/style";
-import { useQuery } from "../../hooks/useQuery";
-import { Link } from "expo-router";
-import { Barometer, DeviceMotion, Gyroscope } from "expo-sensors";
+import { Barometer } from "expo-sensors";
 import * as Location from "expo-location";
-import { Picker } from "@react-native-picker/picker";
 import { Checkbox } from "expo-checkbox";
 import { useMutation } from "@/hooks/useMutation";
 import Wrapper from "@/components/Wrapper";
@@ -27,7 +23,6 @@ type Climb = {
   time: number;
   level: number;
   success: boolean;
-  angle: number;
   lat: number;
   lon: number;
   height: number;
@@ -84,12 +79,6 @@ export default function Log() {
 
   //this is the state used to toggle wether or not the phone is using the sensors to record the user
   const [recording, setRecording] = useState(false);
-
-  //this is used for the max angles
-  const [maxAngles, setMaxAngles] = useState({ maxPitch: 0, maxRoll: 0 });
-  const [motionSubscription, setMotionSubscription] =
-    useState<EventSubscription | null>(null);
-
   const [completed, toggleComplete] = useState(false);
   const [climbType, setClimbType] = useState<string | null>(null);
 
@@ -114,7 +103,6 @@ export default function Log() {
     onChangeHeight(0);
     setHighestPressure(0);
     setInitialPressure(0);
-    setMaxAngles({ maxPitch: 0, maxRoll: 0 });
     toggleComplete(false);
     setClimbType(null);
   };
@@ -123,10 +111,8 @@ export default function Log() {
   const toggleRecording = () => {
     if (recording) {
       stopRecording(); // Stop recording if it's currently active
-      stopDeviceMotionTracking();
     } else {
       startRecording(); // Start recording if it's currently inactive
-      startDeviceMotionTracking();
     }
     setRecording(!recording); // Toggle the recording state
   };
@@ -229,7 +215,7 @@ export default function Log() {
     const proper_date = `${new_year % 1000}/${new_month < 10 ? "0" + new_month : new_month}/${new_day < 10 ? "0" + new_day : String(new_day)}`;
     Alert.alert(
       "Submitted",
-      `You have submitted the following details:\nDate: ${day}/${month}/${year}\nLevel: ${level}\nTime: ${time}\nHeight Reached: ${height}\n Type of Climb: ${climbType}\nExtreme Angle: ${maxAngles.maxPitch}`,
+      `You have submitted the following details:\nDate: ${day}/${month}/${year}\nLevel: ${level}\nTime: ${time}\nHeight Reached: ${height}\n Type of Climb: ${climbType}`,
       [{ text: "OK", onPress: () => resetValues() }],
     );
     sendRequest({
@@ -237,7 +223,6 @@ export default function Log() {
       time: time,
       level: level,
       success: completed,
-      angle: maxAngles.maxPitch,
       lat: location?.coords.latitude,
       lon: location?.coords.longitude,
       height: height,
@@ -251,38 +236,11 @@ export default function Log() {
   //this calculates the height based on the formula (p1 - p2)/ (pressure at ground level * gravity) -- all converted to pascals
   useEffect(() => {
     if (initialPressure !== 0 && highestPressure !== 0) {
-      const height = (initialPressure * 100 - highestPressure *100 ) / p_g;
+      const height = (initialPressure * 100 - highestPressure * 100) / p_g;
       onChangeHeight(parseFloat(height.toFixed(2))); // Update the height state
       // console.log("Height Calculated:", height.toFixed(2));
     }
   }, [initialPressure, highestPressure]);
-
-  //this is where the extreme angle is calculated and stored in the max angle state
-  const startDeviceMotionTracking = () => {
-    const sub = Gyroscope.addListener((gyroData) => {
-      const { x, y, z } = gyroData;
-      const pitch = Math.atan2(y, Math.sqrt(x * x + y * y)) * (180 / Math.PI);
-      const roll = Math.atan2(x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
-
-      // Update max pitch and roll
-      setMaxAngles((prev) => ({
-        maxPitch: Math.max(prev.maxPitch, Math.abs(pitch)),
-        maxRoll: Math.max(prev.maxRoll, Math.abs(roll)),
-      }));
-    });
-
-    Gyroscope.setUpdateInterval(100);
-    setMotionSubscription(sub as unknown as EventSubscription);
-  };
-
-  //this stops the angle recording so it doesnt eat battery when not recording
-  const stopDeviceMotionTracking = () => {
-    if (motionSubscription) {
-      motionSubscription.remove();
-      setMotionSubscription(null);
-      // console.log("DeviceMotion listener stopped.");
-    }
-  };
 
   //this is where the app gets the location of the user when the app is opened
   useEffect(() => {
@@ -302,7 +260,7 @@ export default function Log() {
   return (
     <Wrapper>
       <ScrollView>
-       <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
+        <Text style={{ ...styles.headingMedium, paddingVertical: 15 }}>
           Logged Climb Values
         </Text>
         <View style={{ padding: 5, paddingVertical: 20 }}>
@@ -431,22 +389,6 @@ export default function Log() {
               }) => {
                 setClimbType(item.value);
               }}
-            />
-          </View>
-          {/*ANGLE SELECTOR*/}
-          <View style={styles.climb_info_spacing}>
-            <Text style={styles.headingSmall}>Extreme Angles (°)</Text>
-            <TextInput
-              onChangeText={(text) =>
-                setMaxAngles((prev) => ({
-                  ...prev, // Spread the previous state to keep existing values
-                  maxPitch: parseInt(text) || 0, // Update only the specific property
-                }))
-              }
-              value={maxAngles.maxPitch.toString()} // Access the maxPitch property from the state
-              placeholder="eg. 13°"
-              placeholderTextColor="#ddd"
-              keyboardType="numeric"
             />
           </View>
           {/*climb complete checkbox*/}
