@@ -242,7 +242,7 @@ const main = async () => {
     const d_lat = parseFloat(request.query.lat_delta) || d_fall_back;
     const d_lon = parseFloat(request.query.lon_delta) || d_fall_back;
     const lat = parseFloat(request.query.lat) || 55.8617;
-    const lon = parseFloat(request.query.lon) || 4.2583;
+    const lon = parseFloat(request.query.lon) || -4.2583;
 
     const lat_lower = lat - d_lat;
     const lat_upper = lat + d_lat;
