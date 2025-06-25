@@ -44,7 +44,13 @@ const main = async () => {
           if (result.length === 0) {
             return cb(null, false, { message: "Incorrect E-mail" });
           }
-          if (!(password === result[0].password)) {
+
+          const valid_password = await argon2.verify(
+            result[0].password,
+            password,
+          );
+
+          if (!valid_password) {
             return cb(null, false, { message: "INCORRECT PASSWORD!!" });
           } else {
             return cb(null, result[0]);
@@ -94,7 +100,7 @@ const main = async () => {
       try {
         const [result] = await db.execute(
           "INSERT INTO `CS317-bldr-users` (`full_name`, `email`, `password`,`image`) VALUES (?, ?, ?, ?);",
-          [fullname, email, hashed_password, request.filename.password],
+          [fullname, email, hashed_password, request.file.filename],
         );
         response.json({
           data: {
@@ -103,6 +109,8 @@ const main = async () => {
               email: email,
               fullname: fullname,
               password: hashed_password,
+              image: request.file.filename,
+              bio: "",
             },
           },
         });
