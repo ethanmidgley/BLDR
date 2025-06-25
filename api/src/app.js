@@ -8,6 +8,7 @@ const LocalStrategy = require("passport-local");
 const multer = require("multer");
 const upload = multer({ dest: path.resolve(__dirname, "../uploads/") });
 const fs = require("fs");
+const argon2 = require("argon2");
 
 // Load environment variables for database password
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
@@ -83,29 +84,34 @@ const main = async () => {
   });
 
   //register api
-  app.post("/users/register", async (request, response) => {
-    const { email, fullname, password } = request.body;
+  app.post(
+    "/users/register",
+    upload.single("image"),
+    async (request, response) => {
+      const { email, fullname, password } = request.body;
+      const hashed_password = await argon2.hash(password);
 
-    try {
-      const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-users` (`full_name`, `email`, `password`) VALUES (?, ?, ?);",
-        [fullname, email, password],
-      );
-      response.json({
-        data: {
-          user: {
-            id: result.insertId,
-            email: email,
-            fullname: fullname,
-            password: password,
+      try {
+        const [result] = await db.execute(
+          "INSERT INTO `CS317-bldr-users` (`full_name`, `email`, `password`,`image`) VALUES (?, ?, ?, ?);",
+          [fullname, email, hashed_password, request.filename.password],
+        );
+        response.json({
+          data: {
+            user: {
+              id: result.insertId,
+              email: email,
+              fullname: fullname,
+              password: hashed_password,
+            },
           },
-        },
-      });
-    } catch {
-      response.status(500).send({ error: "failed to create user" });
-      return;
-    }
-  });
+        });
+      } catch {
+        response.status(500).send({ error: "failed to create user" });
+        return;
+      }
+    },
+  );
 
   //login endpoints
   app.post(
