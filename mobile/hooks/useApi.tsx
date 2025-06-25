@@ -6,7 +6,11 @@ export const API_PATH =
 
 type TransmissionData = {
   body?: object;
-  params?: Record<string, string | number | boolean>;
+  params?: Record<string, string | number | boolean | undefined>;
+};
+
+export type RequestOptions<DataType> = RequestInit & {
+  refetchPolicy?: (oldData: DataType, newData: DataType) => DataType;
 };
 
 type FetchStatus = "loading" | "error" | "success" | "not called";
@@ -19,7 +23,7 @@ type ApiResponse<DataType> = {
 };
 
 const convertParams = (
-  obj: Record<string, string | number | boolean>,
+  obj: Record<string, string | number | boolean | undefined>,
 ): string => {
   let s = "";
 
@@ -27,14 +31,16 @@ const convertParams = (
     if (s.length !== 0) {
       s += "&";
     }
-    s += key + "=" + encodeURIComponent(obj[key]);
+    if (obj[key]) {
+      s += key + "=" + encodeURIComponent(obj[key]);
+    }
   }
   return s;
 };
 
 export const useApi = <DataType,>(
   url: string,
-  options?: RequestInit,
+  options?: RequestOptions<DataType>,
 ): [
   (variables?: TransmissionData) => Promise<ApiResponse<DataType>>,
   ApiResponse<DataType>,
@@ -47,7 +53,6 @@ export const useApi = <DataType,>(
     variables?: TransmissionData,
   ): Promise<ApiResponse<DataType>> => {
     setStatus("loading");
-    setData(null);
     setError(null);
     try {
       const res = await fetch(
@@ -63,7 +68,11 @@ export const useApi = <DataType,>(
       );
       const json = (await res.json()) as DataType;
 
-      setData(json);
+      if (options?.refetchPolicy && data != null) {
+        setData(options.refetchPolicy(data, json));
+      } else {
+        setData(json);
+      }
       setStatus("success");
       return { data: json, status: "success", error: null, refetch: send };
     } catch (err: any) {

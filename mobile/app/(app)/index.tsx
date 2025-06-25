@@ -3,8 +3,18 @@ import React from "react";
 import { useQuery } from "@/hooks/useQuery";
 import { Post, PostComponent } from "@/components/PostComponent";
 
+type PostsResponse = {
+  next_cursor: number;
+  posts: Post[];
+};
+
 export default function HomeScreen() {
-  const { data, status, refetch } = useQuery<Post[]>("/posts/fetch");
+  const { data, status, refetch } = useQuery<PostsResponse>("/posts/fetch", {
+    refetchPolicy: (oldData, newData) => ({
+      posts: [...oldData.posts, ...newData.posts],
+      next_cursor: newData.next_cursor,
+    }),
+  });
 
   return (
     <>
@@ -15,8 +25,13 @@ export default function HomeScreen() {
         style={{}}
         refreshing={status === "loading"}
         onRefresh={refetch}
-        data={data}
-        onEndReachedThreshold={() => {}}
+        data={data?.posts}
+        onEndReachedThreshold={2}
+        onEndReached={async () => {
+          await refetch({
+            params: { next_cursor: data?.next_cursor },
+          });
+        }}
         renderItem={(d) => <PostComponent {...d.item} />}
       />
     </>
