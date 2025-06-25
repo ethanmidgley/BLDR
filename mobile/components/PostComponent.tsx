@@ -85,9 +85,11 @@ export function PostComponent({
     const proper_date = `${year % 1000}/${month < 10 ? "0" + month : month}/${day < 10 ? "0" + day : String(day)}`;
 
     const { status } = await sendRequest({
-      post_id: id,
-      content: replyee + comment,
-      date: proper_date,
+      body: {
+        post_id: id,
+        content: replyee + comment,
+        date: proper_date,
+      },
     });
 
     if (status === "error") {

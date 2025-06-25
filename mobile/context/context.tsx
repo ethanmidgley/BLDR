@@ -1,3 +1,4 @@
+import React from "react";
 import { useContext, createContext, type PropsWithChildren } from "react";
 import { useStorageState } from "./useStorageState";
 import { useMutation } from "@/hooks/useMutation";
@@ -51,8 +52,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
       value={{
         signIn: async (email: string, password: string) => {
           const { data } = await sendRequest({
-            email: email,
-            password: password,
+            body: {
+              email: email,
+              password: password,
+            },
           });
           if (data?.user != null) {
             setSession(JSON.stringify(data.user));

@@ -219,14 +219,16 @@ export default function Log() {
       [{ text: "OK", onPress: () => resetValues() }],
     );
     sendRequest({
-      type: climbType,
-      time: time,
-      level: level,
-      success: completed,
-      lat: location?.coords.latitude,
-      lon: location?.coords.longitude,
-      height: height,
-      date: proper_date,
+      body: {
+        type: climbType,
+        time: time,
+        level: level,
+        success: completed,
+        lat: location?.coords.latitude,
+        lon: location?.coords.longitude,
+        height: height,
+        date: proper_date,
+      },
     });
     if (response?.message) {
       Alert.alert(response.message);

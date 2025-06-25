@@ -1,6 +1,6 @@
 import { Link, router } from "expo-router";
 import { styles } from "@/constants/style";
-import React, { useState} from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -21,7 +21,7 @@ export default function Register() {
   const [password, on_change_password] = React.useState("");
   const [confirm_password, on_change_confirm_password] = React.useState("");
   const [uri, setUri] = useState<string | null>(null);
-  const [image_flag,set_image_flag]  = useState(false);
+  const [image_flag, set_image_flag] = useState(false);
 
   const handleChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,7 +29,8 @@ export default function Register() {
       allowsEditing: true,
       quality: 1,
     });
-    if (!result.canceled && result.assets && result.assets.length > 0) { // CANCELLED ***
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      // CANCELLED ***
       const imageUri = result.assets[0].uri;
       setUri(imageUri);
     }
@@ -65,7 +66,7 @@ export default function Register() {
       return;
     }
 
-    if (uri === ""){
+    if (uri === "") {
       Alert.alert("Please upload an image");
       set_image_flag(false);
       return;
@@ -108,7 +109,7 @@ export default function Register() {
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Failed to post data. Please try again.");
-    } 
+    }
   };
 
   return (
@@ -123,95 +124,102 @@ export default function Register() {
         <Text style={styles.h1}> Register </Text>
 
         {!image_flag ? (
-        <>
-        <TextInput
-          style={styles.input}
-          value={full_name}
-          onChangeText={on_change_full_name}
-          placeholder="full name"
-          placeholderTextColor="#ddd"
-          keyboardType="default"
-        />
+          <>
+            <TextInput
+              style={styles.input}
+              value={full_name}
+              onChangeText={on_change_full_name}
+              placeholder="full name"
+              placeholderTextColor="#ddd"
+              keyboardType="default"
+            />
 
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={on_change_email}
-          placeholder="e-mail"
-          placeholderTextColor="#ddd"
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={on_change_email}
+              placeholder="e-mail"
+              placeholderTextColor="#ddd"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
 
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={on_change_password}
-          placeholder="password"
-          placeholderTextColor="#ddd"
-          keyboardType="default"
-          autoCapitalize="none"
-          secureTextEntry={true}
-        />
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={on_change_password}
+              placeholder="password"
+              placeholderTextColor="#ddd"
+              keyboardType="default"
+              autoCapitalize="none"
+              secureTextEntry={true}
+            />
 
-        <TextInput
-          style={styles.input}
-          value={confirm_password}
-          onChangeText={on_change_confirm_password}
-          placeholder="confirm password"
-          placeholderTextColor="#ddd"
-          // keyboardType="visible-password"
-          secureTextEntry={true}
-          autoCapitalize="none"
-        />
+            <TextInput
+              style={styles.input}
+              value={confirm_password}
+              onChangeText={on_change_confirm_password}
+              placeholder="confirm password"
+              placeholderTextColor="#ddd"
+              // keyboardType="visible-password"
+              secureTextEntry={true}
+              autoCapitalize="none"
+            />
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => set_image_flag(true)}
-        >
-        <Text style={styles.button_text}> Next </Text>
-        </TouchableOpacity>
-        </>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => set_image_flag(true)}
+            >
+              <Text style={styles.button_text}> Next </Text>
+            </TouchableOpacity>
+          </>
         ) : (
-        <>
+          <>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#f00",
+                justifyContent: "center",
+                borderRadius: 5,
+                paddingVertical: 8,
+                alignSelf: "center",
+                padding: 10,
+                margin: 10,
+                width: "70%",
+                height: 50,
+              }}
+              onPress={handleChooseImage}
+            >
+              <Text style={{ ...styles.button_text, color: "#fff" }}>
+                Select a profile picture!
+              </Text>
+            </TouchableOpacity>
+            {uri && (
+              <Image
+                source={{ uri: uri }}
+                style={{ ...styles.image, alignSelf: "center" }}
+              />
+            )}
 
-      <TouchableOpacity 
-        style={{
-          backgroundColor: "#f00", 
-          justifyContent: "center", 
-          borderRadius: 5, 
-          paddingVertical: 8,
-          alignSelf:"center",
-          padding:10,
-          margin:10,
-          width:"70%",
-          height:50,
-          }}
-        onPress={handleChooseImage}
-       
-        >
-        <Text style = {{...styles.button_text, color: "#fff"}}>Select a profile picture!</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableOpacity
+                style={{
+                  ...styles.button,
+                  backgroundColor: "#000",
+                  height: 50,
+                }}
+                onPress={() => set_image_flag(false)}
+              >
+                <Text style={styles.button_text}> Back </Text>
+              </TouchableOpacity>
 
-        
-      </TouchableOpacity>
-      {uri && <Image source={{ uri: uri }} style={{...styles.image,alignSelf:"center"}} />}
-
-      <View style={{flexDirection: "row", alignItems: "center"}}>
-        <TouchableOpacity
-          style={{...styles.button, backgroundColor:"#000", height:50}}
-          onPress={() => set_image_flag(false)}
-        >
-        <Text style={styles.button_text}> Back </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{...styles.button, height:50, marginHorizontal:5}}
-          onPress={submitForm}
-        >
-        <Text style={styles.button_text}> Register </Text>
-        </TouchableOpacity>
-        </View>
-        </>
+              <TouchableOpacity
+                style={{ ...styles.button, height: 50, marginHorizontal: 5 }}
+                onPress={submitForm}
+              >
+                <Text style={styles.button_text}> Register </Text>
+              </TouchableOpacity>
+            </View>
+          </>
         )}
         <Text style={styles.text}> Already have an account? </Text>
         <Link href={"/login"} style={styles.link}>
