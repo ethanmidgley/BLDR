@@ -372,6 +372,23 @@ const main = async () => {
     }
   });
 
+  app.post("/profile/bio-edit", isLoggedIn, async (request, response) => {
+    const { bio } = request.body;
+
+    try {
+      await db.execute(
+        "UPDATE `CS317-bldr-users` SET `bio` = ? WHERE id = ?;",
+        [bio, request.user.id],
+      );
+      response.json({
+        bio: bio,
+      });
+    } catch (error) {
+      console.error("Error updating bio:", error);
+      response.status(500).json({ error: "Unable to update bio" });
+    }
+  });
+
   app.listen(port);
 };
 
