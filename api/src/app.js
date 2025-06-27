@@ -311,14 +311,18 @@ const main = async () => {
 
     try {
       const [comments] = await db.query(
-        "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? AND cbc.id <= ? ORDER BY cbc.id DESC LIMIT ?",
+        "SELECT cbc.id, cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? AND cbc.id <= ? ORDER BY cbc.id DESC LIMIT ?",
         [post_id, next_cursor, limit + 1],
       );
 
-      response.json({
-        next_cursor: comments.pop()?.id || null,
-        comments: comments,
-      });
+      response.json(
+        comments.length == 1 || comments.length <= limit
+          ? { next_cursor: null, comments: comments }
+          : {
+              next_cursor: comments.pop()?.id || null,
+              comments: comments,
+            },
+      );
     } catch (err) {
       console.log(err);
       response.status(500).send({ error: "Failed" });
@@ -356,10 +360,14 @@ const main = async () => {
         });
       }
 
-      response.json({
-        next_cursor: result.pop()?.id || null,
-        posts: result,
-      });
+      response.json(
+        result.length == 1 || result.length <= limit
+          ? { next_cursor: null, posts: result }
+          : {
+              next_cursor: result.pop()?.id || null,
+              posts: result,
+            },
+      );
     } catch (err) {
       console.log(err);
       response.status(500).send({ error: "Failed" });

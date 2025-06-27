@@ -189,23 +189,21 @@ export function PostComponent({
             ))}
           </View>
           {comments?.next_cursor != null ? (
-            <View>
-              <TouchableOpacity
-                onPress={async () => {
-                  if (comments.next_cursor != null) {
-                    await refetch({
-                      params: { next_cursor: comments?.next_cursor, limit: 10 },
-                    });
-                  }
-                }}
-              >
-                {commentsStatus == "loading" ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text>Load more...</Text>
-                )}
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={async () => {
+                if (comments.next_cursor != null) {
+                  await refetch({
+                    params: { next_cursor: comments?.next_cursor, limit: 10 },
+                  });
+                }
+              }}
+            >
+              {commentsStatus == "loading" ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={{ paddingRight: 40 }}>Load more...</Text>
+              )}
+            </TouchableOpacity>
           ) : null}
           <View style={{ flexDirection: "row" }}>
             <TextInput
