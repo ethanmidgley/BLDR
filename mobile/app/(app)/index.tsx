@@ -9,12 +9,7 @@ type PostsResponse = {
 };
 
 export default function HomeScreen() {
-  const { data, status, refetch } = useQuery<PostsResponse>("/posts/fetch", {
-    refetchPolicy: (oldData, newData) => ({
-      posts: [...oldData.posts, ...newData.posts],
-      next_cursor: newData.next_cursor,
-    }),
-  });
+  const { data, status, refetch } = useQuery<PostsResponse>("/posts/fetch");
 
   return (
     <>
@@ -29,9 +24,17 @@ export default function HomeScreen() {
         onEndReachedThreshold={2}
         onEndReached={async () => {
           if (data?.next_cursor != null) {
-            await refetch({
-              params: { next_cursor: data?.next_cursor },
-            });
+            await refetch(
+              {
+                params: { next_cursor: data?.next_cursor },
+              },
+              {
+                refetchPolicy: (oldData, newData) => ({
+                  posts: [...oldData.posts, ...newData.posts],
+                  next_cursor: newData.next_cursor,
+                }),
+              },
+            );
           }
         }}
         renderItem={(d) => <PostComponent {...d.item} />}

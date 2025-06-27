@@ -19,7 +19,10 @@ type ApiResponse<DataType> = {
   data: DataType | null;
   status: FetchStatus;
   error: string | null;
-  refetch: (variables?: TransmissionData) => Promise<ApiResponse<DataType>>;
+  refetch: (
+    variables?: TransmissionData,
+    refetchOptions?: RequestOptions<DataType>,
+  ) => Promise<ApiResponse<DataType>>;
 };
 
 const convertParams = (
@@ -51,7 +54,13 @@ export const useApi = <DataType,>(
 
   const send = async (
     variables?: TransmissionData,
+    sendOptions?: RequestOptions<DataType>,
   ): Promise<ApiResponse<DataType>> => {
+    const finalOptions = {
+      ...options,
+      ...sendOptions,
+    };
+
     setStatus("loading");
     setError(null);
     try {
@@ -63,13 +72,13 @@ export const useApi = <DataType,>(
           credentials: "include",
           method: "POST",
           body: JSON.stringify(variables?.body),
-          ...options,
+          ...finalOptions,
         },
       );
       const json = (await res.json()) as DataType;
 
-      if (options?.refetchPolicy && data != null) {
-        setData(options.refetchPolicy(data, json));
+      if (finalOptions?.refetchPolicy && data != null) {
+        setData(finalOptions.refetchPolicy(data, json));
       } else {
         setData(json);
       }
