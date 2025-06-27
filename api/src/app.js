@@ -134,13 +134,14 @@ const main = async () => {
 
   //user data api
   app.get("/user/:id", isLoggedIn, async (request, response) => {
-    
-    try { 
+    try {
       const [result] = await db.execute(
         "SELECT (`full_name`, `image`, `bio`) from `CS317-bldr-users` where id = ?;",
-        [request.id]);
+        [request.id],
+      );
       response.json({
-        data: result });
+        data: result,
+      });
     } catch {
       response.status(500).send({ error: "failed to fetch user data" });
       return;
@@ -273,11 +274,6 @@ const main = async () => {
       );
 
       for (const post of posts) {
-        const [comments] = await db.query(
-          "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? LIMIT 3",
-          [post.id],
-        );
-
         result.push({
           id: post.id,
           user_id: post.user_id,
@@ -292,11 +288,37 @@ const main = async () => {
             lat: post.lat,
             lon: post.lon,
           },
-          comments: comments,
         });
       }
 
       response.json(result);
+    } catch (err) {
+      console.log(err);
+      response.status(500).send({ error: "Failed" });
+      return;
+    }
+  });
+
+  app.get("/posts/:id/comments", isLoggedIn, async (request, response) => {
+    const post_id = parseInt(request.params.id) || -1;
+
+    if (post_id == -1) {
+      response.status(500).send({ error: "Failed" });
+    }
+
+    const next_cursor = parseInt(request.query.next_cursor) || 2147483647;
+    const limit = parseInt(request.query.limit) || 3;
+
+    try {
+      const [comments] = await db.query(
+        "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? AND cbc.id <= ? ORDER BY cbc.id DESC LIMIT ?",
+        [post_id, next_cursor, limit + 1],
+      );
+
+      response.json({
+        next_cursor: comments.pop()?.id || null,
+        comments: comments,
+      });
     } catch (err) {
       console.log(err);
       response.status(500).send({ error: "Failed" });
@@ -317,11 +339,6 @@ const main = async () => {
       );
 
       for (const post of posts) {
-        const [comments] = await db.query(
-          "SELECT cbu.full_name as author, cbc.date, cbc.content FROM `CS317-bldr-comments` cbc LEFT JOIN `CS317-bldr-users` cbu ON cbu.id = cbc.user_id WHERE cbc.post_id = ? LIMIT 3",
-          [post.id],
-        );
-
         result.push({
           id: post.id,
           user_id: post.user_id,
@@ -336,7 +353,6 @@ const main = async () => {
             lat: post.lat,
             lon: post.lon,
           },
-          comments: comments,
         });
       }
 
