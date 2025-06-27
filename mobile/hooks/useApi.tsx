@@ -47,7 +47,6 @@ export const useApi = <DataType,>(
     variables?: TransmissionData,
   ): Promise<ApiResponse<DataType>> => {
     setStatus("loading");
-    setData(null);
     setError(null);
     try {
       const res = await fetch(
