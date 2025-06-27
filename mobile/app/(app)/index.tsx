@@ -4,7 +4,7 @@ import { useQuery } from "@/hooks/useQuery";
 import { Post, PostComponent } from "@/components/PostComponent";
 
 type PostsResponse = {
-  next_cursor: number;
+  next_cursor: number | null;
   posts: Post[];
 };
 
@@ -28,9 +28,11 @@ export default function HomeScreen() {
         data={data?.posts}
         onEndReachedThreshold={2}
         onEndReached={async () => {
-          await refetch({
-            params: { next_cursor: data?.next_cursor },
-          });
+          if (data?.next_cursor != null) {
+            await refetch({
+              params: { next_cursor: data?.next_cursor },
+            });
+          }
         }}
         renderItem={(d) => <PostComponent {...d.item} />}
       />

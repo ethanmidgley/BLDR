@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { API_PATH } from "@/hooks/useApi";
@@ -16,6 +17,7 @@ import { styles } from "@/constants/style";
 import { Link } from "expo-router";
 import { useSession } from "@/context/context";
 import StatsBar from "./StatsBar";
+import { useQuery } from "@/hooks/useQuery";
 
 export type Climb = {
   time: number;
@@ -35,8 +37,12 @@ export type Post = {
   description: string;
   author: string;
   image: string;
-  comments: Comment[];
   climb: Climb;
+};
+
+export type CommentResponse = {
+  next_cursor: number | null;
+  comments: Comment[];
 };
 
 export type Comment = {
@@ -54,7 +60,6 @@ type PostComponentProps = Post & {
 };
 
 export function PostComponent({
-  comments,
   title,
   author,
   description,
@@ -67,6 +72,17 @@ export function PostComponent({
   const [sendRequest] = useMutation<commentResponse>("/comments/add");
   const { getUser } = useSession();
   const username = getUser()?.full_name as string;
+
+  const {
+    data: comments,
+    status: commentsStatus,
+    refetch,
+  } = useQuery<CommentResponse>(`/posts/${id}/comments`, {
+    refetchPolicy: (oldData, newData) => ({
+      comments: [...oldData.comments, ...newData.comments],
+      next_cursor: newData.next_cursor,
+    }),
+  });
 
   const commentOnPost = async () => {
     if (comment === "") {
@@ -95,7 +111,7 @@ export function PostComponent({
     if (status === "error") {
       Alert.alert("Failed to post comment. Try again later.");
     } else if (status === "success") {
-      comments.push({
+      comments?.comments.push({
         id: Infinity,
         author: username,
         content: replyee + comment,
@@ -158,7 +174,7 @@ export function PostComponent({
           <View style={{ gap: 2 }}>
             <Text style={styles.headingSmall}>Comments</Text>
 
-            {comments.map((c, idx) => (
+            {comments?.comments.map((c, idx) => (
               <View key={idx}>
                 <Text style={{ paddingRight: 40 }}>
                   {c.author}: {c.content}
@@ -172,6 +188,25 @@ export function PostComponent({
               </View>
             ))}
           </View>
+          {comments?.next_cursor != null ? (
+            <View>
+              <TouchableOpacity
+                onPress={async () => {
+                  if (comments.next_cursor != null) {
+                    await refetch({
+                      params: { next_cursor: comments?.next_cursor, limit: 10 },
+                    });
+                  }
+                }}
+              >
+                {commentsStatus == "loading" ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text>Load more...</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          ) : null}
           <View style={{ flexDirection: "row" }}>
             <TextInput
               placeholder={placeholder}
