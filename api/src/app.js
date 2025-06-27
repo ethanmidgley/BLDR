@@ -254,7 +254,7 @@ const main = async () => {
     try {
       const [posts] = await db.query(
         "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbc.lat >= ? AND cbc.lat <= ? AND cbc.lon >= ? AND cbc.lon <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
-        [lat_lower, lat_upper, lon_lower, lon_upper],
+        [lat_lower, lat_upper, lon_lower, lon_upper, 20],
       );
 
       for (const post of posts) {

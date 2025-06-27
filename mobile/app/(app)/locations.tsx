@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import MapView, {
   Marker,
   Callout,
+  Region,
   PROVIDER_GOOGLE,
   PROVIDER_DEFAULT,
 } from "react-native-maps";
@@ -135,10 +136,55 @@ export default function Locations() {
   const [bottomStatePost, setBottomStatePost] = useState<Post | null>(null);
 
   //fetch posts to grab climbs
-  const { data } = useQuery<Post[]>("/posts/fetch");
+  const { data, refetch } = useQuery<Post[]>("/points/fetch");
   // console.log(data);
 
+  const [anchor, setAnchor] = useState(setDefaultLocation());
   const [refresh, setRefresh] = useState(0);
+
+  function haversine(anchor: Region, region: Region) {
+    const R = 6371000; //radius of the earth in meters
+    const to_rad = (deg: number) => (deg * Math.PI) / 180;
+    const lats = [region.latitude, anchor.latitude].map(to_rad);
+    const lons = [region.longitude, anchor.longitude].map(to_rad);
+
+    const d_lat = lats[0] - lats[1];
+    const d_lon = lons[0] - lons[1];
+
+    const a =
+      Math.sin(d_lat / 2) ** 2 +
+      Math.cos(lats[0]) * Math.cos(lats[1]) * Math.sin(d_lon / 2) ** 2;
+
+    //distance in meters
+    return R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function region_locked_refresh(region: Region) {
+    console.log("goofy ahh");
+    const d_lat = Math.abs(region.latitudeDelta - anchor.latitudeDelta);
+    const d_lon = Math.abs(region.longitudeDelta - anchor.longitudeDelta);
+
+    //simple scale for now
+    const threshhold =
+      2000 * (1 + (anchor.longitudeDelta + anchor.latitudeDelta / 2)) + 0.001;
+    const d_activation =
+      d_lat >= anchor.latitudeDelta / 2 || d_lon >= anchor.longitudeDelta / 2;
+
+    // no change in delta -> assess over distance
+    if (d_activation || haversine(anchor, region) >= threshhold) {
+      console.log(`${d_activation}, fetching`);
+      console.log(region);
+      setAnchor(region);
+      refetch({
+        params: {
+          lat: region.latitude,
+          lon: region.longitude,
+          lat_delta: region.latitudeDelta,
+          lon_delta: region.longitudeDelta,
+        },
+      });
+    }
+  }
 
   useEffect(() => {
     setRefresh((prev) => prev + 1); // Increment to force a re-render
@@ -151,6 +197,7 @@ export default function Locations() {
         key={refresh}
         style={styles.map} //@ts-ignore
         cluster={false}
+        onRegionChangeComplete={region_locked_refresh}
         provider={
           process.env.environment === "preview"
             ? PROVIDER_GOOGLE
