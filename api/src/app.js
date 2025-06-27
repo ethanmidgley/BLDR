@@ -132,6 +132,21 @@ const main = async () => {
     },
   );
 
+  //user data api
+  app.get("/user/:id", isLoggedIn, async (request, response) => {
+    
+    try { 
+      const [result] = await db.execute(
+        "SELECT (`full_name`, `image`, `bio`) from `CS317-bldr-users` where id = ?;",
+        [request.id]);
+      response.json({
+        data: result });
+    } catch {
+      response.status(500).send({ error: "failed to fetch user data" });
+      return;
+    }
+  });
+
   //log endpoints
 
   //add a climb
