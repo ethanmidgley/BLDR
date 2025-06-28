@@ -18,6 +18,7 @@ import { styles } from "@/constants/style";
 const PostClimbScreen = () => {
   const router = useRouter();
   const { climb_id } = useLocalSearchParams();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uri, setUri] = useState<string | null>(null);
@@ -56,7 +57,7 @@ const PostClimbScreen = () => {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("climb_id", climb_id);
+      formData.append("climb_id", climb_id as string);
       formData.append("date", date);
       //image upload stuff
       const localUri = uri;
@@ -64,6 +65,7 @@ const PostClimbScreen = () => {
       const match = /\.(\w+)$/.exec(filename || "");
       const type = match ? `image/${match[1]}` : "image";
 
+      // @ts-ignore
       formData.append("image", {
         uri: localUri,
         name: filename,

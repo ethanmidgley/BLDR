@@ -5,7 +5,6 @@ import {
   TextInput,
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -14,7 +13,7 @@ import { API_PATH } from "@/hooks/useApi";
 import { Image } from "expo-image";
 import Wrapper from "./Wrapper";
 import { styles } from "@/constants/style";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useSession } from "@/context/context";
 import StatsBar from "./StatsBar";
 import { useQuery } from "@/hooks/useQuery";
@@ -23,11 +22,10 @@ export type Climb = {
   time: number;
   level: number;
   height: number;
-  angle: number;
-  type: string;
   success: boolean;
   lat: number;
   lon: number;
+  type: string;
 };
 
 export type Post = {
@@ -66,12 +64,14 @@ export function PostComponent({
   image,
   climb,
   id,
+  user_id,
   fullWidth = true,
 }: PostComponentProps) {
   const [comment, setComment] = useState<string>("");
   const [sendRequest] = useMutation<commentResponse>("/comments/add");
   const { getUser } = useSession();
   const username = getUser()?.full_name as string;
+  const router = useRouter();
 
   const {
     data: comments,
@@ -147,9 +147,18 @@ export function PostComponent({
       </View>
       <Wrapper style={!fullWidth && { marginHorizontal: 0 }}>
         <View style={{ flex: 1, gap: 10 }}>
-          <Text style={styles.headingMedium}>
-            {title} - {author}
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              router.push({
+                pathname: "/profile",
+                params: { user_id: user_id },
+              });
+            }}
+          >
+            <Text style={styles.headingMedium}>
+              {title} - {author}
+            </Text>
+          </TouchableOpacity>
           <Text style={{ textAlign: "justify" }}>{description}</Text>
           <StatsBar climb={climb} />
 
@@ -198,7 +207,7 @@ export function PostComponent({
                 }
               }}
             >
-              {commentsStatus == "loading" ? (
+              {commentsStatus === "loading" ? (
                 <ActivityIndicator />
               ) : (
                 <Text style={{ paddingRight: 40 }}>Load more...</Text>

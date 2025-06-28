@@ -135,14 +135,24 @@ const main = async () => {
   //user data api
   app.get("/user/:id", isLoggedIn, async (request, response) => {
     try {
-      const [result] = await db.execute(
-        "SELECT (`full_name`, `image`, `bio`) from `CS317-bldr-users` where id = ?;",
-        [request.id],
+      console.log("hey");
+      const [result] = await db.query(
+        "SELECT `full_name`, `image`, `bio` from `CS317-bldr-users` where id = ?;",
+        [request.params.id],
       );
+
+      if (!result) {
+        response.status(404).send({ error: "failed to find user" });
+        return;
+      }
+
       response.json({
-        data: result,
+        fullname: result[0].full_name,
+        image: result[0].image,
+        bio: result[0].bio,
       });
-    } catch {
+    } catch (error) {
+      console.log(error);
       response.status(500).send({ error: "failed to fetch user data" });
       return;
     }
@@ -157,19 +167,8 @@ const main = async () => {
 
     try {
       const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `angle`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-        [
-          request.user.id,
-          type,
-          time,
-          level,
-          success,
-          angle,
-          lat,
-          lon,
-          height,
-          date,
-        ],
+        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+        [request.user.id, type, time, level, success, lat, lon, height, date],
       );
 
       response.json({

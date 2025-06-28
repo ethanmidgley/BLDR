@@ -1,4 +1,4 @@
-import { router, Tabs, usePathname } from "expo-router";
+import { router, Tabs, useLocalSearchParams, usePathname } from "expo-router";
 import React from "react";
 import { Alert, Button, Platform, TouchableOpacity, View } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
@@ -15,7 +15,8 @@ import {
 import { styles } from "@/constants/style";
 
 export default function TabLayout() {
-  const { session, isLoading, signOut } = useSession();
+  const { session, isLoading, getUser, signOut } = useSession();
+  const user_id = getUser()?.id;
   const pathname = usePathname();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
@@ -56,7 +57,8 @@ export default function TabLayout() {
     Alert.alert(
       "To use this page:",
       "1: If you cannot see your climb pull down to refresh.\n2: Click on the climb you want to Post.\n3: Click on the post button to post your climb after adding an image.",
-    );}
+    );
+  };
 
   return (
     <Tabs
@@ -158,6 +160,20 @@ export default function TabLayout() {
             ),
             headerTitleAlign: "center",
           }),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        initialParams={{ user_id: user_id }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate("profile", { user_id: user_id });
+          },
+        })}
+        options={{
+          title: "PROFILE",
+          tabBarIcon: () => <AntDesign name="user" size={24} color="black" />,
         }}
       />
     </Tabs>

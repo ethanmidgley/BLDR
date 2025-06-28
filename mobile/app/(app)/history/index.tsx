@@ -91,7 +91,7 @@ export default function History() {
 
   useEffect(() => {
     // console.log(refresh)
-    if (refresh == "1") {
+    if (refresh === "1") {
       refetch();
     }
   }, [refresh, refetch]);
