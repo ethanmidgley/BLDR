@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export const API_PATH =
   process.env.EXPO_PUBLIC_API_URL ||
-  "https://devweb2024.cis.strath.ac.uk/mhb22136-nodejs";
+  "https://devweb2024.cis.strath.ac.uk/ksb22167-nodejs";
 
 type TransmissionData = {
   body?: object;
