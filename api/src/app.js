@@ -135,7 +135,6 @@ const main = async () => {
   //user data api
   app.get("/user/:id", isLoggedIn, async (request, response) => {
     try {
-      console.log("hey");
       const [result] = await db.query(
         "SELECT `full_name`, `image`, `bio` from `CS317-bldr-users` where id = ?;",
         [request.params.id],
@@ -297,6 +296,7 @@ const main = async () => {
     }
   });
 
+
   app.get("/posts/:id/comments", isLoggedIn, async (request, response) => {
     const post_id = parseInt(request.params.id) || -1;
 
@@ -372,6 +372,57 @@ const main = async () => {
       return;
     }
   });
+
+  // user specific climbs
+  app.get("/posts/fetchbyuser/:id", isLoggedIn, async (request, response) => {
+    const next_cursor = parseInt(request.query.next_cursor) || 2147483647;
+    const limit = parseInt(request.query.limit) || 20;
+    //const user_id = parseInt(request.params.id) || -1;
+    //if (user_id == -1){
+    //  response.status(500).send({ error: "Failed epicly" });
+    //}
+
+    const result = [];
+
+    try { 
+      const [posts] = await db.query(
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? AND cbu.id = ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
+        [next_cursor, request.params.id, limit + 1],
+      );
+
+      for (const post of posts) {
+        result.push({
+          id: post.id,
+          user_id: post.user_id,
+          title: post.title,
+          image: post.image,
+          description: post.description,
+          author: post.full_name,
+          climb: {
+            time: post.time,
+            level: post.level,
+            type: post.type,
+            lat: post.lat,
+            lon: post.lon,
+          },
+        });
+      }
+
+      response.json(
+        result.length == 1 || result.length <= limit
+          ? { next_cursor: null, posts: result }
+          : {
+              next_cursor: result.pop()?.id || null,
+              posts: result,
+            },
+      );
+    } catch (err) {
+      console.log(err);
+      response.status(500).send({ error: "Failed" });
+      return;
+    }
+  });
+
 
   app.get("/image/:uri", async (request, response) => {
     const fileStream = fs.createReadStream(
