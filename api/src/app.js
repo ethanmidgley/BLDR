@@ -162,12 +162,12 @@ const main = async () => {
 
   //add a climb
   app.post("/log/add", isLoggedIn, async (request, response) => {
-    const { type, time, level, success, angle, lat, lon, height, date } =
+    const { type, time, level, success, lat, lon, height, date } =
       request.body;
 
     try {
       const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
         [request.user.id, type, time, level, success, lat, lon, height, date],
       );
 
@@ -180,7 +180,6 @@ const main = async () => {
             time: time,
             level: level,
             success: success,
-            angle: angle,
             lat: lat,
             lon: lon,
             height: height,
