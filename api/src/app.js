@@ -161,12 +161,11 @@ const main = async () => {
 
   //add a climb
   app.post("/log/add", isLoggedIn, async (request, response) => {
-    const { type, time, level, success, lat, lon, height, date } =
-      request.body;
+    const { type, time, level, success, lat, lon, height, date } = request.body;
 
     try {
       const [result] = await db.execute(
-        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+        "INSERT INTO `CS317-bldr-climbs` (`user_id`, `type`, `time`, `level`, `success`, `lat`, `lon`, `height`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [request.user.id, type, time, level, success, lat, lon, height, date],
       );
 
@@ -296,7 +295,6 @@ const main = async () => {
     }
   });
 
-
   app.get("/posts/:id/comments", isLoggedIn, async (request, response) => {
     const post_id = parseInt(request.params.id) || -1;
 
@@ -384,7 +382,7 @@ const main = async () => {
 
     const result = [];
 
-    try { 
+    try {
       const [posts] = await db.query(
         "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? AND cbu.id = ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
         [next_cursor, request.params.id, limit + 1],
@@ -422,7 +420,6 @@ const main = async () => {
       return;
     }
   });
-
 
   app.get("/image/:uri", async (request, response) => {
     const fileStream = fs.createReadStream(
