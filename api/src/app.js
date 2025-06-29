@@ -265,7 +265,7 @@ const main = async () => {
 
     try {
       const [posts] = await db.query(
-        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbc.lat >= ? AND cbc.lat <= ? AND cbc.lon >= ? AND cbc.lon <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type, cbc.height FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbc.lat >= ? AND cbc.lat <= ? AND cbc.lon >= ? AND cbc.lon <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
         [lat_lower, lat_upper, lon_lower, lon_upper, 20],
       );
 
@@ -280,6 +280,7 @@ const main = async () => {
           climb: {
             time: post.time,
             level: post.level,
+            height: post.height,
             type: post.type,
             lat: post.lat,
             lon: post.lon,
@@ -334,7 +335,7 @@ const main = async () => {
 
     try {
       const [posts] = await db.query(
-        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type, cbc.height FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
         [next_cursor, limit + 1],
       );
 
@@ -350,6 +351,7 @@ const main = async () => {
             time: post.time,
             level: post.level,
             type: post.type,
+            height: post.height,
             lat: post.lat,
             lon: post.lon,
           },
@@ -384,7 +386,7 @@ const main = async () => {
 
     try {
       const [posts] = await db.query(
-        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? AND cbu.id = ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
+        "SELECT cbp.id, cbp.user_id, cbp.title, cbp.image, cbp.date, cbp.description, cbu.full_name as full_name, cbc.time, cbc.`level`, cbc.lat, cbc.lon, cbc.type, cbc.height FROM `CS317-bldr-posts` cbp LEFT JOIN `CS317-bldr-users` cbu on cbp.user_id = cbu.id LEFT JOIN `CS317-bldr-climbs` cbc on cbp.climb_id = cbc.id WHERE cbp.id <= ? AND cbu.id = ? ORDER BY cbp.date DESC, cbp.id DESC LIMIT ?;",
         [next_cursor, request.params.id, limit + 1],
       );
 
@@ -400,6 +402,7 @@ const main = async () => {
             time: post.time,
             level: post.level,
             type: post.type,
+            height: post.height,
             lat: post.lat,
             lon: post.lon,
           },

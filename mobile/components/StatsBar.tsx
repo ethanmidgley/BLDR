@@ -17,7 +17,10 @@ const StatsDisplayMap: Partial<Record<keys, DisplayInformation>> = {
     heading: "Success",
     transform: (v: boolean) => (v ? "Yes" : "No"),
   },
-  height: { heading: "Height", transform: (val) => Math.round(val) + "m" },
+  height: {
+    heading: "Height",
+    transform: (val) => Math.round(parseInt(val)) + "m",
+  },
 };
 
 type StatsBarProps = {
@@ -27,7 +30,7 @@ type StatsBarProps = {
 
 export const StatsBar = ({
   climb,
-  keys = ["level", "type", "time"],
+  keys = ["level", "type", "time", "height"],
 }: StatsBarProps) => {
   const style = StyleSheet.create({
     box: {
