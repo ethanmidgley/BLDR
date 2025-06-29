@@ -68,8 +68,8 @@ const DefaultPoints: Spot[] = [
     id: 3,
   },
   {
-    latitude: 55.84850575031594,
-    longitude: -4.197678578040989,
+    latitude: 55.83972770855433,
+    longitude: -4.200466629693101,
     image: "cuningar",
     name: "Cuningar Bouldering",
     desc: "The Cuningar Loop boulders are designed to introduce new climbers to the sport whilst providing challenges for the more experienced climber.",

@@ -17,6 +17,7 @@ import { Image } from "expo-image";
 import { API_PATH } from "@/hooks/useApi";
 import { Post, PostComponent } from "@/components/PostComponent";
 import { useMutation } from "@/hooks/useMutation";
+import { useSession } from "@/context/context";
 
 type User = {
   fullname: string;
@@ -33,6 +34,8 @@ export default function Profile() {
   const [editVisible, setEditVisible] = useState<boolean>(false);
 
   const [updateBio] = useMutation("/profile/bio-edit");
+
+  const { getUser } = useSession();
 
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const {
@@ -168,18 +171,20 @@ export default function Profile() {
                     <Text style={{ ...styles.text, textAlign: "justify" }}>
                       {data?.bio}
                     </Text>
-                    <TouchableOpacity onPress={() => setEditVisible(true)}>
-                      <Text
-                        style={{
-                          ...styles.button_text,
-                          color: "#f00",
-                          marginTop: 5,
-                          marginBottom: 15,
-                        }}
-                      >
-                        Edit Bio
-                      </Text>
-                    </TouchableOpacity>
+                    {getUser()?.id === parseInt(user_id) ? (
+                      <TouchableOpacity onPress={() => setEditVisible(true)}>
+                        <Text
+                          style={{
+                            ...styles.button_text,
+                            color: "#f00",
+                            marginTop: 5,
+                            marginBottom: 15,
+                          }}
+                        >
+                          Edit Bio
+                        </Text>
+                      </TouchableOpacity>
+                    ) : null}
                   </View>
 
                   {/* uploads div */}
