@@ -32,14 +32,14 @@ export default function Profile() {
               <>
           {/* main profile div */}
           <View style={{ width: "100%" }}>
-            <View style={{ flex: 1, width:"30%", flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flex: 1, width:"30%", flexDirection: "row", alignItems: "center", margin: 8 }}>
               <Image
                 source={`${API_PATH}/image/${data?.image}`}
                 contentFit="cover"
                 style={{ width: "100%", borderRadius: "50%", height: 120, marginLeft: 5, marginTop: 5, borderWidth: 5, borderColor: "#f00"}}
               />
 
-              <View style={{ marginHorizontal: 20, height: 120, width: "200%" }}>
+              <View style={{ marginHorizontal: 20, height: 120, width: "190%" }}>
                   <Text style={{ ...styles.headingLarge, textAlign: "center" }}>{data?.fullname}</Text>
                   <Text style={{ ...styles.text, textAlign: "justify" }}>{data?.bio}</Text>
               </View>
