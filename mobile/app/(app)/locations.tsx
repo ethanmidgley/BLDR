@@ -16,17 +16,6 @@ import { PostComponent, Post } from "@/components/PostComponent";
 import { useQuery } from "@/hooks/useQuery";
 import { useSession } from "@/context/context";
 
-// function setDefaultLocation() {
-//   //can perform data base read for this later but ill hard code it for now
-//   console.log("at the 'center'");
-//   return {
-//     latitude: 55.83335013765077,
-//     latitudeDelta: 0.32373518987527206,
-//     longitude: -4.254001719804215,
-//     longitudeDelta: 0.29464614388276633,
-//   };
-// }
-
 const init_region = {
   latitude: 55.83335013765077,
   latitudeDelta: 0.32373518987527206,
@@ -148,6 +137,7 @@ export default function Locations() {
   // console.log(data);
 
   const [anchor, setAnchor] = useState(init_region);
+  const [offset_a, setOffset] = useState(0);
   const [refresh, setRefresh] = useState(0);
 
   function haversine(anchor: Region, region: Region) {
@@ -163,34 +153,26 @@ export default function Locations() {
       Math.sin(d_lat / 2) ** 2 +
       Math.cos(lats[0]) * Math.cos(lats[1]) * Math.sin(d_lon / 2) ** 2;
 
-    //distance in meters
-    return R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    //distance in km
+    return (R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) / 1000;
   }
 
   function region_locked_refresh(region: Region) {
-    console.log("Evaluate change");
     const d_lat = Math.abs(region.latitudeDelta - anchor.latitudeDelta);
     const d_lon = Math.abs(region.longitudeDelta - anchor.longitudeDelta);
+    const threshold = 15 * ((anchor.latitudeDelta + anchor.longitudeDelta) / 2); //can tweak this later
 
-    //simple scale for now
-    const threshhold =
-      5000 * (anchor.longitudeDelta + anchor.latitudeDelta / 2);
     const d_activation =
       d_lat >= anchor.latitudeDelta / 2 || d_lon >= anchor.longitudeDelta / 2;
 
+    //h_sin tells us how far the user has dragged, the offset allows us to calculate the whole distance before reaching threshold
+    const h_sin = haversine(anchor, region);
+
     // no change in delta -> assess over distance
-    if (d_activation || haversine(anchor, region) >= threshhold) {
-      console.log(`zoom changed: ${d_activation}, fetching`);
-      console.log(region);
+    if (d_activation || h_sin + offset_a >= threshold) {
       setAnchor(region);
-      // refetch({
-      //   params: {
-      //     lat: region.latitude,
-      //     lon: region.longitude,
-      //     lat_delta: region.latitudeDelta,
-      //     lon_delta: region.longitudeDelta,
-      //   },
-      // });
+    } else {
+      setOffset(offset_a + h_sin);
     }
   }
 
@@ -200,7 +182,7 @@ export default function Locations() {
 
   useEffect(() => {
     (async () => {
-      console.log("HELP");
+      setOffset(0);
       await refetch({
         params: {
           lat: anchor.latitude,
