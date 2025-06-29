@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { styles } from "@/constants/style";
 import { useQuery } from "@/hooks/useQuery";
 import { useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
 import { API_PATH } from "@/hooks/useApi";
 import { Post, PostComponent } from "@/components/PostComponent";
@@ -18,6 +18,10 @@ type UserPostsResponse = {
   posts: Post[];
 };
 
+const changeBio = () => {
+  
+}
+
 export default function Profile() {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const { data, status } = useQuery<User>("/user/" + user_id);
@@ -32,7 +36,7 @@ export default function Profile() {
               <>
           {/* main profile div */}
           <View style={{ width: "100%" }}>
-            <View style={{ flex: 1, width:"30%", flexDirection: "row", alignItems: "center", margin: 8 }}>
+            <View style={{ flex: 1, width:"30%", flexDirection: "row", alignItems: "center", marginHorizontal: 8, marginTop: 14 }}>
               <Image
                 source={`${API_PATH}/image/${data?.image}`}
                 contentFit="cover"
@@ -41,8 +45,19 @@ export default function Profile() {
 
               <View style={{ marginHorizontal: 20, height: 120, width: "190%" }}>
                   <Text style={{ ...styles.headingLarge, textAlign: "center" }}>{data?.fullname}</Text>
-                  <Text style={{ ...styles.text, textAlign: "justify" }}>{data?.bio}</Text>
               </View>
+            </View>
+
+            <View style={{ height: 80, marginHorizontal: 20, marginTop: 15, width: "90%" }}>
+              <Text 
+                style={{ ...styles.text, textAlign: "justify" }}>{data?.bio}
+              </Text>
+              <TouchableOpacity
+                onPress={() => changeBio()}>
+                <Text style={{ ...styles.button_text, color: "#f00", marginTop: 5, marginBottom: 15}}>
+                Edit Bio
+                </Text>
+              </TouchableOpacity>
             </View>
 
             {/* uploads div */}
@@ -50,7 +65,7 @@ export default function Profile() {
             </>
             )}
                 ListEmptyComponent={() => (
-                  <Text style={{ ...styles.headingMedium, paddingLeft: 15, paddingTop: 150, textAlign: "center" }}>This user has no posts</Text>
+                  <Text style={{ ...styles.headingMedium, paddingTop: 150, textAlign: "center" }}>This user has no posts</Text>
                 )}
                 style={{}}
                 refreshing={postStatus=== "loading"}
