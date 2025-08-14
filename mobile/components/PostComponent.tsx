@@ -68,7 +68,7 @@ export function PostComponent({
   fullWidth = true,
 }: PostComponentProps) {
   const [comment, setComment] = useState<string>("");
-  const [sendRequest] = useMutation<commentResponse>("/comments/add");
+  const [sendRequest] = useMutation<commentResponse>(`/posts/${id}/comments`);
   const { getUser } = useSession();
   const username = getUser()?.full_name as string;
   const router = useRouter();

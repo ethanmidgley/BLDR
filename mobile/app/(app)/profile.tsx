@@ -33,7 +33,7 @@ type UserPostsResponse = {
 export default function Profile() {
   const [editVisible, setEditVisible] = useState<boolean>(false);
 
-  const [updateBio] = useMutation("/profile/bio-edit");
+  const [updateBio] = useMutation("/me", {method: "PATCH"});
 
   const { getUser } = useSession();
 
@@ -42,13 +42,13 @@ export default function Profile() {
     data,
     status,
     refetch: refetchUserData,
-  } = useQuery<User>("/user/" + user_id);
+  } = useQuery<User>("/users/" + user_id);
   const [bio, setBio] = useState<string>("");
   const {
     data: postData,
     status: postStatus,
     refetch,
-  } = useQuery<UserPostsResponse>("/posts/fetchbyuser/" + user_id);
+  } = useQuery<UserPostsResponse>("/users/" + user_id + "/posts");
 
   return (
     <View key={user_id}>

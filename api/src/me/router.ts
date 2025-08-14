@@ -1,0 +1,55 @@
+import express, { Request, Response } from "express";
+import { isLoggedIn } from "../middleware/is-logged-in";
+import { db } from "../db/db";
+
+export const meRouter = express.Router();
+
+meRouter.get("/", isLoggedIn, async (request: Request, response: Response) => {
+  try {
+    const [result] = await db.query<{
+      full_name: string;
+      image: string;
+      bio: string;
+    }>(
+      "SELECT `full_name`, `image`, `bio` from `CS317-bldr-users` where id = ?;",
+      [request.user!.id],
+    );
+
+    if (!result || result.length == 0) {
+      response.status(404).send({ error: "failed to find user" });
+      return;
+    }
+
+    response.json({
+      fullname: result[0]!.full_name,
+      image: result[0]!.image,
+      bio: result[0]!.bio,
+    });
+  } catch (error) {
+    console.log(error);
+    response.status(500).send({ error: "failed to fetch user data" });
+    return;
+  }
+});
+
+// FIXME: It should recieve a partial updates from the body and then update according fields
+meRouter.patch(
+  "/",
+  isLoggedIn,
+  async (request: Request, response: Response) => {
+    const { bio } = request.body;
+
+    try {
+      await db.execute(
+        "UPDATE `CS317-bldr-users` SET `bio` = ? WHERE id = ?;",
+        [bio, request.user!.id],
+      );
+      response.json({
+        bio: bio,
+      });
+    } catch (error) {
+      console.error("Error updating bio:", error);
+      response.status(500).json({ error: "Unable to update bio" });
+    }
+  },
+);

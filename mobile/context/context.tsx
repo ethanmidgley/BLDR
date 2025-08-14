@@ -45,7 +45,7 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
-  const [sendRequest] = useMutation<loginResponse>("/users/login");
+  const [sendRequest] = useMutation<loginResponse>("/auth/login");
 
   return (
     <AuthContext.Provider

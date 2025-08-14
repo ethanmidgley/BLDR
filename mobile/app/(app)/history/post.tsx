@@ -72,7 +72,7 @@ const PostClimbScreen = () => {
         type: type,
       });
       // API redone
-      const response = await fetch(API_PATH + "/posts/add", {
+      const response = await fetch(API_PATH + "/posts", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",

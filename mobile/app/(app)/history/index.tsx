@@ -85,7 +85,7 @@ function ClimbComponent(climb: Climb) {
 }
 
 export default function History() {
-  const { data, refetch } = useQuery<{ data: Climb[] }>("/log/fetch");
+  const { data, refetch } = useQuery<{ data: Climb[] }>("/logs");
   const [refreshing] = useState<boolean>(false);
   const { refresh } = useLocalSearchParams();
 

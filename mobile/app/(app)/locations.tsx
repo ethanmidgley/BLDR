@@ -133,7 +133,7 @@ export default function Locations() {
   const [bottomStatePost, setBottomStatePost] = useState<Post | null>(null);
 
   //fetch posts to grab climbs
-  const { data, refetch } = useQuery<Post[]>("/points/fetch");
+  const { data, refetch } = useQuery<Post[]>("/points");
   // console.log(data);
 
   const [anchor, setAnchor] = useState(init_region);

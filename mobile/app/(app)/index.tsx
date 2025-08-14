@@ -9,7 +9,7 @@ type PostsResponse = {
 };
 
 export default function HomeScreen() {
-  const { data, status, refetch } = useQuery<PostsResponse>("/posts/fetch");
+  const { data, status, refetch } = useQuery<PostsResponse>("/posts");
 
   return (
     <>

@@ -206,7 +206,7 @@ export default function Log() {
 
   //submits the record for and will put it in the database
   const [sendRequest, { data: response }] =
-    useMutation<logResponse>("/log/add");
+    useMutation<logResponse>("/logs");
 
   const submitted = () => {
     let new_day = Number(day);

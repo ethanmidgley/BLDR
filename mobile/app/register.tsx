@@ -90,7 +90,7 @@ export default function Register() {
         type: type,
       });
 
-      const response = await fetch(API_PATH + "/users/register", {
+      const response = await fetch(API_PATH + "/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
