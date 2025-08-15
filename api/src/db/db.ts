@@ -3,9 +3,7 @@ import mysql, { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 export class db {
   static connection: mysql.Connection;
 
-  private constructor(connection: mysql.Connection) {
-    db.connection = connection;
-  }
+  private constructor() {}
 
   private static async createConnection() {
     return mysql.createConnection({
@@ -23,11 +21,13 @@ export class db {
     return db.connection;
   }
 
+  // eslint-disable-next-line
   public static async query<T>(sql: string, values?: any[]) {
     const connection = await db.getConnection();
     return await connection.query<(T & RowDataPacket)[]>(sql, values);
   }
 
+  // eslint-disable-next-line
   public static async execute(sql: string, values?: any[]) {
     const connection = await db.getConnection();
     return await connection.execute<ResultSetHeader>(sql, values);
