@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import passport from "passport";
-import session from "express-session";
+import session, { MemoryStore } from "express-session";
 import fs from "fs";
 import { authRouter } from "./auth/router";
 import { AuthLocalStrategy } from "./auth/passport-local";
@@ -11,9 +11,13 @@ import { logsRouter } from "./logs/router";
 import { postsRouter } from "./posts/router";
 import { pointsRouter } from "./points/router";
 import { meRouter } from "./me/router";
+import { RedisStore } from "connect-redis";
+import { redis } from "./db/redis";
+import { __prod__ } from "./constants";
 
 // Load environment variables for database password
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+import dotenv from "dotenv";
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const main = async () => {
   const app = express();
@@ -26,9 +30,14 @@ const main = async () => {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(
     session({
-      secret: "insert witty secret",
+      secret: process.env.SESSION_SECRET || "insert witty secret",
       resave: false,
       saveUninitialized: false,
+      store: __prod__
+        ? new RedisStore({
+            client: await redis.getConnection(),
+          })
+        : new MemoryStore(),
     }),
   );
 
@@ -47,6 +56,7 @@ const main = async () => {
       return cb(null, user);
     });
   });
+
   app.use("/auth", authRouter);
   app.use("/users", usersRouter);
   app.use("/logs", logsRouter);
