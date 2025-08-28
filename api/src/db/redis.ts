@@ -1,4 +1,4 @@
-import { createClient, RedisClientOptions, RedisClientType } from "redis";
+import { createClient } from "redis";
 
 export class redis {
   private static client: ReturnType<typeof createClient>;
@@ -6,7 +6,9 @@ export class redis {
   private constructor() {}
 
   private static async createConnection() {
-    const connection = createClient().connect();
+    const connection = createClient({
+      url: process.env.REDIS_URL || "",
+    }).connect();
     return connection;
   }
 

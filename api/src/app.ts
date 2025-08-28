@@ -57,6 +57,8 @@ const main = async () => {
     });
   });
 
+  app.use(express.static(path.resolve(__dirname, "../static")));
+
   app.use("/auth", authRouter);
   app.use("/users", usersRouter);
   app.use("/logs", logsRouter);
