@@ -57,6 +57,7 @@ meRouter.patch(
 
 meRouter.patch(
   "/pfp",
+  isLoggedIn,
   upload.single("image"),
   async (request: Request, response: Response) => {
     if (!request.file) {
@@ -67,7 +68,7 @@ meRouter.patch(
     try {
       const [result] = await db.execute(
         "UPDATE `CS317-bldr-users` SET `image` = ? WHERE id = ?;",
-        [request.file.filename],
+        [request.file.filename, request.user!.id],
       );
       response.json({
         data: {

@@ -50,7 +50,7 @@ export default function Profile() {
     }
   };
 
-  const [updatePfp] = async () => {
+  const updatePfp = async () => {
     if (uri === ""){
       Alert.alert("Please upload an image");
       return;
@@ -169,9 +169,7 @@ export default function Profile() {
                     <Text
                       style={styles.button_text}
                       onPress={async () => {
-                        const { status } = await updatePfp({
-                          body: { bio: bio },
-                        });
+                        const { status } = await updatePfp();
                         setEditPfpVisible(false);
                         if (status === "success") {
                           Alert.alert("Updated profile picture");
