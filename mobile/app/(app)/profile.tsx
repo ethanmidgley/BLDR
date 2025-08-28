@@ -325,9 +325,10 @@ export default function Profile() {
 
                   <View
                     style={{
-                      height: 80,
+                      height: "auto",
                       marginHorizontal: 20,
                       marginTop: 15,
+                      marginBottom: 15,
                       width: "90%",
                     }}
                   >
@@ -335,6 +336,13 @@ export default function Profile() {
                       {data?.bio}
                     </Text>
                   </View>
+
+                  <View
+                    style={{
+                      borderBottomColor: 'black',
+                      borderBottomWidth: 1,
+                    }}
+                  />
 
                   {/* uploads div */}
                 </View>
