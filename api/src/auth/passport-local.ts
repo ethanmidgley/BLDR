@@ -19,7 +19,11 @@ export const AuthLocalStrategy = new Strategy(
       if (!valid_password) {
         return cb(null, false, { message: "INCORRECT PASSWORD!!" });
       } else {
-        return cb(null, { id: result[0]!.id, email: result[0]!.email });
+        return cb(null, {
+          id: result[0]!.id,
+          email: result[0]!.email,
+          full_name: result[0]!.full_name,
+        });
       }
     } catch (err) {
       return cb(err);

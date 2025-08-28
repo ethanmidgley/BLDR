@@ -143,8 +143,16 @@ postsRouter.post(
   "/:id/comments",
   isLoggedIn,
   async (request: Request, response: Response) => {
-    const { post_id } = request.params;
+    const post_id = parseInt(request.params.id || "") || -1;
+
+    if (post_id == -1) {
+      response.status(400).send({ error: "Post not found" });
+    }
+
+    console.log(post_id);
     const { date, content } = request.body;
+    console.log(date);
+    console.log(content);
     try {
       const [result] = await db.execute(
         "INSERT INTO `CS317-bldr-comments` (`user_id`, `date`, `content`, `post_id`) VALUES (?, ?, ?, ?);",
