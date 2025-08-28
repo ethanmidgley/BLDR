@@ -5,7 +5,7 @@ import { enforceFloatQuery } from "../utils/utils";
 export const pointsRouter = express.Router();
 
 pointsRouter.get(
-  "/points",
+  "/",
   isLoggedIn,
   async (request: Request, response: Response) => {
     const d_fall_back = 0.3;
