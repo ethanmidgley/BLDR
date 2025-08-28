@@ -59,6 +59,7 @@ const dropDownType = [
   { label: "Roof", value: "Roof" },
   { label: "Mantle", value: "Mantle" },
   { label: "Outdoor", value: "Outdoor" },
+  { label: "Hike", value: "Hike" },
   { label: "Jamming", value: "Jamming" },
 ];
 
