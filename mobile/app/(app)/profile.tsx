@@ -81,10 +81,13 @@ export default function Profile() {
 
       if (!response.ok) {
         Alert.alert("Error", responseData.error || "Something went wrong");
+      } else {
+        return "success";
       }
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Failed to post data. Please try again.");
+      return error;
     }
   };
 
@@ -169,7 +172,7 @@ export default function Profile() {
                     <Text
                       style={styles.button_text}
                       onPress={async () => {
-                        const { status } = await updatePfp();
+                        const status = await updatePfp();
                         setEditPfpVisible(false);
                         if (status === "success") {
                           Alert.alert("Updated profile picture");
