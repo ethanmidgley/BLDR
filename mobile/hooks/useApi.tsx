@@ -1,8 +1,9 @@
+import { useStorageState } from "@/context/useStorageState";
 import { useState } from "react";
+import { router } from "expo-router";
 
 export const API_PATH =
-  process.env.EXPO_PUBLIC_API_URL ||
-  "http://192.168.1.74:3000";
+  process.env.EXPO_PUBLIC_API_URL || "http://192.168.1.74:3000";
 
 type TransmissionData = {
   body?: object;
@@ -52,6 +53,8 @@ export const useApi = <DataType,>(
   const [status, setStatus] = useState<FetchStatus>("not called");
   const [error, setError] = useState<string | null>(null);
 
+  const [_, setSession] = useStorageState("session");
+
   const send = async (
     variables?: TransmissionData,
     sendOptions?: RequestOptions<DataType>,
@@ -75,6 +78,13 @@ export const useApi = <DataType,>(
           ...finalOptions,
         },
       );
+
+      if (!res.ok && res.status === 403) {
+        setSession(null);
+        router.replace("/login");
+        throw Error("Forbidden: 403");
+      }
+
       const json = (await res.json()) as DataType;
 
       if (finalOptions?.refetchPolicy && data != null) {
@@ -83,11 +93,21 @@ export const useApi = <DataType,>(
         setData(json);
       }
       setStatus("success");
-      return { data: json, status: "success", error: null, refetch: send };
+      return {
+        data: json,
+        status: "success",
+        error: null,
+        refetch: send,
+      };
     } catch (err: any) {
       setStatus("error");
       setError(err.message);
-      return { data: null, status: "error", error: err.message, refetch: send };
+      return {
+        data: null,
+        status: "error",
+        error: err.message,
+        refetch: send,
+      };
     }
   };
 
