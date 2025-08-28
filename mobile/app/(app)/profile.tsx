@@ -18,6 +18,7 @@ import { API_PATH } from "@/hooks/useApi";
 import { Post, PostComponent } from "@/components/PostComponent";
 import { useMutation } from "@/hooks/useMutation";
 import { useSession } from "@/context/context";
+import * as ImagePicker from "expo-image-picker";
 
 type User = {
   fullname: string;
@@ -32,6 +33,63 @@ type UserPostsResponse = {
 
 export default function Profile() {
   const [editVisible, setEditVisible] = useState<boolean>(false);
+  const [editPfpVisible, setEditPfpVisible] = useState<boolean>(false);
+
+  const [uri, setUri] = useState<string | null>(null);
+  const [image_flag, set_image_flag] = useState(false);
+
+  const handleChooseImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+      setUri(imageUri);
+    }
+  };
+
+  const updatePfp = async () => {
+    if (uri === ""){
+      Alert.alert("Please upload an image");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      const localUri = uri;
+      const filename = localUri.split("/").pop();
+      const match = /\.(\w+)$/.exec(filename || "");
+      const type = match ? `image/${match[1]}` : "image";
+
+      formData.append("image", {
+        uri: localUri,
+        name: filename,
+        type: type,
+      });
+
+      const response = await fetch(API_PATH + "/me/pfp", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        Alert.alert("Error", responseData.error || "Something went wrong");
+      } else {
+        return "success";
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Failed to post data. Please try again.");
+      return error;
+    }
+  };
 
   const [updateBio] = useMutation("/me", {method: "PATCH"});
 
@@ -54,6 +112,83 @@ export default function Profile() {
     <View key={user_id}>
       {status === "success" ? (
         <>
+          <Modal animationType="slide" transparent={true} visible={editPfpVisible}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  width: 300,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                  padding: 20,
+                }}
+              >
+                <Text style={styles.headingLarge}>Edit Profile Picture</Text>
+
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#f00",
+                    justifyContent: "center",
+                    borderRadius: 5,
+                    paddingVertical: 8,
+                    alignSelf: "center",
+                    padding: 10,
+                    margin: 10,
+                    width: "70%",
+                    height: 50,
+                  }}
+                  onPress={handleChooseImage}
+                >
+                  <Text style={{ ...styles.button_text, color: "#fff" }}>
+                    Select
+                  </Text>
+                </TouchableOpacity>
+                {uri && (
+                  <Image
+                    source={{ uri: uri }}
+                    style={{ ...styles.image, alignSelf: "center" }}
+                  />
+                )}
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    columnGap: 20,
+                  }}
+                >
+                  <Pressable
+                    style={[styles.button, { flex: 1, height: 30 }]}
+                    onPress={() => setEditPfpVisible(false)}
+                  >
+                    <Text style={styles.button_text}>Close</Text>
+                  </Pressable>
+                  <Pressable style={[styles.button, { flex: 1, height: 30 }]}>
+                    <Text
+                      style={styles.button_text}
+                      onPress={async () => {
+                        const status = await updatePfp();
+                        setEditPfpVisible(false);
+                        if (status === "success") {
+                          Alert.alert("Updated profile picture");
+                          refetchUserData();
+                        } else {
+                          Alert.alert("Failed to update profile picture, try again later");
+                        }
+                      }}
+                    >
+                      Save
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          </Modal>
           <Modal animationType="slide" transparent={true} visible={editVisible}>
             <View
               style={{
@@ -157,6 +292,34 @@ export default function Profile() {
                       >
                         {data?.fullname}
                       </Text>
+                      {getUser()?.id === parseInt(user_id) ? (
+                        <TouchableOpacity onPress={() => setEditPfpVisible(true)}>
+                          <Text
+                            style={{
+                              ...styles.button_text,
+                              color: "#f00",
+                              marginTop: 5,
+                              textAlign: "right"
+                            }}
+                          >
+                            Edit Picture
+                          </Text>
+                        </TouchableOpacity>
+                      ) : null}
+                      {getUser()?.id === parseInt(user_id) ? (
+                        <TouchableOpacity onPress={() => setEditVisible(true)}>
+                          <Text
+                            style={{
+                              ...styles.button_text,
+                              color: "#f00",
+                              marginTop: 5,
+                              textAlign: "right"
+                            }}
+                          >
+                            Edit Bio
+                          </Text>
+                        </TouchableOpacity>
+                      ) : null}
                     </View>
                   </View>
 
@@ -171,20 +334,6 @@ export default function Profile() {
                     <Text style={{ ...styles.text, textAlign: "justify" }}>
                       {data?.bio}
                     </Text>
-                    {getUser()?.id === parseInt(user_id) ? (
-                      <TouchableOpacity onPress={() => setEditVisible(true)}>
-                        <Text
-                          style={{
-                            ...styles.button_text,
-                            color: "#f00",
-                            marginTop: 5,
-                            marginBottom: 15,
-                          }}
-                        >
-                          Edit Bio
-                        </Text>
-                      </TouchableOpacity>
-                    ) : null}
                   </View>
 
                   {/* uploads div */}

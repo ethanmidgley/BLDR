@@ -30,7 +30,6 @@ export default function Register() {
       quality: 1,
     });
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      // CANCELLED ***
       const imageUri = result.assets[0].uri;
       setUri(imageUri);
     }

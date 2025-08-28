@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { isLoggedIn } from "../middleware/is-logged-in";
 import { db } from "../db/db";
+import { upload } from "../multer";
 
 export const meRouter = express.Router();
 
@@ -50,6 +51,37 @@ meRouter.patch(
     } catch (error) {
       console.error("Error updating bio:", error);
       response.status(500).json({ error: "Unable to update bio" });
+    }
+  },
+);
+
+meRouter.patch(
+  "/pfp",
+  isLoggedIn,
+  upload.single("image"),
+  async (request: Request, response: Response) => {
+    if (!request.file) {
+      response.status(400).send({ error: "no file uploaded" });
+      return;
+    }
+
+    try {
+      const [result] = await db.execute(
+        "UPDATE `CS317-bldr-users` SET `image` = ? WHERE id = ?;",
+        [request.file.filename, request.user!.id],
+      );
+      response.json({
+        data: {
+          user: {
+            id: result.insertId,
+            image: request.file.filename,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error updating image:", error);
+      response.status(400).send({ error: "Unable to change image" });
+      return;
     }
   },
 );
