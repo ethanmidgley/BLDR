@@ -34,7 +34,19 @@ export type logResponse = {
   message?: string;
 };
 
-const dropDownData = [
+function dropDownLevelGen(cap: number) {
+  let res = [];
+  for (let i = 0; i < cap + 1; i++) {
+    const e = { label: String(i), value: i };
+    res.push(e);
+  }
+  return res;
+}
+
+const hc_cap = 10;
+const dropDownLevel = dropDownLevelGen(hc_cap);
+
+const dropDownType = [
   { label: "Overhang", value: "Overhang" },
   { label: "Jug", value: "Jug" },
   { label: "Crimp", value: "Crimp" },
@@ -62,7 +74,7 @@ export default function Log() {
   );
 
   //this is where the level of the climb is stored
-  const [level, onChangeLevel] = React.useState(0);
+  const [level, onChangeLevel] = React.useState<number | null>(null);
 
   //these are used for the timer and where the time is stored
   const [time, onChangeTime] = React.useState(0);
@@ -205,8 +217,7 @@ export default function Log() {
   };
 
   //submits the record for and will put it in the database
-  const [sendRequest, { data: response }] =
-    useMutation<logResponse>("/logs");
+  const [sendRequest, { data: response }] = useMutation<logResponse>("/logs");
 
   const submitted = () => {
     let new_day = Number(day);
@@ -348,22 +359,24 @@ export default function Log() {
             <Text style={{ ...styles.headingSmall, paddingRight: 20 }}>
               Level
             </Text>
-            <TextInput
-              // need to make this shit regulate the input to 1dp, could just validate on submit for now
-              value={level.toString()}
-              placeholder="eg. 3.4, 10, 7.0"
-              placeholderTextColor="#ddd"
-              keyboardType="numeric"
-              returnKeyType="done"
-              onChangeText={(text) => onChangeLevel(parseInt(text) || 0)}
-              onEndEditing={(event) => {
-                const num = parseFloat(event.nativeEvent.text) || 0;
-                if (num === Math.floor(num)) {
-                  //parse only the integer if there are no decimal points following
-                  onChangeLevel(num);
-                } else {
-                  onChangeLevel(num);
-                }
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={dropDownLevel}
+              search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select an option"
+              searchPlaceholder="Search..."
+              value={level}
+              onChange={(item: {
+                value: React.SetStateAction<number | null>;
+              }) => {
+                onChangeLevel(item.value);
               }}
             />
           </View>
@@ -378,7 +391,7 @@ export default function Log() {
               selectedTextStyle={styles.selectedTextStyle}
               inputSearchStyle={styles.inputSearchStyle}
               iconStyle={styles.iconStyle}
-              data={dropDownData}
+              data={dropDownType}
               search
               maxHeight={300}
               labelField="label"
