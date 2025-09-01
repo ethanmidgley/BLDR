@@ -2,8 +2,6 @@ services:
   mysql:
     image: mysql:8.4.0-oraclelinux8
     container_name: "bldr.mysql"
-    ports:
-      - 3306:3306
     environment:
       MYSQL_DATABASE: "${DB_DATABASE}"
       MYSQL_USER: ${DB_USERNAME}
@@ -14,8 +12,6 @@ services:
 
   redis:
     image: "redis"
-    ports:
-      - 6379:6379
     container_name: "bldr.redis"
     command: "redis-server --requirepass ${REDIS_PASSWORD}"
     volumes:
