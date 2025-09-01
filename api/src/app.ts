@@ -47,11 +47,14 @@ const main = async () => {
 
   passport.serializeUser(function (user, cb) {
     process.nextTick(function () {
-      cb(null, { id: user.id, email: user.email });
+      cb(null, { id: user.id, email: user.email, full_name: user.full_name });
     });
   });
 
-  passport.deserializeUser(function (user: { id: number; email: string }, cb) {
+  passport.deserializeUser(function (
+    user: { id: number; email: string; full_name: string },
+    cb,
+  ) {
     process.nextTick(function () {
       return cb(null, user);
     });

@@ -17,7 +17,7 @@ services:
     ports:
       - 6379:6379
     container_name: "bldr.redis"
-    command: "redis-server --requirepass ${REDISPASSWORD}"
+    command: "redis-server --requirepass ${REDIS_PASSWORD}"
     volumes:
       - redis_data:/var/lib/redis/data
 
@@ -33,7 +33,7 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: localhost
+      DB_HOST: mysql
       REDIS_URL: ${REDIS_URL}
     ports:
       - 3000:3000
