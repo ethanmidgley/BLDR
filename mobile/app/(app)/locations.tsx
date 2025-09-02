@@ -177,10 +177,6 @@ export default function Locations() {
   }
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
     (async () => {
       setOffset(0);
       await refetch({
