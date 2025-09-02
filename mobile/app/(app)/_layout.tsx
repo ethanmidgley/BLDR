@@ -105,15 +105,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "BLDR",
-          headerRight: () => (
-            <AntDesign
-              style={{ marginRight: 16 }}
-              onPress={confirmSignOut} //maybe add small vibration here?!?!
-              name="logout"
-              size={24}
-              color="black"
-            />
-          ),
           tabBarIcon: () => <AntDesign name="home" size={24} color="black" />,
         }}
       />
@@ -174,6 +165,15 @@ export default function TabLayout() {
         options={{
           title: "PROFILE",
           tabBarIcon: () => <AntDesign name="user" size={24} color="black" />,
+          headerRight: () => (
+            <AntDesign
+              style={{ marginRight: 16 }}
+              onPress={confirmSignOut} 
+              name="logout"
+              size={24}
+              color="black"
+            />
+          ),
         }}
       />
     </Tabs>

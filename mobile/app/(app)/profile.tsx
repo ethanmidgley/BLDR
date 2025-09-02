@@ -75,12 +75,11 @@ export default function Profile() {
           "Content-Type": "multipart/form-data",
         },
         body: formData,
+        credentials: "include"
       });
 
-      const responseData = await response.json();
-
       if (!response.ok) {
-        Alert.alert("Error", responseData.error || "Something went wrong");
+        Alert.alert("Error", "File must be less than 10MB");
       } else {
         return "success";
       }

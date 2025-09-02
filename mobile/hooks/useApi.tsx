@@ -3,7 +3,7 @@ import { useState } from "react";
 import { router } from "expo-router";
 
 export const API_PATH =
-  process.env.EXPO_PUBLIC_API_URL || "http://192.168.1.74:3000";
+  process.env.EXPO_PUBLIC_API_URL || "https://nbldr.app";
 
 type TransmissionData = {
   body?: object;
