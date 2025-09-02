@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import { isLoggedIn } from "../middleware/is-logged-in";
 import { db } from "../db/db";
 import { upload } from "../multer";
+import fs from "fs/promises";
+import path from "path";
 
 export const meRouter = express.Router();
 
@@ -66,10 +68,25 @@ meRouter.patch(
     }
 
     try {
+      const [image_uri] = await db.query<{ image: string }>(
+        "SELECT image FROM `CS317-bldr-users` WHERE id = ?;",
+        [request.user!.id],
+      );
+
+      if (image_uri && image_uri.length > 0) {
+        const image_to_delete = image_uri[0]!.image;
+        const fpath = path.resolve(
+          __dirname,
+          `../../uploads/${image_to_delete}`,
+        );
+        await fs.unlink(fpath);
+      }
+
       const [result] = await db.execute(
         "UPDATE `CS317-bldr-users` SET `image` = ? WHERE id = ?;",
         [request.file.filename, request.user!.id],
       );
+
       response.json({
         data: {
           user: {
