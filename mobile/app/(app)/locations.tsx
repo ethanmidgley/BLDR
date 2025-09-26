@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import MapView, {
   Marker,
   Callout,
+  Region,
   PROVIDER_GOOGLE,
   PROVIDER_DEFAULT,
 } from "react-native-maps";
@@ -15,15 +16,12 @@ import { PostComponent, Post } from "@/components/PostComponent";
 import { useQuery } from "@/hooks/useQuery";
 import { useSession } from "@/context/context";
 
-function setDefaultLocation() {
-  //can perform data base read for this later but ill hard code it for now
-  return {
-    latitude: 55.83335013765077,
-    latitudeDelta: 0.32373518987527206,
-    longitude: -4.254001719804215,
-    longitudeDelta: 0.29464614388276633,
-  };
-}
+const init_region = {
+  latitude: 55.83335013765077,
+  latitudeDelta: 0.32373518987527206,
+  longitude: -4.254001719804215,
+  longitudeDelta: 0.29464614388276633,
+};
 
 const spot_images = {
   newsroom: require("../../assets/images/locales/the-newsroom.jpg"),
@@ -70,8 +68,8 @@ const DefaultPoints: Spot[] = [
     id: 3,
   },
   {
-    latitude: 55.84850575031594,
-    longitude: -4.197678578040989,
+    latitude: 55.83972770855433,
+    longitude: -4.200466629693101,
     image: "cuningar",
     name: "Cuningar Bouldering",
     desc: "The Cuningar Loop boulders are designed to introduce new climbers to the sport whilst providing challenges for the more experienced climber.",
@@ -135,33 +133,85 @@ export default function Locations() {
   const [bottomStatePost, setBottomStatePost] = useState<Post | null>(null);
 
   //fetch posts to grab climbs
-  const { data } = useQuery<Post[]>("/posts/fetch");
+  const { data, refetch } = useQuery<Post[]>("/points");
   // console.log(data);
 
+  const [anchor, setAnchor] = useState(init_region);
+  const [offset_a, setOffset] = useState(0);
   const [refresh, setRefresh] = useState(0);
 
+  function haversine(anchor: Region, region: Region) {
+    const R = 6371000; //radius of the earth in meters
+    const to_rad = (deg: number) => (deg * Math.PI) / 180;
+    const lats = [region.latitude, anchor.latitude].map(to_rad);
+    const lons = [region.longitude, anchor.longitude].map(to_rad);
+
+    const d_lat = lats[0] - lats[1];
+    const d_lon = lons[0] - lons[1];
+
+    const a =
+      Math.sin(d_lat / 2) ** 2 +
+      Math.cos(lats[0]) * Math.cos(lats[1]) * Math.sin(d_lon / 2) ** 2;
+
+    //distance in km
+    return (R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) / 1000;
+  }
+
+  function region_locked_refresh(region: Region) {
+    const d_lat = Math.abs(region.latitudeDelta - anchor.latitudeDelta);
+    const d_lon = Math.abs(region.longitudeDelta - anchor.longitudeDelta);
+    const threshold = 15 * ((anchor.latitudeDelta + anchor.longitudeDelta) / 2); //can tweak this later
+
+    const d_activation =
+      d_lat >= anchor.latitudeDelta / 2 || d_lon >= anchor.longitudeDelta / 2;
+
+    //h_sin tells us how far the user has dragged, the offset allows us to calculate the whole distance before reaching threshold
+    const h_sin = haversine(anchor, region);
+
+    // no change in delta -> assess over distance
+    if (d_activation || h_sin + offset_a >= threshold) {
+      setAnchor(region);
+    } else {
+      setOffset(offset_a + h_sin);
+    }
+  }
+
   useEffect(() => {
-    setRefresh((prev) => prev + 1); // Increment to force a re-render
-  }, [data, location]);
+    (async () => {
+      setOffset(0);
+      await refetch({
+        params: {
+          lat: anchor.latitude,
+          lon: anchor.longitude,
+          lat_delta: anchor.latitudeDelta,
+          lon_delta: anchor.longitudeDelta,
+        },
+      });
+    })();
+  }, [anchor]);
+
+  // useEffect(() => {
+  //   setRefresh((prev) => prev + 1); // Increment to force a re-render
+  // }, [data, location]);
 
   //actual app render
   return (
     <View style={styles.map_container}>
       <MapView
-        key={refresh}
+        // key={refresh}
         style={styles.map} //@ts-ignore
         cluster={false}
+        onRegionChangeComplete={region_locked_refresh}
         provider={
           process.env.environment === "preview"
             ? PROVIDER_GOOGLE
             : PROVIDER_DEFAULT
         }
-        initialRegion={setDefaultLocation()}
+        initialRegion={anchor}
       >
         {/*render user location*/}
         {location !== null ? (
           <Marker
-
             key={`user-${location.coords.latitude}-${location.coords.longitude}`} //@ts-ignore
             coordinate={location.coords}
             onPress={() => {
@@ -196,33 +246,39 @@ export default function Locations() {
             </Callout>
           </Marker>
         ))}
-        {/*render users posts location*/}
-        {data?.map((post) => (
-          <Marker
-            key={`${post.title}-${post.id}-${post.climb.lat}-${post.climb.lon}`} //@ts-ignore
-            coordinate={{
-              latitude: post.climb.lat,
-              longitude: post.climb.lon,
-            }}
-            pinColor={
-              post.user_id === user?.id
-                ? "#EEEEEE"
-                : post.climb.level >= 10
-                  ? boulderingGrades[10]
-                  : boulderingGrades[Math.floor(post.climb.level)]
-            }
-            onPress={() => {
-              setBottomStateSpot(null);
-              setBottomStatePost(post);
-            }}
-          >
-            <Callout tooltip={true}>
-              <View
-                style={{ height: 1, width: 1, backgroundColor: "transparent" }}
-              />
-            </Callout>
-          </Marker>
-        ))}
+        {/* render users posts location */}
+        {data != null
+          ? data?.map((post) => (
+              <Marker
+                key={`${post.title}-${post.id}-${post.climb.lat}-${post.climb.lon}`} //@ts-ignore
+                coordinate={{
+                  latitude: post.climb.lat,
+                  longitude: post.climb.lon,
+                }}
+                pinColor={
+                  post.user_id === user?.id
+                    ? "#EEEEEE"
+                    : post.climb.level >= 10
+                      ? boulderingGrades[10]
+                      : boulderingGrades[Math.floor(post.climb.level)]
+                }
+                onPress={() => {
+                  setBottomStateSpot(null);
+                  setBottomStatePost(post);
+                }}
+              >
+                <Callout tooltip={true}>
+                  <View
+                    style={{
+                      height: 1,
+                      width: 1,
+                      backgroundColor: "transparent",
+                    }}
+                  />
+                </Callout>
+              </Marker>
+            ))
+          : null}
       </MapView>
       {/*two states may be null but they won't be active at the same time*/}
       {bottomStateSpot ? (

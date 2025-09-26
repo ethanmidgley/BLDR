@@ -1,7 +1,10 @@
 import { useEffect } from "react";
-import useApi from "./useApi";
+import useApi, { RequestOptions } from "./useApi";
 
-export const useQuery = <DataType,>(url: string, options?: RequestInit) => {
+export const useQuery = <DataType,>(
+  url: string,
+  options?: RequestOptions<DataType>,
+) => {
   const queryOptions: RequestInit = { method: "get" };
   const [mutate, state] = useApi<DataType>(url, {
     ...queryOptions,
@@ -10,7 +13,7 @@ export const useQuery = <DataType,>(url: string, options?: RequestInit) => {
 
   useEffect(() => {
     mutate();
-  }, []);
+  }, [url]);
 
   return state;
 };

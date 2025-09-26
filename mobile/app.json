@@ -34,7 +34,7 @@
           "apiKey": ""
         }
       },
-      "package": "com.awesome.bldr",
+      "package": "app.nbldr.bldr",
       "runtimeVersion": "1.0.0"
     },
     "web": {
@@ -69,7 +69,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "0bfd0f8b-cea9-457e-8baf-b3b4a0dee85c"
+        "projectId": "5d212c58-5026-48a1-b29b-053433d5d09f"
       }
     }
   }

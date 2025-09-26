@@ -1,0 +1,39 @@
+services:
+  mysql:
+    image: mysql:8.4.0-oraclelinux8
+    container_name: "bldr.mysql"
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: "redis"
+    container_name: "bldr.redis"
+    command: "redis-server --requirepass ${REDIS_PASSWORD}"
+    volumes:
+      - redis_data:/var/lib/redis/data
+
+  api:
+    container_name: "bldr.api"
+    build:
+      context: .
+    volumes:
+      - ~/bldr/builds:/usr/src/app/static/assets/builds
+      - ~/bldr/uploads:/usr/src/app/uploads
+    environment:
+      NODE_ENV: production
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: mysql
+      REDIS_URL: ${REDIS_URL}
+    ports:
+      - 3000:3000
+
+volumes:
+  redis_data:
+  db_data:

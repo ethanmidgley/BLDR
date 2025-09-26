@@ -5,27 +5,27 @@ import {
   TextInput,
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { API_PATH } from "@/hooks/useApi";
 import { Image } from "expo-image";
 import Wrapper from "./Wrapper";
 import { styles } from "@/constants/style";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useSession } from "@/context/context";
 import StatsBar from "./StatsBar";
+import { useQuery } from "@/hooks/useQuery";
 
 export type Climb = {
   time: number;
   level: number;
   height: number;
-  angle: number;
-  type: string;
   success: boolean;
   lat: number;
   lon: number;
+  type: string;
 };
 
 export type Post = {
@@ -35,8 +35,12 @@ export type Post = {
   description: string;
   author: string;
   image: string;
-  comments: Comment[];
   climb: Climb;
+};
+
+export type CommentResponse = {
+  next_cursor: number | null;
+  comments: Comment[];
 };
 
 export type Comment = {
@@ -54,19 +58,31 @@ type PostComponentProps = Post & {
 };
 
 export function PostComponent({
-  comments,
   title,
   author,
   description,
   image,
   climb,
   id,
+  user_id,
   fullWidth = true,
 }: PostComponentProps) {
   const [comment, setComment] = useState<string>("");
-  const [sendRequest] = useMutation<commentResponse>("/comments/add");
+  const [sendRequest] = useMutation<commentResponse>(`/posts/${id}/comments`);
   const { getUser } = useSession();
   const username = getUser()?.full_name as string;
+  const router = useRouter();
+
+  const {
+    data: comments,
+    status: commentsStatus,
+    refetch,
+  } = useQuery<CommentResponse>(`/posts/${id}/comments`, {
+    refetchPolicy: (oldData, newData) => ({
+      comments: [...oldData.comments, ...newData.comments],
+      next_cursor: newData.next_cursor,
+    }),
+  });
 
   const commentOnPost = async () => {
     if (comment === "") {
@@ -85,15 +101,17 @@ export function PostComponent({
     const proper_date = `${year % 1000}/${month < 10 ? "0" + month : month}/${day < 10 ? "0" + day : String(day)}`;
 
     const { status } = await sendRequest({
-      post_id: id,
-      content: replyee + comment,
-      date: proper_date,
+      body: {
+        post_id: id,
+        content: replyee + comment,
+        date: proper_date,
+      },
     });
 
     if (status === "error") {
       Alert.alert("Failed to post comment. Try again later.");
     } else if (status === "success") {
-      comments.push({
+      comments?.comments.push({
         id: Infinity,
         author: username,
         content: replyee + comment,
@@ -129,9 +147,18 @@ export function PostComponent({
       </View>
       <Wrapper style={!fullWidth && { marginHorizontal: 0 }}>
         <View style={{ flex: 1, gap: 10 }}>
-          <Text style={styles.headingMedium}>
-            {title} - {author}
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              router.push({
+                pathname: "/profile",
+                params: { user_id: user_id },
+              });
+            }}
+          >
+            <Text style={styles.headingMedium}>
+              {title} - {author}
+            </Text>
+          </TouchableOpacity>
           <Text style={{ textAlign: "justify" }}>{description}</Text>
           <StatsBar climb={climb} />
 
@@ -156,7 +183,7 @@ export function PostComponent({
           <View style={{ gap: 2 }}>
             <Text style={styles.headingSmall}>Comments</Text>
 
-            {comments.map((c, idx) => (
+            {comments?.comments.map((c, idx) => (
               <View key={idx}>
                 <Text style={{ paddingRight: 40 }}>
                   {c.author}: {c.content}
@@ -170,6 +197,23 @@ export function PostComponent({
               </View>
             ))}
           </View>
+          {comments?.next_cursor != null ? (
+            <TouchableOpacity
+              onPress={async () => {
+                if (comments.next_cursor != null) {
+                  await refetch({
+                    params: { next_cursor: comments?.next_cursor, limit: 10 },
+                  });
+                }
+              }}
+            >
+              {commentsStatus === "loading" ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={{ paddingRight: 40 }}>Load more...</Text>
+              )}
+            </TouchableOpacity>
+          ) : null}
           <View style={{ flexDirection: "row" }}>
             <TextInput
               placeholder={placeholder}

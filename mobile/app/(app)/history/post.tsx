@@ -13,11 +13,12 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { API_PATH } from "@/hooks/useApi";
-import { styles } from "@/constants/style"
+import { styles } from "@/constants/style";
 
 const PostClimbScreen = () => {
   const router = useRouter();
   const { climb_id } = useLocalSearchParams();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uri, setUri] = useState<string | null>(null);
@@ -56,7 +57,7 @@ const PostClimbScreen = () => {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("climb_id", climb_id);
+      formData.append("climb_id", climb_id as string);
       formData.append("date", date);
       //image upload stuff
       const localUri = uri;
@@ -64,13 +65,14 @@ const PostClimbScreen = () => {
       const match = /\.(\w+)$/.exec(filename || "");
       const type = match ? `image/${match[1]}` : "image";
 
+      // @ts-ignore
       formData.append("image", {
         uri: localUri,
         name: filename,
         type: type,
       });
       // API redone
-      const response = await fetch(API_PATH + "/posts/add", {
+      const response = await fetch(API_PATH + "/posts", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -107,55 +109,62 @@ const PostClimbScreen = () => {
           ?
         </Text>
       </View>
-      <View style ={{marginHorizontal:20}}>
-        <Text style={{fontSize: 16, marginVertical:5}}>Title:</Text>
-        <TextInput style={{...styles.input,width:"100%"}} value={title} onChangeText={setTitle} />
+      <View style={{ marginHorizontal: 20 }}>
+        <Text style={{ fontSize: 16, marginVertical: 5 }}>Title:</Text>
+        <TextInput
+          style={{ ...styles.input, width: "100%" }}
+          value={title}
+          onChangeText={setTitle}
+        />
 
-        <Text style={{fontSize:16, marginVertical:5}}>Description:</Text>
+        <Text style={{ fontSize: 16, marginVertical: 5 }}>Description:</Text>
         <TextInput
           editable
           multiline
-          style={{...styles.input,width:"100%",height:100,}}
+          style={{ ...styles.input, width: "100%", height: 100 }}
           value={description}
           onChangeText={setDescription}
         />
       </View>
-      
-      <TouchableOpacity 
-        style={{
-          backgroundColor: "#f00", 
-          justifyContent: "center", 
-          borderRadius: 5, 
-          paddingVertical: 8,
-          alignSelf:"center",
-          padding:10,
-          margin:10,
-          width:"70%",
-          height:50,
-          }}
-        onPress={handleChooseImage}
-        
-        >
-        <Text style = {styles.button_text}>Choose Image</Text>
-      </TouchableOpacity>
-      {uri && <Image source={{ uri: uri }} style={{...styles.image,alignSelf:"center"}} />}
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={{
-          backgroundColor: "#f00", 
-          justifyContent: "center", 
-          borderRadius: 5, 
+          backgroundColor: "#f00",
+          justifyContent: "center",
+          borderRadius: 5,
           paddingVertical: 8,
-          alignSelf:"center",
-          padding:10,
-          margin:10,
-          width:"55%",
-          height:50,
-          }}
+          alignSelf: "center",
+          padding: 10,
+          margin: 10,
+          width: "70%",
+          height: 50,
+        }}
+        onPress={handleChooseImage}
+      >
+        <Text style={styles.button_text}>Choose Image</Text>
+      </TouchableOpacity>
+      {uri && (
+        <Image
+          source={{ uri: uri }}
+          style={{ ...styles.image, alignSelf: "center" }}
+        />
+      )}
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#f00",
+          justifyContent: "center",
+          borderRadius: 5,
+          paddingVertical: 8,
+          alignSelf: "center",
+          padding: 10,
+          margin: 10,
+          width: "55%",
+          height: 50,
+        }}
         onPress={handlePost}
-        
-        >
-        <Text style = {styles.button_text}>Create Post</Text>
+      >
+        <Text style={styles.button_text}>Create Post</Text>
       </TouchableOpacity>
     </ScrollView>
   );
