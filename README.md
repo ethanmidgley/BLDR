@@ -18,7 +18,7 @@ Extended from my group's project for: CS317, Mobile App Development.
 
 ## Pitch Overview
 
-https://github.com/user-attachments/assets/42535a06-4877-45f4-99f6-3d03e289f063
+[![Pitch Gif](./assets/overview-quick.gif)](https://github.com/user-attachments/assets/42535a06-4877-45f4-99f6-3d03e289f063)
 
 ## Screenshots
 
@@ -26,13 +26,17 @@ https://github.com/user-attachments/assets/42535a06-4877-45f4-99f6-3d03e289f063
 | --------------------------------------- | ----------------------------- | ---------------------------------- |
 | ![Download page](./assets/download.png) | ![Log in](./assets/login.png) | ![Register](./assets/register.png) |
 
-| Feed                       | Skills                         | Map                      | Map location                               |
-| -------------------------- | ------------------------------ | ------------------------ | ------------------------------------------ |
-| ![Feed](./assets/feed.png) | ![Skills](./assets/skills.png) | ![Map](./assets/map.png) | ![Map location](./assets/map_location.png) |
+| Feed                       | Skills                         | Map                      |
+| -------------------------- | ------------------------------ | ------------------------ |
+| ![Feed](./assets/feed.png) | ![Skills](./assets/skills.png) | ![Map](./assets/map.png) |
 
-| Log climb                      | History                          | Post                       | Profile page                          |
-| ------------------------------ | -------------------------------- | -------------------------- | ------------------------------------- |
-| ![Log](./assets/log_climb.png) | ![History](./assets/history.png) | ![Post](./assets/post.png) | ![Profile page](./assets/profile.png) |
+| Map location                               | Log climb                      | History                          |
+| ------------------------------------------ | ------------------------------ | -------------------------------- |
+| ![Map location](./assets/map_location.png) | ![Log](./assets/log_climb.png) | ![History](./assets/history.png) |
+
+| Post                       | Profile page                          |
+| -------------------------- | ------------------------------------- |
+| ![Post](./assets/post.png) | ![Profile page](./assets/profile.png) |
 
 ## Extended Contributors
 
